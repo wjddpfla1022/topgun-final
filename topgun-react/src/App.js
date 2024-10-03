@@ -5,8 +5,8 @@ import MainPage from './MainPage/MainPage';
 const App = () => {
   return (
     <>
-      <Test />
-      {/* <MainPage /> */}
+      {/* <Test /> */}
+      <MainPage />
     </>
   );
 }
