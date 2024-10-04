@@ -8,7 +8,7 @@ const MainContent=()=>{
     <div className="row pt-3">
         <div className="col-sm-10 offset-sm-1">
             <Routes>
-                <Route path="/main" element={<MainPage/>}/> 
+                <Route exact path="/" element={<MainPage/>}/> 
                 <Route path="/test" element={<Test/>}/>
                 <Route path="*" element={<PageNotFound/>}/>
             </Routes>
