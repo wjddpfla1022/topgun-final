@@ -91,6 +91,20 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!--JWT토큰 생성을 위한 의존성-->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.6</version>
+    <scope>runtime</scope>
+</dependency>
+		
 		<!-- Rest API를 문서화해주는 도구-->		
 		<dependency>
     <groupId>org.springdoc</groupId>
