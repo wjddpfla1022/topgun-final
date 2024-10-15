@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class MemberDTO extends UserDto {
-	private String memberId; // member_id, user_id와 동일하게 관리됨
+	private String memberId; // member_id, users_id와 동일하게 관리됨
 	private String memberEngName; // member_eng_name
 	private Date memberBirth; // member_birth
 	private char memberGender; // member_gender 'M' 또는 'W'
