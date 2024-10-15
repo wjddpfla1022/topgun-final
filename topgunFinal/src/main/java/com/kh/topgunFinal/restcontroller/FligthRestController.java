@@ -1,4 +1,4 @@
-package com.kh.topgunFinal.restController;
+package com.kh.topgunFinal.restcontroller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
