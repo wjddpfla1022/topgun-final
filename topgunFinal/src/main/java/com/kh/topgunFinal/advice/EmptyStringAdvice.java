@@ -1,4 +1,4 @@
-package advice;
+package com.kh.topgunFinal.advice;
 
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;

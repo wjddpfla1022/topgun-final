@@ -1,5 +1,5 @@
 import {Route, Routes} from "react-router";
-import MainPage from '../../MainPage/MainPage';
+import MainPage from '../MainPage/MainPage';
 import PageNotFound from '../error/PageNotFound';
 import Test from '../Test';
 import Flight from '../Flight';

@@ -7,19 +7,21 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 import { RecoilRoot } from 'recoil';
 import { BrowserRouter } from 'react-router-dom';
+//axios customize
+import axios from 'axios';
+
+axios.defaults.timeout = 2000;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<>
-{/* <React.StrictMode> */}
+root.render(
+
   <RecoilRoot>
-  <BrowserRouter>
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-  </BrowserRouter>
+    <BrowserRouter>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </BrowserRouter>
   </RecoilRoot>
-{/* </React.StrictMode> */}
-</>
 );
 
 // If you want to start measuring performance in your app, pass a function
