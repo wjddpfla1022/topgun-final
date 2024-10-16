@@ -5,8 +5,9 @@ import Login from './components/Login/Login';
 import NotFound from './components/NotFound/NotFound';
 import './components/Global.css';
 import Test from './components/Test';
-import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
+import 'react-datepicker/dist/react-datepicker.css'; // 스타일 가져오기
 import MainContent from './components/search/MainContent';
 import { Route, Routes, useLocation } from 'react-router-dom';
 

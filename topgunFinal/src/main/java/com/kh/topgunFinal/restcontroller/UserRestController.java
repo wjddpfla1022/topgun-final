@@ -7,12 +7,14 @@ import com.kh.topgunFinal.dto.UserDto;
 import com.kh.topgunFinal.dto.UserTokenDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.JoinRequestVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.UserLoginRequestVO;
 import com.kh.topgunFinal.vo.UserLoginResponseVO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,7 +41,8 @@ public class UserRestController {
 
 	@PostMapping("/login")
 	public UserLoginResponseVO login(@RequestBody UserLoginRequestVO requestVo) {
-				
+		System.out.println(requestVo);
+
 		// 회원조회
 		UserDto userDto = userDao.selectOne(requestVo.getUsersId());
 		if (userDto == null) {// 아이디 없음
@@ -113,6 +116,50 @@ public class UserRestController {
 		userDto.setUsersPassword(null);// 비밀번호 제거
 
 		return userDto;
+	}
+
+	// 회원 등록 기능
+	@PostMapping("/join")
+	@Transactional
+	public void join(@RequestBody JoinRequestVO vo) {
+		System.out.println("vo = " + vo);
+		
+		// 기본 회원 정보 저장 객체 생성
+		UserDto userDto = new UserDto();
+		
+		// 상세 회원 정보 저장 객체 생성
+		
+		// 항공사 회원 정보 저장 객체 생성
+
+		if (vo.getUsersType().equals("MEMBER")) {
+			// MEMBER 유형에 대한 처리
+			userDto.setUsersId(vo.getUsersId());
+			userDto.setUsersPassword(vo.getUsersPassword());
+			userDto.setUsersName(vo.getUsersName());
+			userDto.setUsersType(vo.getUsersType());
+			userDto.setUsersEmail(vo.getUsersEmail());
+			userDto.setUsersContact(vo.getUsersContact());
+			
+			System.out.println(userDto);
+			
+			System.out.println("하이~");
+		} else if (vo.getUsersType().equals("AIRLINE")) {
+			// AIRLINE 유형에 대한 처리
+			userDto.setUsersId(vo.getUsersId());
+			userDto.setUsersPassword(vo.getUsersPassword());
+			userDto.setUsersName(vo.getUsersName());
+			userDto.setUsersType(vo.getUsersType());
+			userDto.setUsersEmail(vo.getUsersEmail());
+			userDto.setUsersContact(vo.getUsersContact());
+
+			System.out.println(userDto);
+			
+			System.out.println("빠이~");
+			
+		} else {
+			return; // 사용자의 유형이 null일 경우 반환
+		}
+
 	}
 
 }
