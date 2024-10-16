@@ -2,6 +2,7 @@ import {Route, Routes} from "react-router";
 import MainPage from '../../MainPage/MainPage';
 import PageNotFound from '../error/PageNotFound';
 import Test from '../Test';
+import Flight from '../Flight';
 const MainContent=()=>{
 
     return(<>
@@ -10,6 +11,7 @@ const MainContent=()=>{
             <Routes>
                 <Route exact path="/" element={<MainPage/>}/> 
                 <Route path="/test" element={<Test/>}/>
+                <Route path="/flight" element={<Flight/>}/>
                 <Route path="*" element={<PageNotFound/>}/>
             </Routes>
         </div>
