@@ -23,6 +23,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<Test />} />
         <Route path="/main-content" element={<MainContent />} />
+        <Route path="/flight" element={<Flight />} />
         <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
       </Routes>
       <Footer />
