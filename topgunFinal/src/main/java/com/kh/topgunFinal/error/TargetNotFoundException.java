@@ -1,4 +1,4 @@
-package error;
+package com.kh.topgunFinal.error;
 
 //- RuntimeException을 자바에서는 unchecked exception이라고 부른다
 //- RuntimeException을 상속받으면 별도의 예외 처리 절차를 작성하지 않아도 됨

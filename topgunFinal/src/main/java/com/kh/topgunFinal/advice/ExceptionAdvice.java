@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import error.TargetNotFoundException;
+import com.kh.topgunFinal.error.TargetNotFoundException;
 
 
 //스프링 부트에서 발생하는 각종 예외들을 처리하는 간섭 객체

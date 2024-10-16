@@ -47,11 +47,9 @@ const Header = () => {
                             </li>
                         </ul>
                         <div className="text-end">
+                            {/* 여기 로그인되면 수정해야할것 */}
                             <button type="button" onClick={e=>navigate("/login")} className="btn btn-success me-2">
                                 로그인
-                            </button>
-                            <button type="button" onClick={e=>navigate("/join")} className="btn btn-secondary">
-                                회원가입
                             </button>
                         </div>
                     </div>
