@@ -10,11 +10,14 @@ import 'bootstrap/dist/js/bootstrap.bundle.js';
 import 'react-datepicker/dist/react-datepicker.css'; // 스타일 가져오기
 import MainContent from './components/search/MainContent';
 import { Route, Routes, useLocation } from 'react-router-dom';
+
 import { useRecoilState } from 'recoil';
 import { userState } from './util/recoil';
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import PrivateRoute from './components/Route/PrivateRoute';
+import Flight from './components/Flight';
+
 
 
 
@@ -88,10 +91,12 @@ const App = () => {
           <Route path="/test" element={<Test />} />
         </Route>
         <Route path="/main-content" element={<MainContent />} />
+        <Route path="/flight" element={<Flight />} />
         <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
 
       </Routes>
       <Footer />
+
     </>
   );
 }

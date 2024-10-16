@@ -70,6 +70,11 @@ const Header = () => {
                                     About
                                 </a>
                             </li>
+                            <li>
+                                <a href="/flight" className="nav-link px-2 text-white">
+                                    flight
+                                </a>
+                            </li>
                         </ul>
                         <div className="text-end">
 
