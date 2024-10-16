@@ -68,6 +68,7 @@ public class UserRestController {
 
 	@PostMapping("/refresh")
 	public UserLoginResponseVO refresh(@RequestHeader("Authorization") String refreshToken) {
+		System.out.println("refresh = " + refreshToken);
 		// [1] refreshToken이 없거나 Bearer로 시작하지 않으면 안됨
 		if (refreshToken == null)
 			throw new TargetNotFoundException("토큰 없음");
@@ -86,11 +87,12 @@ public class UserRestController {
 		userTokenDto.setTokenTarget(claimVO.getUserId());
 		userTokenDto.setTokenValue(tokenService.removeBearer(refreshToken));
 		UserTokenDto resultDto = userTokenDao.selectOne(userTokenDto);
+		System.out.println("resultDto ============" + resultDto);
 		if (resultDto == null)// 발급내역이 없음
 			throw new TargetNotFoundException("발급 내역이 없음");
 
 		// [4] 기존의 리프시 토큰 삭제
-		userTokenDao.delete(userTokenDto);
+		userTokenDao.delete(resultDto);
 
 		// [5] 로그인 정보 재발급
 		UserLoginResponseVO response = new UserLoginResponseVO();
@@ -123,12 +125,12 @@ public class UserRestController {
 	@Transactional
 	public void join(@RequestBody JoinRequestVO vo) {
 		System.out.println("vo = " + vo);
-		
+
 		// 기본 회원 정보 저장 객체 생성
 		UserDto userDto = new UserDto();
-		
+
 		// 상세 회원 정보 저장 객체 생성
-		
+
 		// 항공사 회원 정보 저장 객체 생성
 
 		if (vo.getUsersType().equals("MEMBER")) {
@@ -139,10 +141,13 @@ public class UserRestController {
 			userDto.setUsersType(vo.getUsersType());
 			userDto.setUsersEmail(vo.getUsersEmail());
 			userDto.setUsersContact(vo.getUsersContact());
-			
+
 			System.out.println(userDto);
-			
+
 			System.out.println("하이~");
+			System.out.println(userDto);
+
+			userDao.insert(userDto);
 		} else if (vo.getUsersType().equals("AIRLINE")) {
 			// AIRLINE 유형에 대한 처리
 			userDto.setUsersId(vo.getUsersId());
@@ -152,10 +157,8 @@ public class UserRestController {
 			userDto.setUsersEmail(vo.getUsersEmail());
 			userDto.setUsersContact(vo.getUsersContact());
 
-			System.out.println(userDto);
-			
 			System.out.println("빠이~");
-			
+
 		} else {
 			return; // 사용자의 유형이 null일 경우 반환
 		}

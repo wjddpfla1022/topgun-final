@@ -5,9 +5,16 @@ import { MdEmail, MdLock } from 'react-icons/md';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { IoCall } from "react-icons/io5";
 import './Login.css'; // 스타일을 위한 CSS 파일
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { userState } from '../../util/recoil';
 
 const Login = () => {
+
+    //recoil state
+    const [, setUser] = useRecoilState(userState);
+
+    const navigate = useNavigate();
     // State
     // 로그인 상태 관리
     const [loginData, setLoginData] = useState({
@@ -35,8 +42,6 @@ const Login = () => {
         airlineName: '',
         airlineNo: '',
     });
-
-
 
 
     // Handler
@@ -70,13 +75,29 @@ const Login = () => {
     // 로그인 요청 함수
     const Login = useCallback(async () => {
         try {
-            const response = await axios.post('http://localhost:8080/users/login', loginData);
-            console.log('로그인 성공:', response.data);
+            const resp = await axios.post('http://localhost:8080/users/login', loginData);
+
+            setUser({
+                userId: resp.data.usersId,
+                userType: resp.data.usersType,
+            });
+
+            axios.defaults.headers.common["Authorization"]
+                = "Bearer " + resp.data.accessToken;
+
+            if (loginData.rememberMe === true) {//로그인 유지 체크 시
+                window.localStorage.setItem("refreshToken", resp.data.refreshToken);
+            }
+            else {//로그인 유지 미 체크시
+                window.sessionStorage.setItem("refreshToken", resp.data.refreshToken);
+            }
+
+            console.log('로그인 성공:', resp.data);
+            navigate('/');
         } catch (error) {
             console.error('로그인 오류:', error);
         }
-    }, [loginData]);
-
+    }, [loginData, navigate, setUser]);
 
 
     // 비밀번호 표시 상태 관리
@@ -133,7 +154,7 @@ const Login = () => {
         const fullEmail = `${emailId}@${domain}`;
         const dataToSend = {
             ...joinData,
-            usersType : userType,
+            usersType: userType,
             usersEmail: fullEmail, // 합쳐진 이메일을 업데이트
         };
         try {

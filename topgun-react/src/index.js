@@ -14,14 +14,15 @@ axios.defaults.timeout = 2000;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-
-  <RecoilRoot>
-    <BrowserRouter>
-      <React.StrictMode>
+  <>
+    <RecoilRoot>
+      <BrowserRouter>
+        {/* // <React.StrictMode> */}
         <App />
-      </React.StrictMode>
-    </BrowserRouter>
-  </RecoilRoot>
+        {/* // </React.StrictMode> */}
+      </BrowserRouter>
+    </RecoilRoot>
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function

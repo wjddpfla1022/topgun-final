@@ -10,7 +10,7 @@
 		token_no, token_target,
 		token_value
 		)
-		values(member_token_seq.nextval, #{tokenTarget},
+		values(users_token_seq.nextval, #{tokenTarget},
 		#{tokenValue})
 	</insert>
 
