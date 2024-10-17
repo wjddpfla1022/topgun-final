@@ -27,7 +27,6 @@ const NoticeBoard = () => {
         content: "",
         author: "",
         createdAt: new Date().toISOString().slice(0, 16),
-        status: "공개",
     });
 
     useEffect(() => {
@@ -64,7 +63,6 @@ const NoticeBoard = () => {
             content: "",
             author: "",
             createdAt: new Date().toISOString().slice(0, 16),
-            status: "공개",
         });
     }, []);
 
@@ -78,16 +76,17 @@ const NoticeBoard = () => {
                 <table className="table" style={{ width: '80%', tableLayout: 'fixed' }}>
                     <thead>
                         <tr>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>번호</th> {/* 게시글 번호 */}
                             <th style={{ padding: '15px', textAlign: 'center' }}>제목</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>작성자</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>작성일</th>
-                            <th style={{ padding: '15px', textAlign: 'center' }}>상태</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>메뉴</th>
                         </tr>
                     </thead>
                     <tbody>
                         {noticeList.map((notice) => (
-                            <tr key={notice.notice_id} style={new Date(notice.createdAt) >= threeDaysAgo ? { } : {}}>
+                            <tr key={notice.notice_id}>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.notice_id}</td> {/* 번호 추가 */}
                                 <td style={{ padding: '15px', textAlign: 'center' }}>
                                     {notice.title}
                                     {new Date(notice.createdAt) >= threeDaysAgo && 
@@ -105,7 +104,6 @@ const NoticeBoard = () => {
                                 </td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.author}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.createdAt}</td>
-                                <td style={{ margin: '115px', textAlign: 'center' }}>{notice.status}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>
                                     <FaTrash className="text-danger" onClick={() => deleteNotice(notice)} />
                                 </td>
@@ -114,6 +112,7 @@ const NoticeBoard = () => {
                     </tbody>
                     <tfoot>
                         <tr>
+                            <td style={{ textAlign: 'center' }}></td> {/* 번호 칸 추가 (빈 공간) */}
                             <td>
                                 <input type="text" className="form-control"
                                        placeholder="제목"
@@ -133,16 +132,6 @@ const NoticeBoard = () => {
                                        name="createdAt"
                                        value={input.createdAt}
                                        onChange={changeInput} />
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                                <select className="form-control"
-                                        style={{ width: '70px', display: 'inline-block' }} 
-                                        name="status"
-                                        value={input.status}
-                                        onChange={changeInput}>
-                                    <option value="공개">공개</option>
-                                    <option value="비공개">비공개</option>
-                                </select>
                             </td>
                             <td style={{ textAlign: 'center' }}>
                                 <button type="button"
