@@ -6,17 +6,17 @@
 <mapper namespace="userToken">
 
 	<insert id="insert">
-		insert into user_token(
+		insert into users_token(
 		token_no, token_target,
 		token_value
 		)
-		values(member_token_seq.nextval, #{tokenTarget},
+		values(users_token_seq.nextval, #{tokenTarget},
 		#{tokenValue})
 	</insert>
 
 
 	<select id="check" resultType="UserTokenDto">
-		select * from user_token
+		select * from users_token
 		where
 		token_target = #{tokenTarget}
 		and
@@ -24,7 +24,7 @@
 	</select>
 
 	<delete id="delete">
-		delete user_token
+		delete users_token
 		where
 		token_target = #{tokenTarget}
 		and
@@ -33,7 +33,7 @@
 
 	<delete id="clear">
 		<![CDATA[
-		delete user_token where token_time <= sysdate-1
+		delete users_token where token_time <= sysdate-1
 		]]>
 	</delete>
 </mapper>
