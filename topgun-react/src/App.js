@@ -20,7 +20,7 @@ import Admin from './components/Admin';
 import NotMemberRoute from './components/Route/NotMemberRoute';
 import AirLine from './components/AirLine.js';
 import Notice from './components/notice.js'; // Notice 컴포넌트 임포트
-/////////////
+//////////////
 
 
 
