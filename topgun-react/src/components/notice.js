@@ -81,7 +81,6 @@ const NoticeBoard = () => {
                     <thead>
                         <tr>
                             <th style={{ padding: '15px', textAlign: 'center' }}>제목</th>
-                            <th style={{ padding: '15px', textAlign: 'center' }}>내용</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>작성자</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>작성일</th>
                             <th style={{ padding: '15px', textAlign: 'center' }}>상태</th>
@@ -92,10 +91,9 @@ const NoticeBoard = () => {
                         {noticeList.map((notice) => (
                             <tr key={notice.notice_id}>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.title}</td>
-                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.content}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.author}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.createdAt}</td>
-                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.status}</td>
+                                <td style={{ margin: '115px', textAlign: 'center' }}>{notice.status}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>
                                     <FaTrash className="text-danger" onClick={() => deleteNotice(notice)} />
                                 </td>
@@ -109,30 +107,27 @@ const NoticeBoard = () => {
                                        placeholder="제목"
                                        name="title"
                                        value={input.title}
-                                       onChange={changeInput} />
-                            </td>
-                            <td>
-                                <input type="text" className="form-control"
-                                       placeholder="내용"
-                                       name="content"
-                                       value={input.content}
-                                       onChange={changeInput} />
+                                       onChange={changeInput}
+                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
                             </td>
                             <td>
                                 <input type="text" className="form-control"
                                        placeholder="작성자"
                                        name="author"
                                        value={input.author}
-                                       onChange={changeInput} />
+                                       onChange={changeInput}
+                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
                             </td>
                             <td>
                                 <input type="datetime-local" className="form-control"
                                        name="createdAt"
                                        value={input.createdAt}
-                                       onChange={changeInput} />
+                                       onChange={changeInput}
+                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
                             </td>
-                            <td>
+                            <td style={{ textAlign: 'center' }}>
                                 <select className="form-control"
+                                        style={{ width: '70px', display: 'inline-block', textAlign: 'center' }} // Center the select input
                                         name="status"
                                         value={input.status}
                                         onChange={changeInput}>
@@ -140,7 +135,7 @@ const NoticeBoard = () => {
                                     <option value="비공개">비공개</option>
                                 </select>
                             </td>
-                            <td>
+                            <td style={{ textAlign: 'center' }}>
                                 <button type="button"
                                         className="btn btn-success"
                                         onClick={addInput}>
