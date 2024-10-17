@@ -79,7 +79,7 @@ const Flight = () => {
             <div className="table-responsive">
                 <table className="table table-striped">
                     <thead className="table-dark">
-                        <tr>
+                        <tr> 
                             <th>항공편 번호</th>
                             <th>출발 공항</th>
                             <th>도착 공항</th>
