@@ -7,7 +7,7 @@ import { IoCall } from "react-icons/io5";
 import './Login.css'; // 스타일을 위한 CSS 파일
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../util/recoil';
+import { memberLoadingState, userState } from '../../util/recoil';
 
 const Login = () => {
 

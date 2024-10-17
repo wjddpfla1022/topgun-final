@@ -28,7 +28,6 @@ const App = () => {
   //recoil state
   const [, setUser] = useRecoilState(userState);
   const [memberLoading, setMemberLoading] = useRecoilState(memberLoadingState);
-  const isLogin = useRecoilValue(loginState);
 
 
 
