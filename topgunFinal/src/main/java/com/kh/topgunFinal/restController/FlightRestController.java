@@ -1,4 +1,4 @@
-package com.kh.topgunFinal.restcontroller;
+package com.kh.topgunFinal.restController;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,16 +10,31 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dto.FlightDto;
 
-@CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
-@RequestMapping("/fligt")
-public class FligthRestController {
+@RequestMapping("/flight")
+public class FlightRestController {
 
 	@Autowired
 	private FlightDao flightDao;
 	
+//	@GetMapping("/")
+//	public List<FlightDto> list() {
+//		return flightDao.selectList();
+//	}
+//	
+//	@DeleteMapping("/{flight}")
+//	public void delete(@PathVariable int poketmonNo) {
+//		poketmonDao.delete(poketmonNo);
+//	}
+//	
 	@PostMapping("/")
 	public void insert(@RequestBody FlightDto flightDto) {
 		flightDao.insert(flightDto);
 	}
+	
+//	@PutMapping("/")
+//	public void update(@RequestBody FlightDto flightDto) {
+//		flightDao.update(flightDto);
+//	}
 }

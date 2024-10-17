@@ -31,6 +31,7 @@ const Flight = () => {
         });
     },[flightList]);
 
+
     const deleteFlight = useCallback((target) => {
         //확인창 추가
         const choice = window.confirm("정말 삭제하시겠습니까?");

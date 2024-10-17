@@ -77,11 +77,8 @@ const Header = () => {
                             </li>
                         </ul>
                         <div className="text-end">
-
-
                             {/* 로그인이 되어있다면 아이디(등급) 형태로 출력 */}
                             {login ? (<>
-
                                 <button type="button" onClick={e => navigate("/mypage")} className="btn text-light text-decoration-none me-2">
                                     {user.userId}
                                     ({user.userType})
@@ -95,7 +92,6 @@ const Header = () => {
                                     로그인
                                 </button>
                             </>)}
-
                         </div>
                     </div>
                 </div>

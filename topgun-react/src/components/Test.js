@@ -4,7 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import moment from 'moment';
 
-const Test2 = () => {
+const Test = () => {
   const [exchangeRates, setExchangeRates] = useState({ inr: null, krw: null });
   const [weather, setWeather] = useState(null);
   const [currWeather, setCurrWeather] = useState(null);
@@ -17,20 +17,27 @@ const Test2 = () => {
   const getExchangeRates = useCallback(async () => {
     const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${fromCurrency}.json`;
     try {
-      const response = await axios.get(url);
-      const data = response.data;
-      if (data[fromCurrency]) {
-        setExchangeRates({
-          inr: data[fromCurrency]['inr'],
-          krw: data[fromCurrency]['krw'],
+        const response = await axios.get(url, {
+            headers: {
+                // Authorization 헤더를 명시적으로 제거
+                Authorization: undefined, // 또는 삭제
+            },
         });
-      } else {
-        console.error("환율 데이터가 없습니다.");
-      }
+        
+        const data = response.data;
+        if (data[fromCurrency]) {
+            setExchangeRates({
+                inr: data[fromCurrency]['inr'],
+                krw: data[fromCurrency]['krw'],
+            });
+        } else {
+            console.error("환율 데이터가 없습니다.");
+        }
     } catch (error) {
-      console.error("환율 조회 중 오류 발생:", error);
+        console.error("환율 조회 중 오류 발생:", error);
     }
-  }, []);
+}, []);
+
 
   const getWeatherData = useCallback(async () => {
     const latitude = 37.5665;
@@ -38,7 +45,12 @@ const Test2 = () => {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m&daily=weathercode&timezone=Asia%2FSeoul`;
 
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url,{
+        headers: {
+            // Authorization 헤더를 명시적으로 제거
+            Authorization: undefined, // 또는 삭제
+        },
+    });
       const data = response.data;
       if (data.current_weather) {
         setCurrWeather(data.current_weather);
@@ -188,4 +200,4 @@ const Test2 = () => {
   );
 };
 
-export default Test2;
+export default Test;
