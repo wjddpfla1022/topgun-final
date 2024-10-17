@@ -56,7 +56,7 @@ public class FlightDao {
         return sqlSession.selectOne("flight.find", flightId);
     }
     
-    
+     
     // 시퀀스 생성 및 등록 메소드 (Flight 테이블에 맞게 조정)
     public int sequence() {
         String sql = "select flight_seq.nextval from dual"; // flight_seq가 정의되어 있어야 합니다.
