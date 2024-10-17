@@ -69,7 +69,7 @@ const Flight = () => {
             departureTime: "",
             arrivalTime: "",
             flightTotalSeat: "",
-            flightStatus: "대기", //default
+            flightStatus: "대기", //default값
         });
     }, []);
 
