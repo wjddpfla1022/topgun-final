@@ -32,3 +32,35 @@ const loginState = selector({
     }
 });
 export { loginState };
+
+const AdminState = selector({
+    key: "AdminState",
+    get: (state) => {
+
+        const user = state.get(userState);
+
+        return user && user.userId && user.userType === 'ADMIN' &&
+            user.userId.length > 0 && user.userType.length > 0;
+    }
+});
+export { AdminState };
+
+const NotMemberState = selector({
+    key: "NotMemberState",
+    get: (state) => {
+
+        const user = state.get(userState);
+
+        return user && user.userId && (user.userType === 'ADMIN' || user.userType === 'AIRLINE') &&
+            user.userId.length > 0 && user.userType.length > 0;
+    }
+});
+
+export { NotMemberState };
+
+//로그인 처리 완료 여부
+const memberLoadingState = atom({
+    key: "memberLoadingState",
+    default: false
+});
+export { memberLoadingState };

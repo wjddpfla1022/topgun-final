@@ -19,7 +19,7 @@ const Flight = () => {
     }, []);
 
     const loadList = useCallback(() => {
-        axios.get("/flight/")
+        axios.post("http://localhost:8080/flight/")
             .then(resp => {
                 setFlightList(resp.data);
             })

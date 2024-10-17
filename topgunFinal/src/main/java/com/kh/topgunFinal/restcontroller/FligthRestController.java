@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dto.FlightDto;
 
-@CrossOrigin(origins = {"http://localhost:3001"})
+@CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
 @RestController
-@RequestMapping("/fligth")
+@RequestMapping("/fligt")
 public class FligthRestController {
 
 	@Autowired
