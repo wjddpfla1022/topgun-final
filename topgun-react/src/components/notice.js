@@ -76,27 +76,27 @@ const NoticeBoard = () => {
 
     return (
         <div className="row mt-4">
-            <div className="col">
-                <table className="table" style={{ tableLayout: 'fixed', width: '100%' }}>
+            <div className="col" style={{ display: 'flex', justifyContent: 'center' }}>
+                <table className="table" style={{ width: '80%', tableLayout: 'fixed' }}>
                     <thead>
                         <tr>
-                            <th style={{ padding: '15px' }}>제목</th>
-                            <th style={{ padding: '15px' }}>내용</th>
-                            <th style={{ padding: '15px' }}>작성자</th>
-                            <th style={{ padding: '15px' }}>작성일</th>
-                            <th style={{ padding: '15px' }}>상태</th>
-                            <th style={{ padding: '15px' }}>메뉴</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>제목</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>내용</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>작성자</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>작성일</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>상태</th>
+                            <th style={{ padding: '15px', textAlign: 'center' }}>메뉴</th>
                         </tr>
                     </thead>
                     <tbody>
                         {noticeList.map((notice) => (
                             <tr key={notice.notice_id}>
-                                <td style={{ padding: '15px' }}>{notice.title}</td>
-                                <td style={{ padding: '15px' }}>{notice.content}</td>
-                                <td style={{ padding: '15px' }}>{notice.author}</td>
-                                <td style={{ padding: '15px' }}>{notice.createdAt}</td>
-                                <td style={{ padding: '15px' }}>{notice.status}</td>
-                                <td style={{ padding: '15px' }}>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.title}</td>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.content}</td>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.author}</td>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.createdAt}</td>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.status}</td>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>
                                     <FaTrash className="text-danger" onClick={() => deleteNotice(notice)} />
                                 </td>
                             </tr>
