@@ -2,7 +2,6 @@ import { useCallback, useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 
 const NoticeBoard = () => {
-    // 샘플 공지사항 데이터
     const sampleNotices = [
         {
             notice_id: 1,
@@ -17,26 +16,24 @@ const NoticeBoard = () => {
             title: "두 번째 공지사항",
             content: "두 번째 공지사항의 내용입니다.",
             author: "관리자",
-            createdAt: "2024-10-18T15:00",
+            createdAt: "2024-10-14T15:00", // 3일 전
             status: "비공개"
         }
     ];
 
-    const [noticeList, setNoticeList] = useState(sampleNotices); // 샘플 데이터 사용
+    const [noticeList, setNoticeList] = useState(sampleNotices);
     const [input, setInput] = useState({
         title: "",
         content: "",
         author: "",
-        createdAt: new Date().toISOString().slice(0, 16), // 현재 시간
-        status: "공개", // Default status
+        createdAt: new Date().toISOString().slice(0, 16),
+        status: "공개",
     });
 
-    // 데이터 로딩 함수: 실제 API 호출은 주석 처리
     useEffect(() => {
         // loadList(); // API 호출은 생략
     }, []);
 
-    // 공지사항 삭제
     const deleteNotice = useCallback((target) => {
         const choice = window.confirm("정말 삭제하시겠습니까?");
         if (choice) {
@@ -44,7 +41,6 @@ const NoticeBoard = () => {
         }
     }, []);
 
-    // 입력 필드 업데이트
     const changeInput = useCallback(e => {
         const { name, value } = e.target;
         setInput(prevInput => ({
@@ -53,26 +49,28 @@ const NoticeBoard = () => {
         }));
     }, []);
 
-    // 공지사항 추가
     const addInput = useCallback(() => {
         const newNotice = {
-            notice_id: noticeList.length + 1, // 임시로 ID 생성
+            notice_id: noticeList.length + 1,
             ...input
         };
         setNoticeList(prevNotices => [...prevNotices, newNotice]);
-        clearInput(); // 입력 필드 초기화
+        clearInput();
     }, [input, noticeList]);
 
-    // 입력 필드 초기화
     const clearInput = useCallback(() => {
         setInput({
             title: "",
             content: "",
             author: "",
             createdAt: new Date().toISOString().slice(0, 16),
-            status: "공개", // Default reset
+            status: "공개",
         });
     }, []);
+
+    // 현재 날짜 기준 3일 전 날짜 계산
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
     return (
         <div className="row mt-4">
@@ -89,8 +87,22 @@ const NoticeBoard = () => {
                     </thead>
                     <tbody>
                         {noticeList.map((notice) => (
-                            <tr key={notice.notice_id}>
-                                <td style={{ padding: '15px', textAlign: 'center' }}>{notice.title}</td>
+                            <tr key={notice.notice_id} style={new Date(notice.createdAt) >= threeDaysAgo ? { } : {}}>
+                                <td style={{ padding: '15px', textAlign: 'center' }}>
+                                    {notice.title}
+                                    {new Date(notice.createdAt) >= threeDaysAgo && 
+                                        <span style={{ 
+                                            color: 'white', 
+                                            backgroundColor: '#ec7393',  // 배경색 변경
+                                            padding: '3px 3px', 
+                                            borderRadius: '5px', 
+                                            fontSize: '0.9em', 
+                                            marginLeft: '10px', 
+                                            marginBottom: '10px' 
+                                        }}>
+                                            NEW
+                                        </span>}
+                                </td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.author}</td>
                                 <td style={{ padding: '15px', textAlign: 'center' }}>{notice.createdAt}</td>
                                 <td style={{ margin: '115px', textAlign: 'center' }}>{notice.status}</td>
@@ -107,27 +119,24 @@ const NoticeBoard = () => {
                                        placeholder="제목"
                                        name="title"
                                        value={input.title}
-                                       onChange={changeInput}
-                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
+                                       onChange={changeInput} />
                             </td>
                             <td>
                                 <input type="text" className="form-control"
                                        placeholder="작성자"
                                        name="author"
                                        value={input.author}
-                                       onChange={changeInput}
-                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
+                                       onChange={changeInput} />
                             </td>
                             <td>
                                 <input type="datetime-local" className="form-control"
                                        name="createdAt"
                                        value={input.createdAt}
-                                       onChange={changeInput}
-                                       style={{ textAlign: 'center' }} /> {/* Centering placeholder text */}
+                                       onChange={changeInput} />
                             </td>
                             <td style={{ textAlign: 'center' }}>
                                 <select className="form-control"
-                                        style={{ width: '70px', display: 'inline-block', textAlign: 'center' }} // Center the select input
+                                        style={{ width: '70px', display: 'inline-block' }} 
                                         name="status"
                                         value={input.status}
                                         onChange={changeInput}>
