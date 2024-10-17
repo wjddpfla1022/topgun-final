@@ -2,8 +2,10 @@ import { useCallback, useState, useEffect } from "react";
 import axios from "axios";
 import { FaTrash } from "react-icons/fa";
 
+
 const Flight = () => {
     const [flightList, setFlightList] = useState([]);
+
     const [input, setInput] = useState({
         flightNumber: "",
         departureAirport: "",
@@ -18,48 +20,47 @@ const Flight = () => {
         loadList();
     }, []);
 
-    const loadList = useCallback(() => {
-        axios.get("/flight/")
-            .then(resp => {
-                setFlightList(resp.data);
-            })
-            .catch(err => {
-                console.error("Failed to load flight list:", err);
-            });
-    }, []);
+    const loadList = useCallback (() => {
+        axios({
+            url:"http://localhost:8080/flight/",
+            method:"get"
+        })
+        .then(resp=>{
+            //console.log(resp);
+            setFlightList(resp.data);
+        });
+    },[flightList]);
 
     const deleteFlight = useCallback((target) => {
+        //확인창 추가
         const choice = window.confirm("정말 삭제하시겠습니까?");
-        if (choice) {
-            axios.delete(`/flight/${target.flight_id}`)
-                .then(() => {
-                    loadList(); // Refresh the list
-                })
-                .catch(err => {
-                    console.error("Failed to delete flight:", err);
-                });
-        }
-    }, [loadList]);
+         axios({
+             url:"http://localhost:8080/flight/"+target.flight_id,
+             method:"delete"
+         })
+         .then(resp=>{
+             loadList();//목록갱신
+         });
+     }, [flightList]);
 
-    const changeInput = useCallback(e => {
-        const { name, value } = e.target;
-        setInput(prevInput => ({
-            ...prevInput,
-            [name]: value
-        }));
-    }, []);
+     const changeInput = useCallback(e=>{
+        setInput({
+            ...input,
+            [e.target.name] : e.target.value
+        });
+    }, [input]);
 
-    const addInput = useCallback(() => {
-        const newFlight = { ...input, flightStatus: "대기" }; // Ensure flightStatus is "대기"
-        axios.post("/flight/", newFlight)
-            .then(() => {
-                clearInput(); // Clear input fields
-                loadList(); // Reload the list
-            })
-            .catch(err => {
-                console.error("Failed to add flight:", err);
-            });
-    }, [input, loadList]);
+    const addInput = useCallback(()=>{
+        axios({
+            url:"http://localhost:8080/flight/",
+            method:"post",
+            data: input
+        })
+        .then(resp=>{
+            clearInput();//입력창 초기화
+            loadList();//목록 다시 불러오기
+        });
+    }, [input]);
 
     const clearInput = useCallback(() => {
         setInput({
@@ -69,14 +70,15 @@ const Flight = () => {
             departureTime: "",
             arrivalTime: "",
             flightTotalSeat: "",
-            flightStatus: "대기", //default값
+            flightStatus: "대기", //default
         });
-    }, []);
+    }, [input]);
 
-    return (
-        <div className="container mt-4">
-            <h2 className="text-center mb-4">항공편 관리</h2>
-            <div className="table-responsive">
+    //view
+    return (<>
+    
+        <div className="row mt-4">
+            <div className="col">
                 <table className="table table-striped">
                     <thead className="table-dark">
                         <tr> 
@@ -163,7 +165,7 @@ const Flight = () => {
                 </table>
             </div>
         </div>
-    );
+         </>);
 };
 
 export default Flight;
