@@ -24,7 +24,7 @@ const Flight = () => {
         axios({
             url:"http://localhost:8080/flight/",
             method:"get"
-        })
+        }) 
         .then(resp=>{
             //console.log(resp);
             setFlightList(resp.data);
