@@ -1,4 +1,4 @@
-package com.kh.topgunFinal.restController;
+package com.kh.topgunFinal.restcontroller;
 
 import java.util.List;
 
