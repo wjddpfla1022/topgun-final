@@ -19,6 +19,9 @@ import AdminRoute from './components/Route/AdminRoute';
 import Admin from './components/Admin';
 import NotMemberRoute from './components/Route/NotMemberRoute';
 import AirLine from './components/AirLine.js';
+import Chat from './components/chat/Chat';
+
+
 
 
 
@@ -91,6 +94,7 @@ const App = () => {
         {/* 로그인 되어야지만 볼 수 있는 페이지 */}
         <Route element={<PrivateRoute />}>
           <Route path="/test" element={<Test />} />
+          <Route path="/chat" element={<Chat />} />
         </Route>
 
 
