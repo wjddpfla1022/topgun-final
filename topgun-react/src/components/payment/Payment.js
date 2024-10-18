@@ -51,15 +51,19 @@ const Payment=()=>{
     }, 0);
    },[checkedSeatsList]);
 
+   const getCurrentUrl = useCallback(()=>{
+    return window.location.origin + window.location.pathname + (window.location.hash||'');
+   }, []);
+
    const sendPurchaseRequest = useCallback(async()=>{
     if(checkedSeatsList.length===0) return;
     const resp = await axios.post(
         "http://localhost:8080/seats/purchase", 
         {
             seatsList: checkedSeatsList,
-            approvalUrl: window.location.href + "/success",
-            cancelUrl: window.location.href + "/cancel",
-            failUrl: window.location.href + "/fail",
+            approvalUrl: getCurrentUrl() + "/success",
+            cancelUrl: getCurrentUrl() + "/cancel",
+            failUrl: getCurrentUrl() + "/fail",
         }
     );
         window.sessionStorage.setItem("tid", resp.data.tid);
