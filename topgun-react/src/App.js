@@ -15,6 +15,10 @@ import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import PrivateRoute from './components/Route/PrivateRoute';
 import Flight from './components/Flight';
+import Payment from "./components/payment/Payment";
+import PaymentSuccess from "./components/payment/PaymentSuccess";
+import PaymentCancel from "./components/payment/PaymentCancel";
+import PaymentFail from "./components/payment/PaymentFail";
 import AdminRoute from './components/Route/AdminRoute';
 import Admin from './components/Admin';
 import NotMemberRoute from './components/Route/NotMemberRoute';
@@ -83,14 +87,18 @@ const App = () => {
 
   return (
     <>
-      {!noHeaderRoutes.includes(location.pathname) && <Header />}
-      <Routes>
+      { !noHeaderRoutes.includes(location.pathname) && <Header /> }
+      <Routes>  
         <Route exact path="/" element={<MainPage />} />
         <Route path="/login" element={<Login />} /> {/* 로그인 */}
 
 
         {/* 로그인 되어야지만 볼 수 있는 페이지 */}
         <Route element={<PrivateRoute />}>
+          <Route path="/payment" element={ <Payment /> } />
+          <Route path="/payment/success/:partnerOrderId" element={ <PaymentSuccess /> } />
+          <Route path="/payment/cancel" element={ <PaymentCancel /> } />
+          <Route path="/payment/fail" element={ <PaymentFail /> } />
           <Route path="/test" element={<Test />} />
           <Route path="/chat" element={<Chat />} />
         </Route>
@@ -111,7 +119,6 @@ const App = () => {
 
         <Route path="/flight" element={<Flight />} />
         <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
-
       </Routes>
       <Footer />
 

@@ -61,6 +61,11 @@ const Header = () => {
                                 </a>
                             </li>
                             <li>
+                                <NavLink to="/payment" className="nav-link px-2 text-white">
+                                    payment
+                                </NavLink>
+                            </li>
+                            <li>
                                 <a href="/notice" className="nav-link px-2 text-white">
                                     notice
                                 </a>
