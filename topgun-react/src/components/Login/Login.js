@@ -7,9 +7,12 @@ import { IoCall } from "react-icons/io5";
 import './Login.css'; // 스타일을 위한 CSS 파일
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { userState } from '../../util/recoil';
+import { memberLoadingState, userState } from '../../util/recoil';
 
 const Login = () => {
+
+    // 정규식: 숫자와 특수 문자가 포함된 패턴
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$]).+$/;
 
     //recoil state
     const [, setUser] = useRecoilState(userState);
@@ -43,15 +46,36 @@ const Login = () => {
         airlineNo: '',
     });
 
+    // 유효성 검사 상태 관리
+    const [validation, setValidation] = useState({
+        usersIdValid: false,
+        usersPasswordValid: false,
+        passwordMatch: false
+    });
+
+    // 아이디, 패스워드 유효성 검사 함수
+    const validateForm = () => {
+        // 아이디가 비어 있지 않으면 true
+        const isUsersIdValid = joinData.usersId.trim() !== '';
+        // 패스워드가 비어 있지 않고, 정규식 조건을 만족하면 true
+        const isUsersPasswordValid = joinData.usersPassword.trim() !== '' && passwordRegex.test(joinData.usersPassword);
+        // 패스워드와 재확인 패스워드가 같으면 true
+        const isPasswordMatch = joinData.usersPassword === joinData.passwordRe;
+
+        setValidation({
+            usersIdValid: isUsersIdValid,
+            usersPasswordValid: isUsersPasswordValid,
+            passwordMatch: isPasswordMatch,
+        });
+    };
+
 
     // Handler
-    // 회원가입입력값 변경 핸들러
     const InputJoinChange = useCallback(e => {
         setJoinData({
             ...joinData,
             [e.target.name]: e.target.value
         });
-
     }, [joinData]);
 
     // 입력값 변경 핸들러
@@ -181,13 +205,13 @@ const Login = () => {
                     <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                         <div className="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                             <p className="lead fw-normal mb-0 me-3">Sign in with</p>
-                            <button type="button" className="btn btn-primary btn-floating mx-1">
+                            <button type="button" className="btn btn-primary mx-1">
                                 <FaFacebookF />
                             </button>
-                            <button type="button" className="btn btn-primary btn-floating mx-1">
+                            <button type="button" className="btn btn-primary mx-1">
                                 <FaTwitter />
                             </button>
-                            <button type="button" className="btn btn-primary btn-floating mx-1">
+                            <button type="button" className="btn btn-primary mx-1">
                                 <FaLinkedinIn />
                             </button>
                         </div>
@@ -319,7 +343,7 @@ const Login = () => {
                                     {/* 프로그레스 바 추가 */}
                                     <div className="progress my-3"> {/* 변경 사항: 프로그레스 바 컨테이너 추가 */}
                                         <div
-                                            className="progress-bar progress-bar-striped progress-bar-animated"
+                                            className="progress-bar"
                                             role="progressbar"
                                             style={{ width: `${calculateProgress()}%` }} // 변경 사항: 프로그레스 바 너비 설정
                                             aria-valuenow={calculateProgress()}
@@ -333,28 +357,36 @@ const Login = () => {
                                     <div className={`page ${currentPage !== 0 ? 'd-none' : ''}`}> {/* 변경 사항: currentPage에 따라 클래스 적용 */}
 
                                         <big>아이디</big>
-                                        <div className="input-group has-validation mb-3">
+                                        <div className="input-group mb-3">
                                             <span className="input-group-text">ID</span>
-                                            <div className="form-floating is-invalid">
-                                                <input type="text" className="form-control is-invalid" placeholder="Username" name="usersId" value={joinData.usersId} onChange={e => InputJoinChange(e)} />
+                                            <div className={`form-floating ${validation.usersIdValid ? 'is-valid' : 'is-invalid'} flex-grow-1`}>
+                                                <input
+                                                    type="text"
+                                                    className={`form-control ${validation.usersIdValid ? 'is-valid' : 'is-invalid'}`}
+                                                    placeholder="Username"
+                                                    name="usersId"
+                                                    value={joinData.usersId}
+                                                    onChange={InputJoinChange}
+                                                    onBlur={validateForm} // 폼 유효성 검사
+                                                />
                                                 <label>아이디</label>
                                             </div>
-                                            <div className="valid-feedback">
-                                                아주멋진 아이뒤네용
-                                            </div>
-                                            <div className="invalid-feedback">
-                                                Please choose a username.
-                                            </div>
+                                            {/* 유효성 검사에 따른 피드백 */}
+                                            {validation.usersIdValid ? (
+                                                <div className="valid-feedback">아주 멋진 아이디네요!</div>
+                                            ) : (
+                                                <div className="invalid-feedback">아이디를 입력해주세요.</div>
+                                            )}
                                         </div>
 
                                         <big>패스워드</big>
                                         <div className="input-group has-validation mb-3">
                                             <span className="input-group-text">PW</span>
-                                            <div className="form-floating is-invalid flex-grow-1">
-                                                <input type={showPassword ? 'text' : 'password'} className="form-control is-invalid" name='usersPassword' value={joinData.usersPassword} onChange={e => InputJoinChange(e)} placeholder="패스워드를 입력하세요" />
+                                            <div className="form-floating flex-grow-1">
+                                                <input type={showPassword ? 'text' : 'password'} className={`form-control ${validation.usersPasswordValid ? 'is-valid' : 'is-invalid'}`} name='usersPassword' value={joinData.usersPassword} onChange={e => {
+                                                    InputJoinChange(e);  // 입력 변경 함수 호출
+                                                }} placeholder="패스워드를 입력하세요" />
                                                 <label>패스워드</label>
-
-
                                                 <span
                                                     className="position-absolute"
                                                     style={{ right: '30px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }}
@@ -363,16 +395,21 @@ const Login = () => {
                                                     {showPassword ? <FiEyeOff /> : <FiEye />}
                                                 </span>
                                             </div>
-                                            <div className="invalid-feedback">
-                                                Please choose a username.
-                                            </div>
+                                            {validation.usersPasswordValid ? (
+                                                <div className="valid-feedback"></div>
+                                            ) : (
+                                                <div className="invalid-feedback">패스워드를 입력해주세요.</div>
+                                            )}
                                         </div>
 
                                         <big>비밀번호 재확인</big>
                                         <div className="input-group has-validation mb-3">
                                             <span className="input-group-text">PW</span>
                                             <div className="form-floating is-invalid flex-grow-1">
-                                                <input type={showPasswordRe ? 'text' : 'password'} className="form-control is-invalid" placeholder="패스워드를 입력하세요" />
+                                                <input
+                                                    type={showPasswordRe ? 'text' : 'password'}
+                                                    className={`form-control ${validation.passwordMatch ? 'is-valid' : 'is-invalid'}`}
+                                                    placeholder="패스워드를 입력하세요" />
                                                 <label>패스워드 확인</label>
                                                 <span
                                                     className="position-absolute"
@@ -383,12 +420,11 @@ const Login = () => {
                                                 </span>
                                             </div>
 
-                                            <div className="invalid-feedback">
-                                                Please choose a username.
-                                            </div>
-
-                                            <div className="valid-feedback">
-                                            </div>
+                                            {validation.passwordMatch ? (
+                                                <div className="valid-feedback">패스워드가 일치합니다.</div>
+                                            ) : (
+                                                <div className="invalid-feedback">패스워드가 일치하지 않습니다.</div>
+                                            )}
 
                                         </div>
 
@@ -508,7 +544,7 @@ const Login = () => {
                                     {/* 프로그레스 바 추가 */}
                                     <div className="progress my-3"> {/* 변경 사항: 프로그레스 바 컨테이너 추가 */}
                                         <div
-                                            className="progress-bar progress-bar-striped progress-bar-animated"
+                                            className="progress-bar"
                                             role="progressbar"
                                             style={{ width: `${calculateProgress()}%` }} // 변경 사항: 프로그레스 바 너비 설정
                                             aria-valuenow={calculateProgress()}

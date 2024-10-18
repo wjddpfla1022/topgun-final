@@ -3,8 +3,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import moment from 'moment';
+import { Oval } from 'react-loading-icons';
 
-const Test2 = () => {
+const Test = () => {
   const [exchangeRates, setExchangeRates] = useState({ inr: null, krw: null });
   const [weather, setWeather] = useState(null);
   const [currWeather, setCurrWeather] = useState(null);
@@ -17,7 +18,13 @@ const Test2 = () => {
   const getExchangeRates = useCallback(async () => {
     const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${fromCurrency}.json`;
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          // Authorization 헤더를 명시적으로 제거
+          Authorization: undefined, // 또는 삭제
+        },
+      });
+
       const data = response.data;
       if (data[fromCurrency]) {
         setExchangeRates({
@@ -32,13 +39,19 @@ const Test2 = () => {
     }
   }, []);
 
+
   const getWeatherData = useCallback(async () => {
     const latitude = 37.5665;
     const longitude = 126.978;
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m&daily=weathercode&timezone=Asia%2FSeoul`;
 
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(url, {
+        headers: {
+          // Authorization 헤더를 명시적으로 제거
+          Authorization: undefined, // 또는 삭제
+        },
+      });
       const data = response.data;
       if (data.current_weather) {
         setCurrWeather(data.current_weather);
@@ -117,7 +130,9 @@ const Test2 = () => {
   };
 
   if (loading) {
-    return <p>로딩 중...</p>; // 날짜 선택 후 로딩 메시지
+    return (<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Oval stroke="#000" strokeWidth={3} />
+    </div>);
   }
 
   return (
@@ -137,7 +152,9 @@ const Test2 = () => {
           <p>{`측정 시간: ${new Date(currWeather.time).toLocaleString()} (UTC)`}</p>
         </>
       ) : (
-        <p>현재 날씨를 가져오는 중입니다...</p>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Oval stroke="#000" strokeWidth={3} />
+        </div>
       )}
 
       <h2>날짜 선택</h2>
@@ -188,4 +205,4 @@ const Test2 = () => {
   );
 };
 
-export default Test2;
+export default Test;

@@ -10,19 +10,17 @@ import { BrowserRouter } from 'react-router-dom';
 //axios customize
 import axios from 'axios';
 
-axios.defaults.timeout = 2000;
+axios.defaults.timeout = 5000;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <>
-    <RecoilRoot>
-      <BrowserRouter>
-        {/* // <React.StrictMode> */}
-        <App />
-        {/* // </React.StrictMode> */}
-      </BrowserRouter>
-    </RecoilRoot>
-  </>
+
+  <RecoilRoot>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </RecoilRoot>
+
 );
 
 // If you want to start measuring performance in your app, pass a function

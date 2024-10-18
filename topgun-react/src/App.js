@@ -8,11 +8,9 @@ import Test from './components/Test';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.js';
 import 'react-datepicker/dist/react-datepicker.css'; // 스타일 가져오기
-import MainContent from './components/search/MainContent';
 import { Route, Routes, useLocation } from 'react-router-dom';
-
-import { useRecoilState } from 'recoil';
-import { userState } from './util/recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { loginState, memberLoadingState, userState } from './util/recoil';
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import PrivateRoute from './components/Route/PrivateRoute';
@@ -21,7 +19,12 @@ import Payment from "./components/payment/Payment";
 import PaymentSuccess from "./components/payment/PaymentSuccess";
 import PaymentCancel from "./components/payment/PaymentCancel";
 import PaymentFail from "./components/payment/PaymentFail";
-
+import AdminRoute from './components/Route/AdminRoute';
+import Admin from './components/Admin';
+import NotMemberRoute from './components/Route/NotMemberRoute';
+import AirLine from './components/AirLine.js';
+import Chat from './components/chat/Chat';
+import Notice from './components/notice.js'; // Notice 컴포넌트 임포트
 
 
 
@@ -30,6 +33,8 @@ const App = () => {
 
   //recoil state
   const [, setUser] = useRecoilState(userState);
+  const [memberLoading, setMemberLoading] = useRecoilState(memberLoadingState);
+
 
 
   //최초 1회 실행
@@ -45,7 +50,7 @@ const App = () => {
     const localToken = window.localStorage.getItem("refreshToken");
     //[3] 둘다 없으면 차단
     if (sessionToken === null && localToken === null) {
-      // setMemberLoading(true);
+      setMemberLoading(true);
       return;
     }
     //[4] 둘 중 하나라도 있다면 로그인 갱신을 진행
@@ -71,13 +76,8 @@ const App = () => {
       window.sessionStorage.setItem("refreshToken", resp.data.refreshToken);
     }
 
-    // setMemberLoading(true);
-  }, [setUser]);
-
-
-
-
-
+    setMemberLoading(true);
+  }, []);
 
 
   const location = useLocation();
@@ -88,26 +88,37 @@ const App = () => {
   return (
     <>
       { !noHeaderRoutes.includes(location.pathname) && <Header /> }
-      <Routes>
-        <Route exact path="/" element={ <MainPage /> } />
-        <Route path="/login" element={ <Login /> } /> {/* 로그인 */ }
+      <Routes>  
+        <Route exact path="/" element={<MainPage />} />
+        <Route path="/login" element={<Login />} /> {/* 로그인 */}
 
-        <Route path="/payment" element={ <Payment /> } />
-        <Route path="/payment/success/:partnerOrderId" element={ <PaymentSuccess /> } />
-        <Route path="/payment/cancel" element={ <PaymentCancel /> } />
-        <Route path="/payment/fail" element={ <PaymentFail /> } />
 
-        <Route element={ <PrivateRoute /> }>
-          <Route path="/test" element={ <Test /> } />
+        {/* 로그인 되어야지만 볼 수 있는 페이지 */}
+        <Route element={<PrivateRoute />}>
           <Route path="/payment" element={ <Payment /> } />
           <Route path="/payment/success/:partnerOrderId" element={ <PaymentSuccess /> } />
           <Route path="/payment/cancel" element={ <PaymentCancel /> } />
           <Route path="/payment/fail" element={ <PaymentFail /> } />
+          <Route path="/test" element={<Test />} />
+          <Route path="/chat" element={<Chat />} />
         </Route>
-        <Route path="/main-content" element={ <MainContent /> } />
-        <Route path="/flight" element={ <Flight /> } />
-        <Route path="*" element={ <NotFound /> } /> {/* 모든 잘못된 경로 처리 */ }
 
+
+        {/* 관리자만 봐야하는 페이지 */}
+        <Route element={<AdminRoute />}>
+          <Route path="/admin" element={<Admin />} />
+        </Route>
+
+        {/* 멤버만 못보는 페이지 -> ADMIN, AIRLINE만 가능 */}
+        <Route element={<NotMemberRoute />}>
+          <Route path="/airline" element={<AirLine />} />
+        </Route>
+
+        {/* 공지사항 페이지 추가 */}
+        <Route path="/notice" element={<Notice />} />  {/* Notice 페이지 경로 설정 */}
+
+        <Route path="/flight" element={<Flight />} />
+        <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
       </Routes>
       <Footer />
 
