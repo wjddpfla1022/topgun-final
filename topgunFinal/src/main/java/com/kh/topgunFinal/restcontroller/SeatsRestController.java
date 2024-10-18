@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,13 +87,15 @@ public class SeatsRestController {
 		
 		return responseVO;
 	}
-
+	@Transactional
 	@PostMapping("/approve")
 	public PayApproveResponseVO approve(
 			@RequestHeader ("Authorization") String token,
-			@RequestBody SeatsApproveRequestVO request) throws URISyntaxException {
+			@RequestBody SeatsApproveRequestVO request
+			) throws URISyntaxException {
 	
-		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		UserClaimVO claimVO = 
+				tokenService.check(tokenService.removeBearer(token));
 		
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
