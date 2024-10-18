@@ -10,12 +10,12 @@
 <insert id="add">
     insert into flight(
         flight_id, flight_number, departure_time, arrival_time, flight_time, 
-        departure_airport, arrival_airport, user_id, flight_total_seat
+        departure_airport, arrival_airport, user_id, flight_total_seat, flight_status
     )
     values(
         flight_seq.nextval, #{flightNumber}, #{departureTime}, #{arrivalTime}, 
         #{flightTime}, #{departureAirport}, #{arrivalAirport}, 
-        #{userId}, #{flightTotalSeat}
+        #{userId}, #{flightTotalSeat}, #{flightStatus}
     )
 </insert>
 

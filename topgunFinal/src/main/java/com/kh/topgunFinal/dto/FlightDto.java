@@ -10,7 +10,7 @@ public class FlightDto {
     private String flightNumber; 
     private Timestamp departureTime; 
     private Timestamp arrivalTime; 
-    private Timestamp flightTime; 
+    private String flightTime; 
     private String departureAirport; 
     private String arrivalAirport; 
     private String userId; 
