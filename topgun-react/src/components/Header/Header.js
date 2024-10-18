@@ -75,6 +75,11 @@ const Header = () => {
                                     flight
                                 </a>
                             </li>
+                            <li>
+                                <NavLink to="/payment" className="nav-link px-2 text-white">
+                                    payment
+                                </NavLink>
+                            </li>
                         </ul>
                         <div className="text-end">
 
