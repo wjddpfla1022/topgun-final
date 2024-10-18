@@ -8,10 +8,12 @@ const Flight = () => {
 
     const [input, setInput] = useState({
         flightNumber: "",
-        departureAirport: "",
-        arrivalAirport: "",
         departureTime: "",
         arrivalTime: "",
+        flightTime: "",
+        departureAirport: "",
+        arrivalAirport: "",
+        userId: "",
         flightTotalSeat: "",
         flightStatus: "대기", // Default status
     });
@@ -26,7 +28,7 @@ const Flight = () => {
             method:"get"
         }) 
         .then(resp=>{
-            //console.log(resp);
+            console.log(resp.data);
             setFlightList(resp.data);
         });
     },[flightList]);
@@ -36,7 +38,7 @@ const Flight = () => {
         //확인창 추가
         const choice = window.confirm("정말 삭제하시겠습니까?");
          axios({
-             url:"http://localhost:8080/flight/"+target.flight_id,
+             url:"http://localhost:8080/flight/"+target.flightId,
              method:"delete"
          })
          .then(resp=>{
@@ -66,10 +68,12 @@ const Flight = () => {
     const clearInput = useCallback(() => {
         setInput({
             flightNumber: "",
-            departureAirport: "",
-            arrivalAirport: "",
             departureTime: "",
             arrivalTime: "",
+            flightTime: "",
+            departureAirport: "",
+            arrivalAirport: "",
+            userId: "",
             flightTotalSeat: "",
             flightStatus: "대기", //default
         });
@@ -84,10 +88,12 @@ const Flight = () => {
                     <thead className="table-dark">
                         <tr> 
                             <th>항공편 번호</th>
-                            <th>출발 공항</th>
-                            <th>도착 공항</th>
                             <th>출발 시간</th>
                             <th>도착 시간</th>
+                            <th>운항 시간</th>
+                            <th>출발 공항</th>
+                            <th>도착 공항</th>
+                            <th>ID</th>
                             <th>총 좌석 수</th>
                             <th>상태</th>
                             <th>메뉴</th>
@@ -95,12 +101,14 @@ const Flight = () => {
                     </thead>
                     <tbody>
                         {flightList.map((flight) => (
-                            <tr key={flight.flight_id}>
+                            <tr key={flight.flightId}>
                                 <td>{flight.flightNumber}</td>
-                                <td>{flight.departureAirport}</td>
-                                <td>{flight.arrivalAirport}</td>
                                 <td>{flight.departureTime}</td>
                                 <td>{flight.arrivalTime}</td>
+                                <td>{flight.flightTime}</td>
+                                <td>{flight.departureAirport}</td>
+                                <td>{flight.arrivalAirport}</td>
+                                <td>{flight.userId}</td>
                                 <td>{flight.flightTotalSeat}</td>
                                 <td>{flight.flightStatus}</td>
                                 <td>
@@ -119,6 +127,24 @@ const Flight = () => {
                                        onChange={changeInput} />
                             </td>
                             <td>
+                                <input type="datetime-local" className="form-control"
+                                       name="departureTime"
+                                       value={input.departureTime}
+                                       onChange={changeInput} />
+                            </td>
+                            <td>
+                                <input type="datetime-local" className="form-control"
+                                       name="arrivalTime"
+                                       value={input.arrivalTime}
+                                       onChange={changeInput} />
+                            </td>
+                            <td>
+                                <input type="text" className="form-control"
+                                       name="flightTime"
+                                       value={input.flightTime}
+                                       onChange={changeInput} />
+                            </td>
+                            <td>
                                 <input type="text" className="form-control"
                                        placeholder="출발 공항"
                                        name="departureAirport"
@@ -133,15 +159,10 @@ const Flight = () => {
                                        onChange={changeInput} />
                             </td>
                             <td>
-                                <input type="datetime-local" className="form-control"
-                                       name="departureTime"
-                                       value={input.departureTime}
-                                       onChange={changeInput} />
-                            </td>
-                            <td>
-                                <input type="datetime-local" className="form-control"
-                                       name="arrivalTime"
-                                       value={input.arrivalTime}
+                                <input type="text" className="form-control"
+                                       placeholder="아이디"
+                                       name="userId"
+                                       value={input.userId}
                                        onChange={changeInput} />
                             </td>
                             <td>
@@ -152,7 +173,12 @@ const Flight = () => {
                                        onChange={changeInput} />
                             </td>
                             <td>
-                                <span className="badge bg-secondary">대기</span>
+                                <span className="badge bg-secondary" 
+                                name="flightStatus"
+                                value={input.flightStatus}
+                                onChange={changeInput}>
+                                    대기
+                                    </span>
                             </td>
                             <td>
                                 <button type="button"
