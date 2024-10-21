@@ -3,23 +3,28 @@ import Header from './components/Header/Header';
 import MainPage from './components/MainPage/MainPage';
 import Login from './components/Login/Login';
 import NotFound from './components/NotFound/NotFound';
-import './components/Global.css';
 import Test from './components/Test';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-import 'react-datepicker/dist/react-datepicker.css'; // 스타일 가져오기
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState, memberLoadingState, userState } from './util/recoil';
+import { useRecoilState } from 'recoil';
+import { memberLoadingState, userState } from './util/recoil';
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import PrivateRoute from './components/Route/PrivateRoute';
 import Flight from './components/Flight';
+import Payment from "./components/payment/Payment";
+import PaymentSuccess from "./components/payment/PaymentSuccess";
+import PaymentCancel from "./components/payment/PaymentCancel";
+import PaymentFail from "./components/payment/PaymentFail";
 import AdminRoute from './components/Route/AdminRoute';
 import Admin from './components/Admin';
 import NotMemberRoute from './components/Route/NotMemberRoute';
 import AirLine from './components/AirLine.js';
 import AdminFlight from './components/AdminFlight.js';
+import Chat from './components/chat/Chat';
+import Notice from './components/notice.js'; // Notice 컴포넌트 임포트
+import MyPage from './components/MyPage/MyPage';
+import Booking from './components/booking/Booking.js';
+
 
 
 
@@ -28,8 +33,7 @@ const App = () => {
 
   //recoil state
   const [, setUser] = useRecoilState(userState);
-  const [memberLoading, setMemberLoading] = useRecoilState(memberLoadingState);
-  const isLogin = useRecoilValue(loginState);
+  const [, setMemberLoading] = useRecoilState(memberLoadingState);
 
 
 
@@ -83,15 +87,23 @@ const App = () => {
 
   return (
     <>
-      {!noHeaderRoutes.includes(location.pathname) && <Header />}
-      <Routes>
+      { !noHeaderRoutes.includes(location.pathname) && <Header /> }
+      <Routes>  
         <Route exact path="/" element={<MainPage />} />
         <Route path="/login" element={<Login />} /> {/* 로그인 */}
 
+        {/* 예약페이지 */}
+        <Route path="/booking" element={<Booking/>}/>
 
         {/* 로그인 되어야지만 볼 수 있는 페이지 */}
         <Route element={<PrivateRoute />}>
+          <Route path="/payment" element={ <Payment /> } />
+          <Route path="/payment/success/:partnerOrderId" element={ <PaymentSuccess /> } />
+          <Route path="/payment/cancel" element={ <PaymentCancel /> } />
+          <Route path="/payment/fail" element={ <PaymentFail /> } />
           <Route path="/test" element={<Test />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path='/mypage' element={<MyPage />}/>
         </Route>
 
 
@@ -107,8 +119,10 @@ const App = () => {
         <Route path="/flight" element={<Flight />} />
         </Route>
 
-        <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
+        {/* 공지사항 페이지 추가 */}
+        <Route path="/notice" element={<Notice />} />  {/* Notice 페이지 경로 설정 */}
 
+        <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
       </Routes>
       <Footer />
 
