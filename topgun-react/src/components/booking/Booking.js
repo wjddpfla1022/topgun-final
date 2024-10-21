@@ -1,4 +1,3 @@
-import './Booking.css';
 import { IoLogoReddit } from "react-icons/io";
 import { AiOutlineSwapRight } from "react-icons/ai";
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -6,6 +5,7 @@ import { IoIosAirplane } from "react-icons/io";
 import { Modal } from 'bootstrap';
 import { FaArrowDown } from "react-icons/fa";
 import { PiLineVerticalBold } from "react-icons/pi";
+import './Booking.css';
 
 const Booking = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -66,7 +66,7 @@ const Booking = () => {
         <>
           {/* 일반석 항공권 리스트 */}
           <div className="row mt-4">
-            <div className="row" style={{ height: "230px" }}>
+            <div className="flight-list">
               <div className="col-md-3 booking-time" style={{
                 borderRight: isSmallScreen ? "1px solid black" : "none",  // 창이 좁아지면 borderRight 추가
                 borderRadius: isSmallScreen ? "1em" : "0",
@@ -121,7 +121,7 @@ const Booking = () => {
 
         {/* 일반석 두번째 항공권 리스트 */}
         <div className="row mt-4">
-            <div className="row" style={{ height: "230px" }}>
+            <div className="flight-list">
               <div className="col-md-3 booking-time" style={{
                 borderRight: isSmallScreen ? "1px solid black" : "none",  // 창이 좁아지면 borderRight 추가
                 borderRadius: isSmallScreen ? "1em" : "0",
@@ -174,7 +174,7 @@ const Booking = () => {
         <>
           <div className="row mt-4">
             {/* 항공권 예약 리스트 */}
-              <div className="row" style={{ height: "230px" }}>
+              <div className="flight-list">
                 <div className="col-md-3 booking-time" style={{
                   borderRight: isSmallScreen ? "1px solid black" : "none",  // 창이 좁아지면 borderRight 추가
                   borderRadius: isSmallScreen ? "1em" : "0",
@@ -226,7 +226,7 @@ const Booking = () => {
 
           {/* 비지니스석 두번째 항공권 리스트 */}
           <div className="row mt-4">
-              <div className="row" style={{ height: "230px" }}>
+              <div className="flight-list">
                 <div className="col-md-3 booking-time" style={{
                   borderRight: isSmallScreen ? "1px solid black" : "none",  // 창이 좁아지면 borderRight 추가
                   borderRadius: isSmallScreen ? "1em" : "0",
