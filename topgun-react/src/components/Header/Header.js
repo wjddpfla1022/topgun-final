@@ -75,6 +75,11 @@ const Header = () => {
                                     flight
                                 </a>
                             </li>
+                            <li>
+                                <a href="/admin/list" className="nav-link px-2 text-white">
+                                    AdminFlight
+                                </a>
+                            </li>
                         </ul>
                         <div className="text-end">
                             {/* 로그인이 되어있다면 아이디(등급) 형태로 출력 */}
