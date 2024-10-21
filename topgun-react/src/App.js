@@ -3,14 +3,10 @@ import Header from './components/Header/Header';
 import MainPage from './components/MainPage/MainPage';
 import Login from './components/Login/Login';
 import NotFound from './components/NotFound/NotFound';
-import './components/Global.css';
 import Test from './components/Test';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.js';
-import 'react-datepicker/dist/react-datepicker.css'; // 스타일 가져오기
 import { Route, Routes, useLocation } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginState, memberLoadingState, userState } from './util/recoil';
+import { useRecoilState } from 'recoil';
+import { memberLoadingState, userState } from './util/recoil';
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import PrivateRoute from './components/Route/PrivateRoute';
@@ -33,7 +29,7 @@ const App = () => {
 
   //recoil state
   const [, setUser] = useRecoilState(userState);
-  const [memberLoading, setMemberLoading] = useRecoilState(memberLoadingState);
+  const [, setMemberLoading] = useRecoilState(memberLoadingState);
 
 
 
