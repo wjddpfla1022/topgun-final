@@ -15,7 +15,7 @@
 	<!-- 채팅방 퇴장 -->
 	<delete id="leave">
 		delete room_member
-		where room_no = #{roomNo} ane users_id = #{usersId}
+		where room_no = #{roomNo} and users_id = #{usersId}
 	</delete>
 	
 	<!-- 자격 검사 -->

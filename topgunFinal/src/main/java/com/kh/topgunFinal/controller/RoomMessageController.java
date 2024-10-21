@@ -11,28 +11,29 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
-import com.kh.topgunFinal.dao.MessageDao;
 import com.kh.topgunFinal.dao.RoomDao;
-import com.kh.topgunFinal.dto.MessageDto;
+import com.kh.topgunFinal.dao.RoomMessageDao;
+import com.kh.topgunFinal.dto.RoomMemberDto;
+import com.kh.topgunFinal.dto.RoomMessageDto;
 import com.kh.topgunFinal.service.TokenService;
-import com.kh.topgunFinal.vo.MessageRequestVO;
-import com.kh.topgunFinal.vo.MessageResponseVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
+import com.kh.topgunFinal.vo.WebsocketRequestVO;
+import com.kh.topgunFinal.vo.WebsocketResponseVO;
 
 @Controller
-public class MessageController {
+public class RoomMessageController {
 
 	@Autowired
 	private TokenService tokenService;
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
 	@Autowired
-	private MessageDao messageDao;
+	private RoomMessageDao roomMessageDao;
 	@Autowired
 	private RoomDao roomDao;
 	
 	@MessageMapping("/room/{roomNo}")
-	public void chat(@DestinationVariable int roomNo, Message<MessageRequestVO> message) {
+	public void chat(@DestinationVariable int roomNo, Message<WebsocketRequestVO> message) {
 		//토큰 
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 		String accessToken = accessor.getFirstNativeHeader("accessToken");
@@ -40,27 +41,35 @@ public class MessageController {
 		
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(accessToken));
 		
-		MessageRequestVO request = message.getPayload();
+		RoomMemberDto roomMemberDto = new RoomMemberDto();
+		roomMemberDto.setUsersId(claimVO.getUserId());
+		roomMemberDto.setRoomNo(roomNo);
+		boolean canEnter = roomDao.check(roomMemberDto);
+		if(canEnter == false) return;
+		
+		WebsocketRequestVO request = message.getPayload();
 		
 		//메세지 발송
-		MessageResponseVO response = new MessageResponseVO();
+		WebsocketResponseVO response = new WebsocketResponseVO();
 		response.setSenderUsersId(claimVO.getUserId());
 		response.setSenderUsersType(claimVO.getUserType());
 		response.setTime(LocalDateTime.now());
 		response.setContent(request.getContent());
-		messagingTemplate.convertAndSend("/private/chate/"+roomNo, response);
+		messagingTemplate.convertAndSend("/private/chat/"+roomNo, response);
 		
-		//DB 저장
-		int messageNo = messageDao.sequence();
-		MessageDto messageDto = new MessageDto();
-		messageDto.setMessageNo(messageNo);
-		messageDto.setMessageSender(claimVO.getUserId());
-		messageDto.setMessageReceiver(null);
-		messageDto.setMessageContent(request.getContent());
-		messageDto.setMessageType("chat");
-		messageDto.setMessageTime(Timestamp.valueOf(response.getTime()));
-		messageDto.setRoomNo(roomNo);
-		messageDao.insert(messageDto);
+		// DB 저장
+	    int messageNo = roomMessageDao.sequence();
+	    RoomMessageDto messageDto = new RoomMessageDto();
+	    messageDto.setRoomMessageNo(messageNo);
+	    messageDto.setRoomMessageType("chat");
+	    messageDto.setRoomMessageSender(claimVO.getUserId());
+	    messageDto.setRoomMessageReceiver(null);
+	    messageDto.setRoomMessageContent(request.getContent());
+	    messageDto.setRoomMessageTime(Timestamp.valueOf(response.getTime()));
+	    messageDto.setRoomNo(roomNo);
+
+	    // 여기서 insert 호출
+	    roomMessageDao.insert(messageDto);
 	}
 	
 }

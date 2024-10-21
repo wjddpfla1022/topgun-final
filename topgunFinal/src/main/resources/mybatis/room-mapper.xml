@@ -26,9 +26,9 @@
 	</select>
 	
 	<select id="listByUser" resultType="RoomVO">
-		select
-			R.*, nvl(RM.users_id, 'Y', 'N') "join"
-		from
+		select 
+			R.*, nvl2(RM.users_id, 'Y', 'N') "join"
+		from 
 			room R left outer join (
 				select * from room_member where users_id = #{usersId}
 			) RM
