@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class MessageMoreVO {
+public class WebsocketMessageMoreVO {
 	private boolean last;
-	private List<MessageVO> messageList;
+	private List<WebsocketMessageVO> messageList;
 }

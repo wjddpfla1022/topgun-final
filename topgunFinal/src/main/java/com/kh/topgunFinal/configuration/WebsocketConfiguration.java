@@ -1,4 +1,4 @@
-package com.kh.topgunFinal.websocket;
+package com.kh.topgunFinal.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -10,10 +10,10 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebsocketConfiguration implements WebSocketMessageBrokerConfigurer{
 	@Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/private");
-        config.setApplicationDestinationPrefixes("/app");
-    }
+	 public void configureMessageBroker(MessageBrokerRegistry registry) {
+		registry.enableSimpleBroker("/public","/private");
+		registry.setApplicationDestinationPrefixes("/app");
+	}
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/ws") //웹소켓 연결을 위한 주소 설정
