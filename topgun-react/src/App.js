@@ -19,10 +19,12 @@ import AdminRoute from './components/Route/AdminRoute';
 import Admin from './components/Admin';
 import NotMemberRoute from './components/Route/NotMemberRoute';
 import AirLine from './components/AirLine.js';
+import AdminFlight from './components/AdminFlight.js';
 import Chat from './components/chat/Chat';
 import Notice from './components/notice.js'; // Notice 컴포넌트 임포트
 import MyPage from './components/MyPage/MyPage';
 import Booking from './components/booking/Booking.js';
+
 
 
 
@@ -108,17 +110,18 @@ const App = () => {
         {/* 관리자만 봐야하는 페이지 */}
         <Route element={<AdminRoute />}>
           <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/list" element={<AdminFlight />} />
         </Route>
 
         {/* 멤버만 못보는 페이지 -> ADMIN, AIRLINE만 가능 */}
         <Route element={<NotMemberRoute />}>
           <Route path="/airline" element={<AirLine />} />
+        <Route path="/flight" element={<Flight />} />
         </Route>
 
         {/* 공지사항 페이지 추가 */}
         <Route path="/notice" element={<Notice />} />  {/* Notice 페이지 경로 설정 */}
 
-        <Route path="/flight" element={<Flight />} />
         <Route path="*" element={<NotFound />} /> {/* 모든 잘못된 경로 처리 */}
       </Routes>
       <Footer />
