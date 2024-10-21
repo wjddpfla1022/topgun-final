@@ -36,6 +36,28 @@
 		= #{usersId}
 	</select>
 
+	<select id="findInfo" resultType="InfoResponseVO">
+		SELECT *
+		FROM users
+		<choose>
+			<when test="userType == 'AIRLINE'">
+				LEFT JOIN airline ON users.users_id = airline.user_id
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+			</when>
+			<when test="userType == 'MEMBER'">
+				LEFT JOIN member ON users.users_id = member.member_id
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+			</when>
+			<when test="userType == 'ADMIN'">
+				LEFT JOIN admin ON users.users_id = admin.users_id
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+			</when>
+			<otherwise>
+				SELECT NULL
+			</otherwise>
+		</choose>
+	</select>
+
 	<!-- 회원 정보 상세 -->
 	<insert id="memberInsert">
 		INSERT INTO member(
@@ -57,7 +79,8 @@
 		USER_ID,
 		AIRLINE_NO,
 		AIRLINE_NAME
-		) VALUES (
+		)
+		VALUES (
 		#{userId},
 		#{airlineNo},
 		#{airlineName}
