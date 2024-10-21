@@ -18,7 +18,7 @@ public class FlightMapper implements RowMapper<FlightDto> {
         flightDto.setFlightNumber(rs.getString("flightNumber"));
         flightDto.setDepartureTime(rs.getTimestamp("departureTime"));
         flightDto.setArrivalTime(rs.getTimestamp("arrivalTime"));
-        flightDto.setFlightTime(rs.getTimestamp("flightTime"));
+        flightDto.setFlightTime(rs.getString("flightTime"));
         flightDto.setDepartureAirport(rs.getString("departureAirport"));
         flightDto.setArrivalAirport(rs.getString("arrivalAirport"));
         flightDto.setUserId(rs.getString("userId"));
