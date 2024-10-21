@@ -10,20 +10,20 @@
 
 	<insert id="insert">
 		INSERT INTO users (
-        users_id,
-        users_name,
-        users_password,
-        users_email,
-        users_contact,
-        users_type
-    ) VALUES (
-        #{usersId},
-        #{usersName},
-        #{usersPassword},
-        #{usersEmail},
-        #{usersContact},
-        #{usersType}
-    )
+		users_id,
+		users_name,
+		users_password,
+		users_email,
+		users_contact,
+		users_type
+		) VALUES (
+		#{usersId},
+		#{usersName},
+		#{usersPassword},
+		#{usersEmail},
+		#{usersContact},
+		#{usersType}
+		)
 	</insert>
 
 	<select id="list" resultType="UserDto">
@@ -35,5 +35,33 @@
 		select * from users where users_id
 		= #{usersId}
 	</select>
+
+	<!-- 회원 정보 상세 -->
+	<insert id="memberInsert">
+		INSERT INTO member(
+		MEMBER_ID,
+		MEMBER_ENG_NAME,
+		MEMBER_BIRTH,
+		MEMBER_GENDER
+		) VALUES (
+		#{memberId},
+		#{memberEngName},
+		#{memberBirth},
+		#{memberGender}
+		)
+	</insert>
+
+	<!-- 항공사 정보 상세 -->
+	<insert id="airlineInsert">
+		INSERT INTO airline(
+		USER_ID,
+		AIRLINE_NO,
+		AIRLINE_NAME
+		) VALUES (
+		#{userId},
+		#{airlineNo},
+		#{airlineName}
+		)
+	</insert>
 
 </mapper>
