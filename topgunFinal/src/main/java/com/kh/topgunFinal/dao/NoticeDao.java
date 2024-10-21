@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
 import com.kh.topgunFinal.dto.NoticeDto;
+import com.kh.topgunFinal.dto.NoticeImage;
 
 @Repository
 public class NoticeDao {
@@ -43,4 +45,10 @@ public class NoticeDao {
     public int getNextSequence() {
         return sqlSession.selectOne("notice.getSequence");
     }
+    
+    // 이미지 추가
+    public void insertImage(NoticeImage image) {
+        sqlSession.insert("notice.addImage", image);
+    }
+    
 }

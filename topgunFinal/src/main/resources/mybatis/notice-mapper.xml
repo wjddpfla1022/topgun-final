@@ -9,6 +9,11 @@
   <select id="getSequence" resultType="int">
     SELECT notice_seq.nextval FROM dual
   </select>
+  
+  <!-- 이미지 시퀀스 조회 -->
+  <select id="getImageSequence" resultType="int">
+    SELECT notice_image_seq.nextval FROM dual
+  </select>
 
   <!-- 공지사항 추가 -->
   <insert id="add">
@@ -40,5 +45,15 @@
   <select id="detail" parameterType="int" resultType="com.kh.topgunFinal.dto.NoticeDto">
     SELECT * FROM notice WHERE notice_id = #{noticeId}
   </select>
+  
+   <!-- 이미지 업로드용 기능 -->
+  <insert id="addImage">
+    INSERT INTO notice_images(
+      image_id, notice_id, image_url
+    )
+    VALUES(
+      #{imageId}, #{noticeId}, #{imageUrl}
+    )
+  </insert>
 
 </mapper>
