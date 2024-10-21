@@ -74,7 +74,7 @@ const AdminFlight = () => {
                                     <td>{new Date(flight.departureTime).toLocaleString()}</td>
                                     <td>{new Date(flight.arrivalTime).toLocaleString()}</td>
                                     <td>{flight.flightTime}</td>
-                                    <td>{flight.departureAir1port}</td>
+                                    <td>{flight.departureAirport}</td>
                                     <td>{flight.arrivalAirport}</td>
                                     <td>{flight.userId}</td>
                                     <td>{flight.flightTotalSeat}</td>
