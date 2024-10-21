@@ -1,5 +1,8 @@
 package com.kh.topgunFinal.dao;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.topgunFinal.dto.AirlineDto;
 import com.kh.topgunFinal.dto.MemberDto;
 import com.kh.topgunFinal.dto.UserDto;
+import com.kh.topgunFinal.vo.InfoResponseVO;
 
 @Repository
 public class UserDao {
@@ -72,5 +76,14 @@ public class UserDao {
 		if (userDto.getUsersType().equals("AIRLINE")) {
 			session.insert("Users.airlineInsert", airlineDto);
 		}
+	}
+
+	public InfoResponseVO getMyInfo(String userId, String userType) {
+		// 맵에 파라미터 추가
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("userType", userType);
+		
+		return session.selectOne("Users.findInfo", params);
 	}
 }

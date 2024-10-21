@@ -9,6 +9,7 @@ import com.kh.topgunFinal.dto.UserDto;
 import com.kh.topgunFinal.dto.UserTokenDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.InfoResponseVO;
 import com.kh.topgunFinal.vo.JoinRequestVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.UserLoginRequestVO;
@@ -17,6 +18,8 @@ import com.kh.topgunFinal.vo.UserLoginResponseVO;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
 @RestController
@@ -188,5 +194,23 @@ public class UserRestController {
 		}
 
 	}
+
+	@PostMapping("/myInfo")
+	public InfoResponseVO getMyInfo(@RequestBody UserClaimVO userClaim) {
+		String userId = userClaim.getUserId();
+		String userType = userClaim.getUserType();
+
+		InfoResponseVO response = userDao.getMyInfo(userId, userType);
+
+		return response;
+	}
+	
+	//정보 수정
+//	@PutMapping("/update")
+//	public boolean putMethodName(@RequestBody String entity) {
+//		//TODO: process PUT request
+//		
+//		return entity;
+//	}
 
 }
