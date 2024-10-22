@@ -83,7 +83,38 @@ public class UserDao {
 		Map<String, Object> params = new HashMap<>();
 		params.put("userId", userId);
 		params.put("userType", userType);
-		
+
 		return session.selectOne("Users.findInfo", params);
+	}
+
+	@Transactional
+	public boolean updateInfo(InfoResponseVO infoVo) {
+	    if (infoVo == null) {
+	        return false;
+	    }
+
+	    // 첫 번째 테이블 업데이트
+	    int result1 = session.update("Users.updateInfo", infoVo);
+
+	    // 두 번째 테이블 업데이트
+	    int result2 = 0;
+
+	    switch (infoVo.getUsersType()) {
+	        case "MEMBER":
+	            result2 = session.update("Users.updateMember", infoVo);
+	            break;
+	        case "ADMIN":
+	        	// ADMIN에 대한 업데이트가 필요 없다면, 1로 설정하여 성공 처리
+	            result2 = 1;
+	            break;
+	        case "AIRLINE":
+	            result2 = session.update("Users.updateAirline", infoVo); // 항공사 업데이트 메서드
+	            break;
+	        default:
+	            return false;
+	    }
+
+	    // 두 업데이트 모두 성공한 경우에만 true 반환
+	    return result1 > 0 && result2 > 0;
 	}
 }

@@ -18,8 +18,6 @@ import com.kh.topgunFinal.vo.UserLoginResponseVO;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-
 
 @CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
 @RestController
@@ -204,13 +200,26 @@ public class UserRestController {
 
 		return response;
 	}
-	
-	//정보 수정
-//	@PutMapping("/update")
-//	public boolean putMethodName(@RequestBody String entity) {
-//		//TODO: process PUT request
-//		
-//		return entity;
-//	}
+
+	// 정보 수정 + 정보변경시 비밀번호 인증
+	@PutMapping("/update")
+	public boolean updateUserInfo(@RequestBody InfoResponseVO infoVo, @RequestParam String authPassword) {
+		UserDto user = userDao.selectOne(infoVo.getUsersId());
+		// 유저 정보 있는지 확인
+		if (user != null) {
+			// 비밀번호 검증
+			boolean isValid = encoder.matches(authPassword, user.getUsersPassword());
+			// 인증 완료 시
+			if (isValid) {
+				return userDao.updateInfo(infoVo);
+			} else {
+				// 실패시
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+	}
 
 }
