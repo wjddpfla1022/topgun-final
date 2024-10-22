@@ -4,7 +4,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
+<!-- 결제,결제상세 동시 처리 -->
 <mapper namespace="payment">
 <!--등록-->
     <select id="paymentSequence" resultType="int">
@@ -16,22 +16,25 @@
 
     <insert id="paymentInsert">
     insert into payment(
-        payment_no, payment_tid, payment_name, 
-        payment_total, payment_remain, user_id
+        payment_no, payment_tid, payment_fly, 
+        payment_airline, payment_seatsRank, payment_seatsNo, 
+        payment_total, payment_remain, payment_name, payment_time
     ) values(
-        #{paymentNo}, #{paymentTid}, #{paymentName}, 
-        #{paymentTotal}, #{paymentReamin}, #{userId}
+        #{paymentNo}, #{paymentTid}, #{paymentFly}, 
+        #{paymentAirline}, #{paymentSeatsRank}, #{paymentSeatsNo}, 
+        #{paymentTotal}, #{paymentRemain}, #{paymentNmae}, #{paymentTime}
     )
     </insert>
 
     <insert id="paymentDetailInsert">
     insert into payment_detail(
-        payment_detail_no, payment_detail_name, payment_detail_price, 
-        payment_detail_qty, payment_detail_item, payment_detail_origin, 
-        payment_detail_status
+        payment_detail_no, payment_detail_price, payment_detail_origin, 
+        payment_detail_seatsNo, payment_detail_seatsRank, payment_detail_passportCode, 
+        payment_detail_name, payment_detail_sex, payment_detail_birth, payment_detail_status
     ) values(
-        #{paymentDetailNo}, #{paymentDetailName}, #{paymentDetailPrice}, 
-        #{paymentdetailQty}, #{paymentDetailItem}, #{paymentDetailOrigin},
+        #{paymentDetailNo}, #{paymentDetailPrice}, #{paymentDetailOrigin}, 
+        #{paymentDetailSeatsNo}, #{paymentDetailSeatsRank}, #{paymentDetailPassportCode},
+        #{paymentDetailName}, #{paymentDetailSex}, #{paymentDetailBirth}, #{paymentDetailStatus},
         '승인'
     )
     </insert>

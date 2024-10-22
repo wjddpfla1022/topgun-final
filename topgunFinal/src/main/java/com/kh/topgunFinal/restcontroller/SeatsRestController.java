@@ -5,7 +5,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.PaymentDao;
 import com.kh.topgunFinal.dao.SeatsDao;
+import com.kh.topgunFinal.dto.PaymentDetailDto;
 import com.kh.topgunFinal.dto.PaymentDto;
 import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
@@ -29,8 +32,6 @@ import com.kh.topgunFinal.vo.pay.PayApproveRequestVO;
 import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
 import com.kh.topgunFinal.vo.pay.PayReadyRequestVO;
 import com.kh.topgunFinal.vo.pay.PayReadyResponseVO;
-
-import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin(origins= {"http://localhost:3000"})
 @RestController
@@ -48,6 +49,9 @@ public class SeatsRestController {
 
 	@Autowired
 	private PaymentDao paymentDao;
+	
+	@Autowired
+	private SqlSession sqlSession;
 	
 	//좌석 조회
 	@GetMapping("/")
@@ -95,6 +99,7 @@ public class SeatsRestController {
 		return responseVO;
 	}
 	//response에 받은 tid ,partner_order_id, partner_user_id , pg_token 전달
+	@Transactional
 	@PostMapping("/approve")
 	public PayApproveResponseVO approve(
 			@RequestHeader ("Authorization") String token, //아이디 토큰
@@ -111,17 +116,39 @@ public class SeatsRestController {
 		requestVO.setPgToken(request.getPgToken());
 		//approve 처리 client에 전송
 		PayApproveResponseVO responseVO = payService.approve(requestVO);
-
-		//최종 결제 DB저장
 		
-		//[1]대표 저보 등록
+		//DB저장
+		//[1]대표 정보 등록
 		int paymentSeq= paymentDao.paymentSequence();
 		PaymentDto paymentDto = new PaymentDto();
-		paymentDto.setPyamentNo(paymentSeq);
-		paymentDto.setPaymentTid(responseVO.getTid());
-		paymentDto.setPaymentName(responseVO.getItemName());
+		paymentDto.setPyamentNo(paymentSeq);//결제번호
+		paymentDto.setPaymentTid(responseVO.getTid());//
+		//......추가 일단 좌석만 넣고 다시 시도
+		
+		//[2]상세 정보 등록
+		for(SeatsQtyVO qtyVO : request.getSeatsList()) {
+			SeatsDto seatsDto = seatsDao.selectOne(qtyVO.getSeatsNo());//좌석조회
+			if(seatsDto==null) throw new TargetNotFoundException("존재하지 않는 도서");//취소가 된다면 위에 있는거 모두 삭제
+			
+			int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
+			PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
+			paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);//번호 설정
+			//.....추가
+		}
+		
+		
 		//approve 출력
 		return responseVO;
 	}
+	
+	//구매 내역 조회
+//	@GetMapping("/paymentlist")
+//	public List<PaymentDto> paymentList(@RequestHeader("Authorization") String token){
+//		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+//		
+//		List<PaymentDto> list = paymentDao.selectList(claimVO.getUserId());
+//		return  sqlSession.selectList("payment.list", userId);
+//	
+//	}
 			
 }
