@@ -60,14 +60,16 @@ public class NoticeRestController {
         return noticeDto;
     }
 
-    // 공지사항 수정
-    @PutMapping("/") // Update (수정) - 200, 404, 500
-    public void update(@RequestBody NoticeDto noticeDto) {
+ // 공지사항 수정
+    @PutMapping("/{noticeId}") // Update (수정) - 200, 404, 500
+    public void update(@PathVariable int noticeId, @RequestBody NoticeDto noticeDto) {
+        noticeDto.setNoticeId(noticeId); // ID를 noticeDto에 설정
         boolean result = noticeDao.update(noticeDto);
         if (!result) {
             throw new TargetNotFoundException();
         }
     }
+
 
     // 공지사항 삭제
     @DeleteMapping("/{noticeId}") // Delete (삭제) - 200, 404, 500
