@@ -34,7 +34,7 @@ public class NoticeRestController {
             image.setNoticeId(noticeDto.getNoticeId()); // 이미지와 공지사항을 연결
             noticeDao.insertImage(image); // 이미지 등록
         }
-    }//
+    }////////////////////////
 
     // 공지사항 목록 조회
     @GetMapping("/") // Read (목록) - 200, 500
