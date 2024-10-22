@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.NoticeDto;
-import com.kh.topgunFinal.dto.NoticeImageDto;
+import com.kh.topgunFinal.dto.NoticeImageDto; // NoticeImageDto 사용
 
 @Repository
 public class NoticeDao {
@@ -50,5 +50,4 @@ public class NoticeDao {
     public void insertImage(NoticeImageDto image) {
         sqlSession.insert("notice.addImage", image);
     }
-    
 }
