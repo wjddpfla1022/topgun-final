@@ -1,5 +1,8 @@
 package com.kh.topgunFinal.vo;
 
+
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -14,7 +17,7 @@ public class InfoResponseVO {
 
     // 회원일 경우
     private String memberEngName;
-    private String memberBirth; // 생년월일
+    private LocalDateTime memberBirth; // 생년월일
     private String memberGender; // 성별
 
     // 항공사일 경우
