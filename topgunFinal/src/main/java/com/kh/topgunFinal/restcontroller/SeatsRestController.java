@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,8 @@ import com.kh.topgunFinal.vo.SeatsQtyVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.pay.PayApproveRequestVO;
 import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
+import com.kh.topgunFinal.vo.pay.PayCancelRequestVO;
+import com.kh.topgunFinal.vo.pay.PayCancelResponseVO;
 import com.kh.topgunFinal.vo.pay.PayOrderRequestVO;
 import com.kh.topgunFinal.vo.pay.PayOrderResponseVO;
 import com.kh.topgunFinal.vo.pay.PayReadyRequestVO;
@@ -217,5 +220,65 @@ public class SeatsRestController {
 		infoVO.setResponseVO(responseVO);
 		return infoVO;
 	}
+	
+		//1. 전체취소(paymentNo)
+		@Transactional
+		@DeleteMapping("/cancelAll/{paymentNo}")
+		public PayCancelResponseVO cancelAll(
+				@PathVariable int paymentNo, 
+				@RequestHeader("Authorization") String token) throws URISyntaxException{
+			PaymentDto paymentDto = paymentDao.selectOne(paymentNo);
+			if(paymentDto == null)
+				throw new TargetNotFoundException("존재하지 않는 결제정보");
+			UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+			if(!paymentDto.getUserId().equals(claimVO.getUserId()))
+				throw new TargetNotFoundException("소유자 불일치");
+			if(paymentDto.getPaymentRemain()==0)
+				throw new TargetNotFoundException("이미 취소된 결제");
+			
+			//남은금액 취소 요청
+			PayCancelRequestVO request = new PayCancelRequestVO();
+			request.setTid(paymentDto.getPaymentTid());
+			request.setCancelAmount(paymentDto.getPaymentRemain());
+			PayCancelResponseVO response = payService.cancel(request);
+			
+			//잔여금액 0으로 변경
+			paymentDao.cancelAll(paymentNo);
+			//관련항목의 상태를 취소로 변경
+			paymentDao.cancelAllItem(paymentNo);
+			
+			return response;
+		}
+		//2. 항목취소(paymentDetailNo)
+		@DeleteMapping("/cancelItem/{paymentDetailNo}")
+		public PayCancelResponseVO cancelItem(
+				@RequestHeader("Authorization") String token, 
+				@PathVariable int paymentDetailNo) throws URISyntaxException {
+			PaymentDetailDto paymentDetailDto = 
+					paymentDao.selectDetailOne(paymentDetailNo);
+			if(paymentDetailDto==null)
+				throw new TargetNotFoundException("존재하지 않는 결제정보");
+			
+			PaymentDto paymentDto = 
+					paymentDao.selectOne(paymentDetailDto.getPaymentDetailOrigin());
+			if(paymentDto==null)
+				throw new TargetNotFoundException("존재하지 않는 결제정보");
+			
+			UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+			if(!paymentDto.getUserId().equals(claimVO.getUserId()));
+				
+				//취소요청
+				int money = paymentDetailDto.getPaymentDetailPrice()*paymentDetailDto.getPaymentDetailQty();
+				PayCancelRequestVO request = new PayCancelRequestVO();
+				request.setTid(paymentDto.getPaymentTid());
+				request.setCancelAmount(money);
+				PayCancelResponseVO response = payService.cancel(request);
+				//상태항목을 취소로 변경
+				paymentDao.cancelItem(paymentDetailNo);
+				//항목금액 차감
+				paymentDao.decreaseItemRemain(paymentDto.getPaymentNo(), money);
+				
+				return response;
+		}
 	
 }
