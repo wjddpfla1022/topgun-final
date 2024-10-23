@@ -27,7 +27,7 @@ public class EmailConfiguration {
 		props.setProperty("mail.smtp.auth", "true");//인증 후 이용하도록 설정
 		props.setProperty("mail.smtp.debug", "true");//디버깅 허용 설정
 		props.setProperty("mail.smtp.starttls.enable", "true");//TLS 사용 설정
-		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");//TLS 버전 설정
+//		props.setProperty("mail.smtp.ssl.protocols", "TLSv1.2");//TLS 버전 설정
 		props.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");//신뢰할 수 있는 주소로 등록
 		sender.setJavaMailProperties(props);
 		

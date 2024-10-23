@@ -7,5 +7,4 @@ import lombok.Data;
 public class UserClaimVO {
 	private String userId;
 	private String userType;
-	private String userName;
 }
