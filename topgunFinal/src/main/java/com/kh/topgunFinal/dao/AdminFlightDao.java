@@ -32,13 +32,13 @@ public class AdminFlightDao {
         return sqlSession.selectOne("admin.find", flightId);
     }
 	
- // 검색
+ // 검색 
     public List<FlightDto> search(String column, String keyword) {
         Map<String, Object> params = new HashMap<>();
         params.put("column", column);
         params.put("keyword", keyword);
         return sqlSession.selectList("flight.search", params);
-    }
+    } 
 	
 
-}
+} 

@@ -28,7 +28,7 @@ public class FlightRestController {
 	public List<FlightDto> list() {
 		return flightDao.selectList();
 	}
-	
+	 
 	@GetMapping("/column/{column}/keyword/{keyword}")
 	public List<FlightDto> search(
 	        @PathVariable String column, @PathVariable String keyword) {

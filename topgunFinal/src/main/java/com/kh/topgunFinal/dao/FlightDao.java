@@ -51,7 +51,7 @@ public class FlightDao {
         params.put("keyword", keyword);
         return sqlSession.selectList("flight.search", params);
     }
-    
+     
     // 상세
     public FlightDto selectOne(int flightId) {
         return sqlSession.selectOne("flight.find", flightId);

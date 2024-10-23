@@ -48,7 +48,7 @@
     delete flight where flight_id = #{flightId}
 </delete>  
 
-<!-- 검색 -->
+<!-- 검색 -->   
 <select id="search" resultType="FlightDto">
     <![CDATA[
         select * from flight
