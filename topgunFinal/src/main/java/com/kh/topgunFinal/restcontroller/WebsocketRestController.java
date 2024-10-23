@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.kh.topgunFinal.dao.WebsocketMessageDao;
+import com.kh.topgunFinal.dao.RoomMessageDao;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.TokenService;
 import com.kh.topgunFinal.vo.UserClaimVO;
@@ -23,7 +23,7 @@ import com.kh.topgunFinal.vo.WebsocketMessageVO;
 public class WebsocketRestController {
 	
 	@Autowired
-	private WebsocketMessageDao websocketMessageDao;
+	private RoomMessageDao roomMessageDao;
 	@Autowired
 	private TokenService tokenService;
 	
@@ -37,11 +37,11 @@ public class WebsocketRestController {
 		}
 		
 		List<WebsocketMessageVO> messageList = 
-					websocketMessageDao.selectListMemberComplete(usersId, 1, 100, firstMessageNo);
+				roomMessageDao.selectListMemberComplete(usersId, 1, 100, firstMessageNo);
 		if(messageList.isEmpty()) throw new TargetNotFoundException("보여줄 메세지 없음");
 		
 		List<WebsocketMessageVO> prevMessageList = 
-					websocketMessageDao.selectListMemberComplete(usersId, 1, 100, messageList.get(0).getNo());
+				roomMessageDao.selectListMemberComplete(usersId, 1, 100, messageList.get(0).getNo());
 		
 		WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
 		moreVO.setMessageList(messageList);

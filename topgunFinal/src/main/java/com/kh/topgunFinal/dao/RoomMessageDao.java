@@ -39,8 +39,8 @@ public class RoomMessageDao {
 			params.put("usersId", usersId);
 			params.put("beginRow", beginRow);
 			params.put("endRow", endRow);
-			params.put("firstMessageNo", firstMessageNo);
 			params.put("roomNo", roomNo);
+			params.put("firstMessageNo", firstMessageNo);
 			return sqlSession.selectList("roomMessage.listMemberComplete", params);
 		}
 }
