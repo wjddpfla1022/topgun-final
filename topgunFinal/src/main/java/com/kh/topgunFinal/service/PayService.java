@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 import com.kh.topgunFinal.configuration.PayProperties;
 import com.kh.topgunFinal.vo.pay.PayApproveRequestVO;
 import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
+import com.kh.topgunFinal.vo.pay.PayCancelRequestVO;
+import com.kh.topgunFinal.vo.pay.PayCancelResponseVO;
 import com.kh.topgunFinal.vo.pay.PayOrderRequestVO;
 import com.kh.topgunFinal.vo.pay.PayOrderResponseVO;
 import com.kh.topgunFinal.vo.pay.PayReadyRequestVO;
@@ -84,6 +86,20 @@ public class PayService {
 		PayOrderResponseVO response=
 				template.postForObject(uri, entity, PayOrderResponseVO.class);
 		
+		return response;
+	}
+	
+	//결제 취소(cancel)
+	public PayCancelResponseVO cancel(PayCancelRequestVO request) throws URISyntaxException {
+		URI uri = new URI("https://open-api.kakaopay.com/online/v1/payment/cancel");
+		Map<String, String> body = new HashMap<>();
+		body.put("cid", payProperties.getCid());
+		body.put("tid", request.getTid());
+		body.put("cancel_amount", String.valueOf(request.getCancelAmount()));
+		body.put("cancel_tax_free_amount", String.valueOf(request.getCancelTaxFreeAmount()));
+		HttpEntity entity = new HttpEntity(body, headers);
+		PayCancelResponseVO response = 
+				template.postForObject(uri, entity, PayCancelResponseVO.class);
 		return response;
 	}
 	

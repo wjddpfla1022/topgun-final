@@ -82,4 +82,23 @@
 		order by payment_no desc
 	</select>
 	
+	<!-- 결제 전체 취소 -->
+	<update id="cancelAll">
+		update payment set payment_remain=0 where payment_no = #{paymentNo}
+	</update>
+	<update id="cancelAllItem">
+		update payment_detail set payment_detail_status='취소' where payment_detail_origin= #{paymentNo}
+	</update>
+	<!-- 결제 부분 취소 -->
+	<update id="cancelItem">
+		update payment_detail set payment_detail_status='취소' where payment_detail_no = #{paymentDetailNo}
+	</update>
+	<update id="decreaseItemRemain">
+		update payment set payment_remain = payment_remain - #{money} where payment_no = #{paymentNo}
+	</update>
+	<!-- 결제 상세 단일 조회 -->
+	<select id="selectDetailOne" resultType="PaymentDetailDto">
+		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
+	</select>
+	
 </mapper>

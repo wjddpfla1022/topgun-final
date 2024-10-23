@@ -1,6 +1,8 @@
 package com.kh.topgunFinal.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +40,25 @@ public class PaymentDao {
 	}
 	public List<PaymentTotalVO> selectTotalList(String userId){
 		return sqlSession.selectList("payment.findTotal", userId);
+	}
+	//전체취소
+	public boolean cancelAll(int paymentNo) {
+		return sqlSession.update("payment.cancelAll", paymentNo)>0;
+	}
+	public boolean cancelAllItem(int paymentNo) {
+		return sqlSession.update("payment.cancelAllItem", paymentNo)>0;
+	}
+	//항목취소
+	public boolean cancelItem(int paymentDetailNo) {
+		return sqlSession.update("payment.cancelItem", paymentDetailNo)>0;
+	}
+	public boolean decreaseItemRemain(int paymentNo, int money) {
+		Map<String, Integer> params = new HashMap<>();
+		params.put("paymentNo", paymentNo);
+		params.put("money", money);
+		return sqlSession.update("payment.decreaseItemRemain", params)>0;
+	}
+	public PaymentDetailDto selectDetailOne(int paymentDetailNo) {
+		return sqlSession.selectOne("payment.selectDetailOne", paymentDetailNo);
 	}
 }
