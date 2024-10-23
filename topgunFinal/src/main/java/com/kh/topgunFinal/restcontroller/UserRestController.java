@@ -64,9 +64,11 @@ public class UserRestController {
 			UserLoginResponseVO response = new UserLoginResponseVO();
 			response.setUsersId(userDto.getUsersId());
 			response.setUsersType(userDto.getUsersType());
+			response.setUsersName(userDto.getUsersName());
 			UserClaimVO claimVO = new UserClaimVO();
 			claimVO.setUserId(userDto.getUsersId());
 			claimVO.setUserType(userDto.getUsersType());
+			claimVO.setUserName(userDto.getUsersName());
 			response.setAccessToken(tokenService.createAccessToken(claimVO));// 액세스토큰
 			response.setRefreshToken(tokenService.createRefreshToken(claimVO));// 리프레시토큰
 			return response;
@@ -107,6 +109,7 @@ public class UserRestController {
 		UserLoginResponseVO response = new UserLoginResponseVO();
 		response.setUsersId(claimVO.getUserId());
 		response.setUsersType(claimVO.getUserType());
+		response.setUsersName(claimVO.getUserName());
 		response.setAccessToken(tokenService.createAccessToken(claimVO));// 재발급
 		response.setRefreshToken(tokenService.createRefreshToken(claimVO));// 재발급
 		return response;
