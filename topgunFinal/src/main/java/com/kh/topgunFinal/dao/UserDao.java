@@ -127,4 +127,17 @@ public class UserDao {
 		return session.update("Users.updateUserPw", params) > 0;
 
 	}
+
+	public int findImage(String userId) {
+		return session.selectOne("attach.findImage", userId);
+	}
+
+	// 회원 이미지 연결
+	public void connect(String userId, int attachmentNo) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("userId", userId);
+		params.put("attachmentNo", attachmentNo);
+
+		session.insert("attach.connect",params);
+	}
 }

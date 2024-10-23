@@ -1,6 +1,8 @@
 package com.kh.topgunFinal.restcontroller;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.kh.topgunFinal.dao.UserDao;
 import com.kh.topgunFinal.dao.UserTokenDao;
 import com.kh.topgunFinal.dto.AirlineDto;
@@ -8,6 +10,7 @@ import com.kh.topgunFinal.dto.MemberDto;
 import com.kh.topgunFinal.dto.UserDto;
 import com.kh.topgunFinal.dto.UserTokenDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
+import com.kh.topgunFinal.service.AttachmentService;
 import com.kh.topgunFinal.service.TokenService;
 import com.kh.topgunFinal.vo.InfoResponseVO;
 import com.kh.topgunFinal.vo.JoinRequestVO;
@@ -15,6 +18,7 @@ import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.UserLoginRequestVO;
 import com.kh.topgunFinal.vo.UserLoginResponseVO;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -22,6 +26,7 @@ import java.time.ZonedDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +52,9 @@ public class UserRestController {
 
 	@Autowired
 	private PasswordEncoder encoder;
+
+	@Autowired
+	private AttachmentService attachmentService;
 
 	@PostMapping("/login")
 	public UserLoginResponseVO login(@RequestBody UserLoginRequestVO requestVo) {
@@ -221,6 +229,48 @@ public class UserRestController {
 			return false;
 		}
 
+	}
+
+	// 이미지 찾기
+	@PostMapping("/myImage")
+	public int myImage(@RequestHeader("Authorization") String accessToken) {
+
+		if (tokenService.isBearerToken(accessToken) == false)
+			throw new TargetNotFoundException("유효하지 않은 토큰");
+
+		try {
+			UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(accessToken));
+			int attachmentNo = userDao.findImage(claimVO.getUserId());
+			return attachmentNo;
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	// 프로필 이미지만 업로드하는 매핑
+	@Transactional
+	@PostMapping("/profile")
+	public void profile(@RequestHeader("Authorization") String accessToken, @RequestParam MultipartFile attach)
+			throws IllegalStateException, IOException {
+		if (attach.isEmpty())
+			return;
+
+		// 아이디 추출
+		String userId = tokenService.check(tokenService.removeBearer(accessToken)).getUserId();
+		
+		// 기존 이미지가 있다면 제거
+		try {
+			int beforeNo = userDao.findImage(userId);
+			attachmentService.delete(beforeNo);
+		} catch (Exception e) {
+			// 예외 무시
+		}
+
+		// 신규 이미지 저장
+		int attachmentNo = attachmentService.save(attach);
+
+		// 아이디와 신규 이미지를 연결
+		userDao.connect(userId, attachmentNo);
 	}
 
 }
