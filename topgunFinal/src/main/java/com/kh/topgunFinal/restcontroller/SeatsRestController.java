@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -24,12 +25,16 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.PaymentInfoVO;
+import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
 import com.kh.topgunFinal.vo.SeatsPurchaseRequestVO;
 import com.kh.topgunFinal.vo.SeatsQtyVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.pay.PayApproveRequestVO;
 import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
+import com.kh.topgunFinal.vo.pay.PayOrderRequestVO;
+import com.kh.topgunFinal.vo.pay.PayOrderResponseVO;
 import com.kh.topgunFinal.vo.pay.PayReadyRequestVO;
 import com.kh.topgunFinal.vo.pay.PayReadyResponseVO;
 
@@ -52,6 +57,7 @@ public class SeatsRestController {
 	
 	@Autowired
 	private SqlSession sqlSession;
+	
 	
 	//좌석 조회
 	@GetMapping("/")
@@ -146,5 +152,70 @@ public class SeatsRestController {
 		//approve 출력
 		return responseVO;
 	}
-			
+
+	//구매 내역 조회
+	@GetMapping("/paymentlist")
+	public List<PaymentDto> paymentList(@RequestHeader("Authorization") String token){
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token)); 
+		List<PaymentDto> list =paymentDao.selectList(claimVO. getUserId());
+		return list;
+	}
+	//구매 내역 상세 조회
+	@GetMapping("/paymentlist/{paymentNo}")
+	public List<PaymentDetailDto> paymentDetailList(
+			@RequestHeader("Authorization") String token,
+			@PathVariable int paymentNo){
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		
+		PaymentDto paymentDto= paymentDao.selectOne(paymentNo);
+		if(paymentDto==null)
+			throw new TargetNotFoundException("존재하지 않는 결제번호");
+		if(!paymentDto.getUserId().equals(claimVO.getUserId()))//내 결제 정보가 아니면
+			throw new TargetNotFoundException("잘못된 대상의 결제번호");
+		
+		List<PaymentDetailDto> list = paymentDao.selectDetailList(paymentNo);
+		return list;
+	}
+	//모든목록 한번에
+	@GetMapping("/paymentTotalList")
+	public List<PaymentTotalVO> paymentTotalList(
+			@RequestHeader("Authorization") String token) {
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		return  paymentDao.selectTotalList(claimVO.getUserId());
+	}
+	
+	@GetMapping("/order/{tid}")
+	public PayOrderResponseVO order(@PathVariable String tid) throws URISyntaxException {
+		PayOrderRequestVO request = new PayOrderRequestVO();
+		request.setTid(tid);
+		return payService.order(request);
+	}
+	
+	@GetMapping("/detail/{paymentNo}")
+	public PaymentInfoVO detail(
+			@RequestHeader("Authorization") String token,
+			@PathVariable int paymentNo) throws URISyntaxException{
+		//결제내역
+		PaymentDto paymentDto = paymentDao.selectOne(paymentNo);
+		if(paymentDto==null)
+			throw new TargetNotFoundException("존재하지 않는 결제내역");
+		//회원 소유 검증
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		if(!paymentDto.getUserId().equals(claimVO.getUserId()))
+			throw new TargetNotFoundException("결제내역의 소유자가 아닙니다.");
+		//결제 상세 내역
+		List<PaymentDetailDto> list = paymentDao.selectDetailList(paymentNo);
+		//조회내역
+		PayOrderRequestVO requestVO = new PayOrderRequestVO();
+		requestVO.setTid(paymentDto.getPaymentTid());
+		PayOrderResponseVO responseVO = payService.order(requestVO);
+		
+		//반환 형태 생성
+		PaymentInfoVO infoVO = new PaymentInfoVO();
+		infoVO.setPaymentDto(paymentDto);
+		infoVO.setPaymentDetailList(list);
+		infoVO.setResponseVO(responseVO);
+		return infoVO;
+	}
+	
 }

@@ -12,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.kh.topgunFinal.configuration.PayProperties;
-import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
 import com.kh.topgunFinal.vo.pay.PayApproveRequestVO;
+import com.kh.topgunFinal.vo.pay.PayApproveResponseVO;
+import com.kh.topgunFinal.vo.pay.PayOrderRequestVO;
+import com.kh.topgunFinal.vo.pay.PayOrderResponseVO;
 import com.kh.topgunFinal.vo.pay.PayReadyRequestVO;
 import com.kh.topgunFinal.vo.pay.PayReadyResponseVO;
 
@@ -68,4 +70,23 @@ public class PayService {
 		PayApproveResponseVO response = template.postForObject(uri, entity, PayApproveResponseVO.class);
 		return response;
 	}
+	
+	//결제 조회(order)
+	public PayOrderResponseVO order(PayOrderRequestVO request) throws URISyntaxException {
+		URI uri = new URI("https://open-api.kakaopay.com/online/v1/payment/order");
+		
+		Map<String, String> body = new HashMap<>();
+		body.put("cid", payProperties.getCid());
+		body.put("tid", request.getTid());
+		
+		HttpEntity entity = new HttpEntity(body, headers);
+		
+		PayOrderResponseVO response=
+				template.postForObject(uri, entity, PayOrderResponseVO.class);
+		
+		return response;
+	}
+	
+
+	
 }
