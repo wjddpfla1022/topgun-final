@@ -36,6 +36,13 @@ public class AdminFlightRestController {
 		return adminFlightDao.selectOne(flightId);
 	}
 	
+	//검색 
+	@GetMapping("/column/{column}/keyword/{keyword}")
+	public List<FlightDto> search(
+	        @PathVariable String column, @PathVariable String keyword) {
+	    List<FlightDto> list = adminFlightDao.search(column, keyword);
+	    return list;
+	}
 	
 	@PutMapping("/update")
 	public void update(@RequestBody FlightDto flightDto) {

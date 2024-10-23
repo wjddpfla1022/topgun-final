@@ -47,5 +47,14 @@
 <delete id="del">
     delete flight where flight_id = #{flightId}
 </delete>  
+
+<!-- 검색 -->   
+<select id="search" resultType="FlightDto">
+    <![CDATA[
+        select * from flight
+        where instr(#{column}, #{keyword}) > 0
+        order by #{column} asc
+    ]]>
+</select>
   
   </mapper>
