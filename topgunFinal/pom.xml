@@ -118,6 +118,13 @@
 			<version>2.6.0</version>
 		</dependency>
 
+		<!-- 자바에서 HTML을 해석할 수 있도록 도와주는 도구 -->
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.18.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>

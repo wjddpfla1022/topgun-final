@@ -109,12 +109,21 @@
 
 	<!-- 여기는 항공사 정보 수정(Update) -->
 	<update id="updateAirline">
-		UPDATE KH14FD.AIRLINE
+		UPDATE AIRLINE
 		SET
 		AIRLINE_NAME = #{airlineName},
 		AIRLINE_NO = #{airlineNo}
 		WHERE
 		USER_ID = #{usersId}
+	</update>
+	
+	<!-- 임시 비밀번호로 비밀번호 수정(Update) -->
+	<update id="updateUserPw">
+		UPDATE USERS
+		SET
+		USERS_PASSWORD = #{tempPassword}
+		WHERE
+		USERS_ID = #{userId}
 	</update>
 	
 </mapper>

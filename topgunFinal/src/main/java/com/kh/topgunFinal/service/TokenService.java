@@ -47,6 +47,7 @@ public class TokenService {
 				.issuedAt(now) // 발행 시간 -> 지금
 				.claim("userId", vo.getUserId()) // 발급자 ID
 				.claim("userType", vo.getUserType()) // 발급자 Type
+				.claim("userName", vo.getUserName()) // 발급자 Type
 			.compact(); // 생성
 
 	}
@@ -68,6 +69,7 @@ public class TokenService {
 				.issuer(tokenProperties.getIssuer())
 				.issuedAt(now).claim("userId", vo.getUserId()) // 발급자 ID
 				.claim("userType", vo.getUserType()) // 발급자 Type
+				.claim("userName", vo.getUserName()) // 발급자 이름
 			.compact(); // 생성
 
 		// DB 저장
@@ -90,6 +92,7 @@ public class TokenService {
 		UserClaimVO vo = new UserClaimVO();
 		vo.setUserId((String) claims.get("userId"));
 		vo.setUserType((String) claims.get("userType"));
+		vo.setUserName((String)claims.get("userName"));
 		return vo;
 	}
 	
