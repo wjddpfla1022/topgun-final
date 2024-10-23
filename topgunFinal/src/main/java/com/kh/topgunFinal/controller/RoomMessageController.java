@@ -20,6 +20,7 @@ import com.kh.topgunFinal.vo.UserClaimVO;
 import com.kh.topgunFinal.vo.WebsocketDMResponseVO;
 import com.kh.topgunFinal.vo.WebsocketMessageVO;
 import com.kh.topgunFinal.vo.WebsocketRequestVO;
+import com.kh.topgunFinal.vo.WebsocketResponseVO;
 
 @Controller
 public class RoomMessageController {
@@ -51,7 +52,7 @@ public class RoomMessageController {
 		WebsocketRequestVO request = message.getPayload();
 		
 		//메세지 발송
-		WebsocketMessageVO response = new WebsocketMessageVO();
+		WebsocketResponseVO response = new WebsocketResponseVO();
 		response.setSenderUsersId(claimVO.getUserId());
 		response.setSenderUsersType(claimVO.getUserType());
 		response.setTime(LocalDateTime.now());
