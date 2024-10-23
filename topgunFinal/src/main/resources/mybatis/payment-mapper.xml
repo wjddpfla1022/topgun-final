@@ -35,4 +35,51 @@
         '승인'
     )
     </insert>
+    
+    <!-- 정보 조회 -->
+    <select id="list" resultType="PaymentDto">
+    	select * from payment 
+    	where user_id = #{userId}
+    	order by payment_no desc
+    </select>
+
+	<!-- 상세정보 조회 -->
+	<select id="find" resultType="PaymentDto">
+		select * from payment where payment_no = #{paymentNo}
+	</select>
+	<select id="findDetail" resultType="PaymentDetailDto">
+		select *	from payment_detail 
+		where payment_detail_origin = #{paymentNo} 
+		order by payment_detail_no asc
+	</select>
+	
+	<!--  계층형 조회-->
+	<resultMap type="PaymentTotalVO" id="paymentTotalVO">
+		<association property="paymentDto">
+			<result column="payment_no" property="paymentNo"/>
+			<result column="payment_name" property="paymentName"/>
+			<result column= "payment_total" property="paymentTotal"/>
+			<result column="payment_tid" property="paymentTid"/>
+			<result column="payment_remain" property="paymentRemain"/>
+			<result column= "payment_time" property="paymentTime"  javaType="java.sql.Date"/>
+			<result column="user_id" property="userId"/>
+		</association>
+		<collection property="paymentDetailList" 
+		javaType="java.util.List" ofType="PaymentDetailDto" select="findDetail" column="payment_no">
+			<result column="payment_detail_no" property="paymentDetailNo"/>
+			<result column="payment_detail_name" property="paymentDetailName"/>
+			<result column="payment_detail_price" property="paymentDetailPrice"/>
+			<result column="payment_detail_qty" property="paymentDetailQty"/>
+			<result column="payment_detail_item" property="paymentDetailItem"/>
+			<result column="payment_detail_origin" property="paymentDetailOrigin"/>
+			<result column="payment_detail_status" property="paymentDetailStatus"/>
+		</collection>
+	</resultMap>
+	
+	<select id="findTotal" resultMap="paymentTotalVO">
+		select * from payment 
+		where user_id = #{userId} 
+		order by payment_no desc
+	</select>
+	
 </mapper>
