@@ -24,6 +24,20 @@
     )
     </insert>
 
+	<!-- 정보 업데이트 (여권정보)-->
+	<update id="paymentDetailUpdate">
+    UPDATE payment_detail SET
+        payment_detail_passport =#{paymentDetailPassport},
+        payment_detail_passanger =#{paymentDetailPassanger},
+        payment_detail_english =#{paymentDetailEnglish},
+        payment_detail_sex =#{paymentDetailSex},
+        payment_detail_birth =#{paymentDetailBirth},
+        payment_detail_country =#{paymentDetailCountry},
+        payment_detail_visa =#{paymentDetailVisa},
+        payment_detail_expire =#{paymentDetailExpire} 
+        WHERE payment_detail_no = #{paymentDetailNo}
+</update>
+
     <insert id="paymentDetailInsert">
     insert into payment_detail(
         payment_detail_no, payment_detail_name, payment_detail_price, 

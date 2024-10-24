@@ -8,5 +8,6 @@ import lombok.Data;
 public class RoomDto {
 	private int roomNo;
 	private String roomName;
-	private Timestamp roomCreate;
+	private Timestamp roomCreated;
+	private String roomCreatedBy; 
 }

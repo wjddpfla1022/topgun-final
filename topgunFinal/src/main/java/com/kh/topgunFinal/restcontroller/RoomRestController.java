@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,9 +32,11 @@ public class RoomRestController {
 
 	//채팅방 등록
 	@PostMapping("/")
-	public RoomDto insert(@RequestBody RoomDto roomDto) {
+	public RoomDto insert(@RequestBody RoomDto roomDto, @RequestHeader("Authorization") String token) {
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
 		int roomNo = roomDao.sequence();
 		roomDto.setRoomNo(roomNo);
+		roomDto.setRoomCreatedBy(claimVO.getUserId());
 		roomDao.insert(roomDto);
 		return roomDao.selectOne(roomNo);
 	}
@@ -43,6 +46,12 @@ public class RoomRestController {
 	public List<RoomVO> list(@RequestHeader("Authorization") String token){
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
 		return roomDao.selectList(claimVO.getUserId());
+	}
+	
+	//채팅방 삭제
+	@DeleteMapping("/{roomNo}")
+	public void delete(@PathVariable int roomNo) {
+		roomDao.delete(roomNo);
 	}
 
 	//채팅방 입장

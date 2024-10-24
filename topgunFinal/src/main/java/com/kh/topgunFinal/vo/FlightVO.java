@@ -15,6 +15,6 @@ public class FlightVO {
     private String departureAirport; 
     private String arrivalAirport; 
     private String userId;
-    private int flightTotalSeat; 
+    private int flightPrice; 
     private String flightStatus;  
 }
