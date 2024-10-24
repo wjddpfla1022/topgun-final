@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.mapper.FlightMapper;
+import com.kh.topgunFinal.vo.FlightVO;
 
 @Repository
 public class FlightDao {
@@ -40,8 +41,8 @@ public class FlightDao {
     }
     
     // 조회
-    public List<FlightDto> selectList() {
-        return sqlSession.selectList("flight.list");
+    public List<FlightVO> selectList() {
+        return sqlSession.selectList("flight.list2");
     }
     
  // 검색
