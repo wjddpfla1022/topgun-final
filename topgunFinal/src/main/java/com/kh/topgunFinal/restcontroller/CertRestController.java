@@ -33,8 +33,8 @@ public class CertRestController {
 
 	// 사용자가 요구하는 이메일로 인증메일을 발송하는 기능
 	@PostMapping("/send")
-	public void send(@RequestParam String certEmail) throws MessagingException, IOException {
-		emailService.sendCert2(certEmail);
+	public void send(@RequestParam String certEmail,@RequestParam String certId ) throws MessagingException, IOException {
+		emailService.sendResetPw(certId, certEmail);
 	}
 
 	// 사용자가 입력한 인증번호가 유효한지를 판정하는 기능

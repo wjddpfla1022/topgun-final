@@ -121,9 +121,14 @@
 	<update id="updateUserPw">
 		UPDATE USERS
 		SET
-		USERS_PASSWORD = #{tempPassword}
+		USERS_PASSWORD = #{newPassword}
 		WHERE
 		USERS_ID = #{userId}
 	</update>
+	
+	<delete id="deleteUser">
+		DELETE USERS
+		WHERE USERS_ID = #{userId}
+	</delete>
 	
 </mapper>
