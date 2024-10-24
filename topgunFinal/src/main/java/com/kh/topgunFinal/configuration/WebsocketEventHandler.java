@@ -60,35 +60,35 @@ public class WebsocketEventHandler {
 			messagingTemplate.convertAndSend("/public/users", values);			
 		}
 		
-		else if(accessor.getDestination().equals("/public/db")) { //비회원
-			List<WebsocketMessageVO> messageList = websocketMessageDao.selectListMemberComplete(null, 1, 100);
-			if(messageList.isEmpty()) return;
-			
-			List<WebsocketMessageVO> prevMessageList = 
-					websocketMessageDao.selectListMemberComplete(null, 1, 100, messageList.get(0).getNo());
-			
-			WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
-			moreVO.setMessageList(messageList);
-			moreVO.setLast(prevMessageList.isEmpty());
-			
-			messagingTemplate.convertAndSend("/public/db/"+moreVO);
-		}
-		else if(accessor.getDestination().startsWith("/public/db")) { //회원
-			String usersId = accessor.getDestination().substring("/public/db/".length());
-			
-			List<WebsocketMessageVO> messageList = 
-					websocketMessageDao.selectListMemberComplete(usersId, 1, 100);
-			if(messageList.isEmpty()) return;
-			
-			List<WebsocketMessageVO> prevMessageList = 
-					websocketMessageDao.selectListMemberComplete(usersId, 1, 100, messageList.get(0).getNo());
-			
-			WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
-			moreVO.setMessageList(messageList);
-			moreVO.setLast(prevMessageList.isEmpty());
-			
-			messagingTemplate.convertAndSend("/public/db/"+usersId,moreVO);			
-		}
+//		else if(accessor.getDestination().equals("/public/db")) { //비회원
+//			List<WebsocketMessageVO> messageList = websocketMessageDao.selectListMemberComplete(null, 1, 100);
+//			if(messageList.isEmpty()) return;
+//			
+//			List<WebsocketMessageVO> prevMessageList = 
+//					websocketMessageDao.selectListMemberComplete(null, 1, 100, messageList.get(0).getNo());
+//			
+//			WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
+//			moreVO.setMessageList(messageList);
+//			moreVO.setLast(prevMessageList.isEmpty());
+//			
+//			messagingTemplate.convertAndSend("/public/db/"+moreVO);
+//		}
+//		else if(accessor.getDestination().startsWith("/public/db")) { //회원
+//			String usersId = accessor.getDestination().substring("/public/db/".length());
+//			
+//			List<WebsocketMessageVO> messageList = 
+//					websocketMessageDao.selectListMemberComplete(usersId, 1, 100);
+//			if(messageList.isEmpty()) return;
+//			
+//			List<WebsocketMessageVO> prevMessageList = 
+//					websocketMessageDao.selectListMemberComplete(usersId, 1, 100, messageList.get(0).getNo());
+//			
+//			WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
+//			moreVO.setMessageList(messageList);
+//			moreVO.setLast(prevMessageList.isEmpty());
+//			
+//			messagingTemplate.convertAndSend("/public/db/"+usersId,moreVO);			
+//		}
 		
 		else if(accessor.getDestination().startsWith("/private/db")) {
 			String removeStr = accessor.getDestination().substring("/private/db/".length());
