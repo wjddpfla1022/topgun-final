@@ -10,12 +10,12 @@
 	<insert id="add">
 	    insert into flight(
 	        flight_id, flight_number, departure_time, arrival_time, flight_time, 
-	        departure_airport, arrival_airport, user_id, flight_total_seat, flight_status
+	        departure_airport, arrival_airport, user_id, flight_price, flight_status
 	    )
 	    values(
 	        flight_seq.nextval, #{flightNumber}, #{departureTime}, #{arrivalTime}, 
 	        #{flightTime}, #{departureAirport}, #{arrivalAirport}, 
-	        #{userId}, #{flightTotalSeat}, #{flightStatus}
+	        #{userId}, #{flightPrice}, #{flightStatus}
 	    )
 	</insert>
 	
@@ -38,7 +38,7 @@
 	        flight_time = #{flightTime}, 
 	        departure_airport = #{departureAirport}, 
 	        arrival_airport = #{arrivalAirport}, 
-	        flight_total_seat = #{flightTotalSeat}, 
+	        flight_price = #{flightPrice}, 
 	        flight_status = #{flightStatus}
 	    where flight_id = #{flightId}
 	</update>
@@ -67,7 +67,7 @@
 	        f.departure_airport,  
 	        f.arrival_airport,        
 	        f.user_id,                  
-	        f.flight_total_seat,     
+	        f.flight_price,     
 	        f.flight_status,           
 	        a.airline_name
 	    FROM flight f
@@ -85,7 +85,7 @@
 	    <result property="departureAirport" column="departure_airport"/>
 	    <result property="arrivalAirport" column="arrival_airport"/>
 	    <result property="userId" column="user_id"/>
-	    <result property="flightTotalSeat" column="flight_total_seat"/>
+	    <result property="flightPrice" column="flight_price"/>
 	    <result property="flightStatus" column="flight_status"/>
 	    
 	    <!-- AirlineDto와의 association 설정 -->
