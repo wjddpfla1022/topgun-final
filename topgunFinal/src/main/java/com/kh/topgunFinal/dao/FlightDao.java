@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.FlightDto;
-import com.kh.topgunFinal.mapper.FlightMapper;
 import com.kh.topgunFinal.vo.FlightVO;
 
 @Repository
@@ -18,8 +17,7 @@ public class FlightDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private FlightMapper flightMapper; // FlightMapper로 변경
+
     
     @Autowired
     private SqlSession sqlSession;
@@ -68,7 +66,7 @@ public class FlightDao {
     public void insertWithSequence(FlightDto flightDto) {
         String sql = "insert into flight("
                         + "flight_id, flight_number, departure_time, arrival_time, "
-                        + "flight_time, departure_airport, arrival_airport, user_id, flight_total_seat"
+                        + "flight_time, departure_airport, arrival_airport, user_id, flight_price"
                     + ") values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] data = {
             flightDto.getFlightId(), 
@@ -79,7 +77,7 @@ public class FlightDao {
             flightDto.getDepartureAirport(),
             flightDto.getArrivalAirport(),
             flightDto.getUserId(),
-            flightDto.getFlightTotalSeat()
+            flightDto.getFlightPrice()
         };
         jdbcTemplate.update(sql, data);
     }
