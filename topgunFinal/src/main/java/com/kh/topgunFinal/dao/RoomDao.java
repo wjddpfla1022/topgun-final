@@ -31,6 +31,9 @@ public class RoomDao {
 	public RoomDto selectOne(int roomNo) {
 		return sqlSession.selectOne("room.detail", roomNo);
 	}
+	public boolean delete(int roomNo) {
+		return sqlSession.delete("room.delete", roomNo) > 0;
+	}
 	
 	//채팅방 입장(roomMember 테이블)
 	public void enter(RoomMemberDto roomMemberDto) {
