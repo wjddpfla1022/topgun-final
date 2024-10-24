@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dto.FlightDto;
+import com.kh.topgunFinal.vo.FlightVO;
 
 @CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
@@ -25,7 +26,7 @@ public class FlightRestController {
 	private FlightDao flightDao;
 	
 	@GetMapping("/")
-	public List<FlightDto> list() {
+	public List<FlightVO> list() {
 		return flightDao.selectList();
 	}
 	 
