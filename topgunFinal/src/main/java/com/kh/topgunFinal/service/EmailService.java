@@ -37,6 +37,7 @@ public class EmailService {
 
 	// 인증메일 발송 서비스(마임메세지)
 	public void sendCert2(String userEmail) throws MessagingException, IOException {
+		System.out.println(userEmail);
 		// 인증번호 생성
 		String value = randomService.generateNumber(6);
 
