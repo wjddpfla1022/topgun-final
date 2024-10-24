@@ -61,4 +61,10 @@ public class PaymentDao {
 	public PaymentDetailDto selectDetailOne(int paymentDetailNo) {
 		return sqlSession.selectOne("payment.selectDetailOne", paymentDetailNo);
 	}
+	
+	//정보 추가입력
+	 public void updatePaymentDetail(PaymentDetailDto paymentDetail) {
+	        sqlSession.update("payment.paymentDetailUpdate", paymentDetail);
+	    }
+	 
 }

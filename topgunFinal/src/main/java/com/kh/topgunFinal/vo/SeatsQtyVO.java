@@ -8,5 +8,5 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SeatsQtyVO {
 	private int seatsNo; 
-    private int qty; 
+    private int qty; //1로 고정
 }
