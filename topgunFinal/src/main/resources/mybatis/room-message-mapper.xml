@@ -48,8 +48,6 @@
 		<!-- 조회할 채팅에 대한 조건 -->
 		(
 			RM.room_message_type = 'chat'
-			or
-			RM.room_message_type = 'system'
 			<!-- DM은 회원만(usersId != null) 조회 -->
 			<if test="usersId != null">
 			or

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.RoomDao;
@@ -92,5 +93,27 @@ public class RoomRestController {
 		boolean canEnter = roomDao.check(roomMemberDto);
 
 		return canEnter;
+	}
+	
+	@PostMapping("/createAndEnter")
+	public RoomDto createAndEnter(@RequestBody RoomDto roomDto, 
+													@RequestHeader("Authorization")String token,
+													@RequestParam("userId") String userId) {
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		int roomNo = roomDao.sequence();
+		roomDto.setRoomNo(roomNo);
+		roomDto.setRoomCreatedBy(claimVO.getUserId());
+		roomDao.insert(roomDto);
+		
+		RoomMemberDto roomMemberDto = new RoomMemberDto();
+		roomMemberDto.setRoomNo(roomNo);
+		roomMemberDto.setUsersId(claimVO.getUserId());
+		roomDao.enter(roomMemberDto);
+		
+		// flight.userId를 방에 추가
+	    roomMemberDto.setUsersId(userId); // flight.userId
+	    roomDao.enter(roomMemberDto);
+		
+		return roomDao.selectOne(roomNo);
 	}
 }
