@@ -18,16 +18,24 @@
   <!-- 공지사항 추가 -->
   <insert id="add">
     INSERT INTO notice(
-      notice_id, notice_title, notice_content, notice_author, notice_created_at
+      notice_id, notice_title, notice_content, notice_author, 
+      notice_created_at, main_notice, urgent_notice, modified_notice
     ) VALUES(
-      #{noticeId}, #{noticeTitle}, #{noticeContent}, #{noticeAuthor}, #{noticeCreatedAt}
+      #{noticeId}, #{noticeTitle}, #{noticeContent}, #{noticeAuthor}, 
+      #{noticeCreatedAt}, #{mainNotice}, #{urgentNotice}, #{modifiedNotice}
     )
   </insert>
 
   <!-- 공지사항 수정 -->
   <update id="update">
     UPDATE notice
-    SET notice_title = #{noticeTitle}, notice_content = #{noticeContent}, notice_author = #{noticeAuthor}
+    SET 
+      notice_title = #{noticeTitle}, 
+      notice_content = #{noticeContent}, 
+      notice_author = #{noticeAuthor},
+      main_notice = #{mainNotice}, 
+      urgent_notice = #{urgentNotice}, 
+      modified_notice = #{modifiedNotice}
     WHERE notice_id = #{noticeId}
   </update>
 
@@ -38,12 +46,20 @@
 
   <!-- 공지사항 리스트 조회 -->
   <select id="list" resultType="com.kh.topgunFinal.dto.NoticeDto">
-    SELECT * FROM notice ORDER BY notice_created_at DESC
+    SELECT notice_id AS noticeId, notice_title AS noticeTitle, notice_content AS noticeContent, 
+           notice_author AS noticeAuthor, notice_created_at AS noticeCreatedAt,
+           main_notice AS mainNotice, urgent_notice AS urgentNotice, modified_notice AS modifiedNotice
+    FROM notice 
+    ORDER BY notice_created_at DESC
   </select>
 
   <!-- 공지사항 상세 조회 -->
   <select id="detail" parameterType="int" resultType="com.kh.topgunFinal.dto.NoticeDto">
-    SELECT * FROM notice WHERE notice_id = #{noticeId}
+    SELECT notice_id AS noticeId, notice_title AS noticeTitle, notice_content AS noticeContent, 
+           notice_author AS noticeAuthor, notice_created_at AS noticeCreatedAt,
+           main_notice AS mainNotice, urgent_notice AS urgentNotice, modified_notice AS modifiedNotice
+    FROM notice 
+    WHERE notice_id = #{noticeId}
   </select>
   
   <!-- 이미지 업로드용 기능 -->
