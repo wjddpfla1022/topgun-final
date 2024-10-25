@@ -86,7 +86,7 @@ public class SeatsRestController {
 			if(seatsDto==null) throw new TargetNotFoundException("결제 대상 없음");
 			total += seatsDto.getSeatsPrice() * vo.getQty();
 			if(buffer.isEmpty()) {//첫번째 좌석 번호 //메인이름
-				buffer.append("AirlineDto.getAirlineName() ");
+				buffer.append(seatsDto.getFlightId()+" ");
 				buffer.append(seatsDto.getSeatsRank());
 				buffer.append(seatsDto.getSeatsNumber());
 			}
@@ -290,27 +290,20 @@ public class SeatsRestController {
 		        @RequestHeader("Authorization") String token,
 		        @PathVariable int paymentDetailNo,
 		        @RequestBody PaymentDetailDto paymentDetailDto) throws URISyntaxException {
-
-		    // 회원 정보 확인
+			System.out.println(paymentDetailDto);
 		    UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-		    
-		    // 결제 상세 정보 조회
 		    PaymentDetailDto existingDetail = paymentDao.selectDetailOne(paymentDetailNo);
 		    if (existingDetail == null) {
 		        throw new TargetNotFoundException("존재하지 않는 결제 상세정보");
 		    }
-		    // 결제 정보 조회
 		    PaymentDto paymentDto = paymentDao.selectOne(existingDetail.getPaymentDetailOrigin());
 		    if (paymentDto == null) {
 		        throw new TargetNotFoundException("존재하지 않는 결제 정보");
 		    }
-		    // 소유자 확인
 		    if (!paymentDto.getUserId().equals(claimVO.getUserId())) {
 		        throw new TargetNotFoundException("결제 상세정보의 소유자가 아닙니다.");
 		    }
-		    // 업데이트 수행
 		    paymentDao.updatePaymentDetail(paymentDetailDto);
-		    
 		    return ResponseEntity.ok("Payment detail updated successfully.");
 		}
 		
