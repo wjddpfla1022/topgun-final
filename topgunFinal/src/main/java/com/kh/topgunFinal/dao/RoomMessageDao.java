@@ -23,6 +23,9 @@ public class RoomMessageDao {
 	public void insert(RoomMessageDto roomMessageDto) {
 		sqlSession.insert("roomMessage.add", roomMessageDto);
 	}
+	public boolean delete(int roomMessageNo) {
+		return sqlSession.delete("roomMessage.delete", roomMessageNo) > 0;
+	}
 	//최초 입장 시 전달할 메세지 조회
 		public List<WebsocketMessageVO> selectListMemberComplete(String usersId, int beginRow, int endRow, int roomNo){
 			Map<String, Object> params = new HashMap<>();

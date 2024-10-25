@@ -100,5 +100,65 @@
 			<result property="airlineName" column="airline_name" />
 		</association>
 	</resultMap>
+	
+			<!--  복합 검색을 위한 코드 -->
+			<select id="complexFlightSearch" resultType="FlightVO">
+			<include refid="top-n-header"></include>
+			    SELECT * FROM flight
+			    <where>
+			        <!-- 출발지 검색 조건 -->
+			        <if test="departureAirport != null and departureAirport != ''">
+			            AND departure_airport = #{departureAirport}
+			        </if>
+			        
+			        <!-- 도착지 검색 조건 -->
+			        <if test="arrivalAirport != null and arrivalAirport != ''">
+			            AND arrival_airport = #{arrivalAirport}
+			        </if>
+			        
+			        <!-- 날짜 검색 조건 -->
+			        <if test="departureTime != null">
+			            <![CDATA[
+			            AND TO_CHAR(departure_time, 'YYYY-MM-DD') = #{departureTime}
+			            ]]>
+			        </if>
+			        
+			        <!-- 인원수 검색 조건 -->
+			        <if test="passengers != null and passengers > 0">
+			            <!-- 좌석 관련 로직 추가 가능 -->
+			            
+			        </if>
+			        
+			    </where>
+			    
+			    <!-- 정렬 처리 -->
+			    <choose>
+			        <when test="orderList != null and orderList.size() > 0">
+			            ORDER BY
+			            <foreach item="orderItem" collection="orderList" separator=",">
+			                ${orderItem}
+			            </foreach>
+			        </when>
+			        <otherwise>
+			            ORDER BY departure_time ASC
+			        </otherwise>
+			    </choose>
+			    <include refid="top-n-footer"></include>
+			</select>
+			
+
+			<sql id="top-n-header">
+				<if test="beginRow != null and endRow != null">
+				select * from (
+		  			select rownum rn, TMP.* from(
+		  		</if>
+			</sql>
+			<sql id="top-n-footer">
+				<if test="beginRow != null and endRow != null">
+				 	)TMP
+				)
+				where rn between #{beginRow} and #{endRow}
+				</if>
+			</sql>
 
 </mapper>
