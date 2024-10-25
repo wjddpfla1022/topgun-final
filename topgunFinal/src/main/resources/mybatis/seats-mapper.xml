@@ -6,13 +6,20 @@
 <mapper namespace="seats">
 
 	<!-- 등록 -->
+	<insert id="insert" parameterType="SeatsDto">
+		INSERT INTO SEATS (SEATS_NO, FLIGHT_ID, SEATS_RANK, SEATS_PRICE,
+		SEATS_NUMBER)
+		VALUES (#{seatsNo}, #{flightId}, #{seatsRank}, #{seatsPrice}, #{seatsNumber})
+	</insert>
 
 	<!-- 목록 -->
 	<select id="list" resultType="seatsDto">
-		select * from seats order by seats_no asc
+		select * from seats order by
+		seats_no asc
 	</select>
-	
-	 <select id="selectOne" parameterType="int" resultType="com.kh.topgunFinal.dto.SeatsDto">
-        SELECT * FROM seats WHERE seats_no = #{seatsNo}
-    </select>
+
+	<select id="selectOne" parameterType="int"
+		resultType="com.kh.topgunFinal.dto.SeatsDto">
+		SELECT * FROM seats WHERE seats_no = #{seatsNo}
+	</select>
 </mapper>
