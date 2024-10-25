@@ -28,7 +28,7 @@ public class WebsocketRestController {
 	private TokenService tokenService;
 	
 	@GetMapping("/more/{firstMessageNo}")
-	public WebsocketMessageMoreVO more(@PathVariable int firstMessageNo, 
+	public WebsocketMessageMoreVO more(@PathVariable int firstMessageNo,
 												@RequestHeader(value="Authorization", required = false)String token) {
 		String usersId = null;
 		if(token != null) {
@@ -36,10 +36,12 @@ public class WebsocketRestController {
 			usersId = claimVO.getUserId();
 		}
 		
+		//사용자에게 보여줄 목록 조회
 		List<WebsocketMessageVO> messageList = 
 				roomMessageDao.selectListMemberComplete(usersId, 1, 100, firstMessageNo);
 		if(messageList.isEmpty()) throw new TargetNotFoundException("보여줄 메세지 없음");
 		
+		//남은 목록이 더 있는지 확인
 		List<WebsocketMessageVO> prevMessageList = 
 				roomMessageDao.selectListMemberComplete(usersId, 1, 100, messageList.get(0).getNo());
 		
