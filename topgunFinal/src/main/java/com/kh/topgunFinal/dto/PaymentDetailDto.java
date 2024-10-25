@@ -1,5 +1,7 @@
 package com.kh.topgunFinal.dto;
 
+import java.time.LocalDate;
+
 import lombok.Data;
 
 @Data
@@ -16,8 +18,9 @@ public class PaymentDetailDto {
     private String paymentDetailPassanger;
     private String paymentDetailEnglish;
     private String paymentDetailSex;
-    private String paymentDetailBirth;
+    private LocalDate paymentDetailBirth;
     private String paymentDetailCountry;
     private String paymentDetailVisa;
-    private String paymentDetailExpire;
+    private LocalDate paymentDetailExpire;
 }
+ 
