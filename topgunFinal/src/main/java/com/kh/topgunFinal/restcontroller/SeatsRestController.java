@@ -65,9 +65,9 @@ public class SeatsRestController {
 	
 	
 	//좌석 조회
-	@GetMapping("/")
-	public List<SeatsDto>list(){
-		return seatsDao.selectList();
+	@GetMapping("/{flightId}") // 비워두면 /seats/{flightId}에 대한 GET 요청이 됩니다.
+	public List<SeatsDto> list(@PathVariable int flightId) {
+	    return seatsDao.selectList(flightId); // 항공편 ID를 DAO 메서드에 전달
 	}
 	
 	//좌석 구매
@@ -81,16 +81,21 @@ public class SeatsRestController {
 		//total, itemName
 		StringBuffer buffer = new StringBuffer();
 		int total = 0;
-		for(SeatsQtyVO vo : request.getSeatsList()) {
-			SeatsDto seatsDto = seatsDao.selectOne(vo.getSeatsNo());
-			if(seatsDto==null) throw new TargetNotFoundException("결제 대상 없음");
-			total += seatsDto.getSeatsPrice() * vo.getQty();
-			if(buffer.isEmpty()) {//첫번째 좌석 번호 //메인이름
-				buffer.append(seatsDto.getFlightId()+" ");
-				buffer.append(seatsDto.getSeatsRank());
-				buffer.append(seatsDto.getSeatsNumber());
-			}
-		}
+		
+		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
+		    for (SeatsQtyVO vo : request.getSeatsList()) {
+		        SeatsDto seatDto = seatsList.stream()
+		                .filter(seat -> seat.getSeatsNo() == vo.getSeatsNo())
+		                .findFirst()
+		                .orElseThrow(() -> new TargetNotFoundException("결제 대상 없음"));
+
+		        total += seatDto.getSeatsPrice() * vo.getQty();
+		        if (buffer.isEmpty()) {
+		            buffer.append(seatDto.getFlightId()).append(" ");
+		            buffer.append(seatDto.getSeatsRank());
+		            buffer.append(seatDto.getSeatsNumber());
+		        }
+		    }
 		if(request.getSeatsList().size()>=2) { //2좌석 이상 구매시
 			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건");
 		}
@@ -141,9 +146,12 @@ public class SeatsRestController {
 		paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
 		//[2]상세 정보 등록
+		List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
 		for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
-			SeatsDto seatsDto = seatsDao.selectOne(qtyVO.getSeatsNo());//좌석조회
-			if(seatsDto==null) throw new TargetNotFoundException("존재하지 않는 좌석입니다");//취소가 된다면 위에 있는거 모두 삭제
+			SeatsDto seatsDto = seatsList.stream()
+		            .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
+		            .findFirst()
+		            .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
 			
 			int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
 			PaymentDetailDto paymentDetailDto = new PaymentDetailDto();

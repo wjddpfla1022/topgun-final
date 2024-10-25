@@ -17,9 +17,15 @@
 		select * from seats order by
 		seats_no asc
 	</select>
-
+	
+	<!-- 항공편 번호에 따른 좌석 조회 -->
+	<select id="selectSeatsListByFlightId" parameterType="int" resultType="SeatsDto">
+		SELECT * FROM seats WHERE flight_id = #{flightId} ORDER BY seats_no ASC
+	</select>
+<!-- 
 	<select id="selectOne" parameterType="int"
-		resultType="com.kh.topgunFinal.dto.SeatsDto">
+		resultType="SeatsDto">
 		SELECT * FROM seats WHERE seats_no = #{seatsNo}
 	</select>
+ -->
 </mapper>
