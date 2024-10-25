@@ -26,6 +26,10 @@
 		)
 	</insert>
 	
+	<delete id="delete">
+		delete room_message where room_message_no = #{roomMessageNo}
+	</delete>
+	
 	<select id="listMemberComplete" resultType="WebsocketMessageVO">
 		<include refid="top-n-header"></include>
 		select 
