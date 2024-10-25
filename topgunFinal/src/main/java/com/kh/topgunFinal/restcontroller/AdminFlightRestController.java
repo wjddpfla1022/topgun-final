@@ -3,6 +3,7 @@ package com.kh.topgunFinal.restcontroller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.AdminFlightDao;
 import com.kh.topgunFinal.dao.FlightDao;
+import com.kh.topgunFinal.dao.SeatsDao;
 import com.kh.topgunFinal.dto.FlightDto;
 
 @CrossOrigin(origins = {"http://localhost:3000"})
@@ -24,6 +26,9 @@ public class AdminFlightRestController {
 
 	@Autowired
 	private AdminFlightDao adminFlightDao;
+	
+	@Autowired
+	private SeatsDao seatsDao;
 	
 	@GetMapping("/")
 	public List<FlightDto> list() {
@@ -45,7 +50,12 @@ public class AdminFlightRestController {
 	}
 	
 	@PutMapping("/update")
+	@Transactional
 	public void update(@RequestBody FlightDto flightDto) {
 		adminFlightDao.update(flightDto);
+		
+		System.out.println(flightDto);
+		// 승인 완료 후 좌석 생성
+		seatsDao.insertList(flightDto.getFlightId());
 	}
 }
