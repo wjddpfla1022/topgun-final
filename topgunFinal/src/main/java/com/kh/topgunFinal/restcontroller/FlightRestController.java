@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.vo.FlightVO;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
@@ -56,4 +58,5 @@ public class FlightRestController {
 	public void update(@RequestBody FlightDto flightDto) {
 		flightDao.update(flightDto);
 	}
+	
 }
