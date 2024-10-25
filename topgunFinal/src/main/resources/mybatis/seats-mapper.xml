@@ -19,7 +19,7 @@
 	</select>
 	
 	<!-- 조건(flightId) 목록 -->
-	<select id="list" resultType="seatsDto">
+	<select id="listByFlightId" resultType="seatsDto">
 		select * from seats order where FLIGHT_ID = #{flightId} by
 		SEATS_NUMBER
 	</select>
