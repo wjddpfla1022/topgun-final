@@ -37,7 +37,7 @@ public class AdminFlightDao {
         Map<String, Object> params = new HashMap<>();
         params.put("column", column);
         params.put("keyword", keyword);
-        return sqlSession.selectList("flight.search", params);
+        return sqlSession.selectList("admin.search", params);
     } 
 	
 
