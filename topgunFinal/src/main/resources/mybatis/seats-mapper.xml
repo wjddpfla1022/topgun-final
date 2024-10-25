@@ -17,6 +17,12 @@
 		select * from seats order by
 		seats_no asc
 	</select>
+	
+	<!-- 조건(flightId) 목록 -->
+	<select id="list" resultType="seatsDto">
+		select * from seats order where FLIGHT_ID = #{flightId} by
+		SEATS_NUMBER
+	</select>
 
 	<select id="selectOne" parameterType="int"
 		resultType="com.kh.topgunFinal.dto.SeatsDto">
