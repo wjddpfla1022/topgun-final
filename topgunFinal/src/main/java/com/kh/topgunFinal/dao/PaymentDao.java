@@ -63,8 +63,8 @@ public class PaymentDao {
 	}
 	
 	//정보 추가입력
-	 public void updatePaymentDetail(PaymentDetailDto paymentDetail) {
-	        sqlSession.update("payment.paymentDetailUpdate", paymentDetail);
+	 public boolean updatePaymentDetail(PaymentDetailDto paymentDetail) {
+	        return sqlSession.update("payment.paymentDetailUpdate", paymentDetail)>0;
 	    }
 	 
 }
