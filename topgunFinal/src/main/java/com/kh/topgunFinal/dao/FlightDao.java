@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.FlightDto;
+import com.kh.topgunFinal.vo.FlightComplexSearchRequestVO;
 import com.kh.topgunFinal.vo.FlightVO;
 
 @Repository
@@ -50,7 +51,16 @@ public class FlightDao {
         params.put("keyword", keyword);
         return sqlSession.selectList("flight.search", params);
     }
+    //복합검색
+    public List<FlightVO> complexSearch(FlightComplexSearchRequestVO  requestVO){
+    	return sqlSession.selectList("flight.complexFlightSearch" , requestVO);
+    }
      
+	//복합 검색 카운트 메소드
+	public int complexSearchCount(FlightComplexSearchRequestVO requestVO) {
+		return sqlSession.selectOne("flight.complexSearchCount", requestVO);
+	}
+	
     // 상세
     public FlightDto selectOne(int flightId) {
         return sqlSession.selectOne("flight.find", flightId);

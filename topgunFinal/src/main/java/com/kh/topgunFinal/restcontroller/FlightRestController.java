@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dto.FlightDto;
+import com.kh.topgunFinal.vo.FlightComplexSearchRequestVO;
+import com.kh.topgunFinal.vo.FlightComplexSearchResponseVO;
 import com.kh.topgunFinal.vo.FlightVO;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,12 +33,25 @@ public class FlightRestController {
 	public List<FlightVO> list() {
 		return flightDao.selectList();
 	}
-	 
+	//검색 
 	@GetMapping("/column/{column}/keyword/{keyword}")
 	public List<FlightDto> search(
 	        @PathVariable String column, @PathVariable String keyword) {
 	    List<FlightDto> list = flightDao.search(column, keyword);
 	    return list;
+	}
+	//복합 검색
+	@PostMapping("/complexSearch")
+	public FlightComplexSearchResponseVO complexSearch(
+							@RequestBody FlightComplexSearchRequestVO requestVO) {
+		
+		int count = flightDao.complexSearchCount(requestVO);
+		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
+		boolean last = requestVO.getEndRow() == null || count <= requestVO.getEndRow();
+		
+		FlightComplexSearchResponseVO response = new FlightComplexSearchResponseVO();
+		response.setFlightList(flightDao.complexSearch(requestVO));
+		return response;
 	}
 	
 	@GetMapping("/{flightId}")
