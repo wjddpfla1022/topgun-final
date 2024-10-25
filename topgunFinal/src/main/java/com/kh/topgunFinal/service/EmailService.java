@@ -21,6 +21,9 @@ import com.kh.topgunFinal.dto.UserDto;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 @Service
 public class EmailService {
 
@@ -51,6 +54,7 @@ public class EmailService {
 			userIdWrapper.text(userId);
 
 			// 돌아올 링크 주소를 생성하는 코드
+			
 
 			// - 인증번호 생성
 			String certNumber = randomService.generateNumber(6);
@@ -59,14 +63,20 @@ public class EmailService {
 			certDto.setCertEmail(userEmail);
 			certDto.setCertNumber(certNumber);
 			certDao.insert(certDto);
+			
+			
+			// URI 인코드
+			String encodedCertNumber = URLEncoder.encode(certNumber, StandardCharsets.UTF_8.toString());
+	        String encodedUserEmail = URLEncoder.encode(userEmail, StandardCharsets.UTF_8.toString());
+	        String encodedUserId = URLEncoder.encode(userId, StandardCharsets.UTF_8.toString());
 
 			String url = ServletUriComponentsBuilder
 //					.fromCurrentContextPath()//http://localhost:8080
 					.fromHttpUrl("http://localhost:3000") // 원하는 호스트와 포트를 설정
 					.path("/resetPw")// 나머지경로
-					.queryParam("certNumber", certNumber)// 파라미터
-					.queryParam("certEmail", userEmail)// 파라미터
-					.queryParam("userId", userId)// 파라미터
+					.queryParam("certNumber", encodedCertNumber)// 파라미터
+					.queryParam("certEmail", encodedUserEmail)// 파라미터
+					.queryParam("userId", encodedUserId)// 파라미터
 					.build().toUriString();// 문자열변환
 
 			Element resetUrlWrapper = document.getElementById("reset-url");
