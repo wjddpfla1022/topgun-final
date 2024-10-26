@@ -24,11 +24,10 @@ public class SeatsDao {
 
 	@Value("${custom.seat.col}")
 	private int seatCol;
-
+	
 	// 조회
-	public List<SeatsDto> selectList() {
-		System.out.println(sqlSession.selectList("seats.list"));
-		return sqlSession.selectList("seats.list");
+	public List<SeatsDto> selectList(int flightId) {
+	    return sqlSession.selectList("seats.selectSeatsListByFlightId", flightId);
 	}
 	
 	// 조건 리스트 조회(FlightId로 좌석을 조회해야한다)
@@ -37,15 +36,14 @@ public class SeatsDao {
 		return sqlSession.selectList("seats.listByFlightId", flightId);
 	}
 
-	// 좌석 조회
-	public SeatsDto selectOne(int seatsNo) {
-		return sqlSession.selectOne("seats.selectOne", seatsNo);
-	}
+//	// 좌석 조회
+//	public SeatsDto selectOne(int seatsNo) {
+//		return sqlSession.selectOne("seats.selectOne", seatsNo);
+//	}
 
 	// 좌석 생성
 	public void insertList(int flightId) {
 	    List<SeatsDto> list = createSeatService.createList(seatRow, seatCol, flightId);
-	    
 	    for (SeatsDto seat : list) {
 	        sqlSession.insert("seats.insert", seat);  // 각 좌석을 개별적으로 삽입
 	    }
