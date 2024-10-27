@@ -44,7 +44,7 @@ public class FlightDao {
         return sqlSession.selectList("flight.list2");
     }
     
- // 검색
+    // 검색
     public List<FlightDto> search(String column, String keyword) {
         Map<String, Object> params = new HashMap<>();
         params.put("column", column);

@@ -51,6 +51,8 @@ public class FlightRestController {
 		
 		FlightComplexSearchResponseVO response = new FlightComplexSearchResponseVO();
 		response.setFlightList(flightDao.complexSearch(requestVO));
+		response.setCount(count);
+		response.setLast(last);
 		return response;
 	}
 	
