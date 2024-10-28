@@ -18,11 +18,13 @@
   <!-- 공지사항 추가 -->
   <insert id="add">
     INSERT INTO notice(
+
       notice_id, notice_title, notice_content, notice_author, 
       notice_created_at, main_notice, urgent_notice, modified_notice
     ) VALUES(
       #{noticeId}, #{noticeTitle}, #{noticeContent}, #{noticeAuthor}, 
       #{noticeCreatedAt}, #{mainNotice}, #{urgentNotice}, #{modifiedNotice}
+
     )
   </insert>
 
@@ -36,6 +38,7 @@
       main_notice = #{mainNotice}, 
       urgent_notice = #{urgentNotice}, 
       modified_notice = #{modifiedNotice}
+
     WHERE notice_id = #{noticeId}
   </update>
 
@@ -51,6 +54,7 @@
            main_notice AS mainNotice, urgent_notice AS urgentNotice, modified_notice AS modifiedNotice
     FROM notice 
     ORDER BY notice_created_at DESC
+
   </select>
 
   <!-- 공지사항 상세 조회 -->

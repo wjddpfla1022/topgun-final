@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.FlightDto;
-import com.kh.topgunFinal.mapper.FlightMapper;
+import com.kh.topgunFinal.vo.FlightComplexSearchRequestVO;
 import com.kh.topgunFinal.vo.FlightVO;
 
 @Repository
@@ -18,8 +18,7 @@ public class FlightDao {
     
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private FlightMapper flightMapper; // FlightMapper로 변경
+
     
     @Autowired
     private SqlSession sqlSession;
@@ -45,14 +44,23 @@ public class FlightDao {
         return sqlSession.selectList("flight.list2");
     }
     
- // 검색
+    // 검색
     public List<FlightDto> search(String column, String keyword) {
         Map<String, Object> params = new HashMap<>();
         params.put("column", column);
         params.put("keyword", keyword);
         return sqlSession.selectList("flight.search", params);
     }
+    //복합검색
+    public List<FlightVO> complexSearch(FlightComplexSearchRequestVO  requestVO){
+    	return sqlSession.selectList("flight.complexFlightSearch" , requestVO);
+    }
      
+	//복합 검색 카운트 메소드
+	public int complexSearchCount(FlightComplexSearchRequestVO requestVO) {
+		return sqlSession.selectOne("flight.complexSearchCount", requestVO);
+	}
+	
     // 상세
     public FlightDto selectOne(int flightId) {
         return sqlSession.selectOne("flight.find", flightId);
@@ -68,7 +76,7 @@ public class FlightDao {
     public void insertWithSequence(FlightDto flightDto) {
         String sql = "insert into flight("
                         + "flight_id, flight_number, departure_time, arrival_time, "
-                        + "flight_time, departure_airport, arrival_airport, user_id, flight_total_seat"
+                        + "flight_time, departure_airport, arrival_airport, user_id, flight_price"
                     + ") values(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         Object[] data = {
             flightDto.getFlightId(), 
@@ -79,7 +87,7 @@ public class FlightDao {
             flightDto.getDepartureAirport(),
             flightDto.getArrivalAirport(),
             flightDto.getUserId(),
-            flightDto.getFlightTotalSeat()
+            flightDto.getFlightPrice()
         };
         jdbcTemplate.update(sql, data);
     }

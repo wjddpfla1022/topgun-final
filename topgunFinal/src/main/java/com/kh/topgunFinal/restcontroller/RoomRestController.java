@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.RoomDao;
@@ -31,9 +33,11 @@ public class RoomRestController {
 
 	//채팅방 등록
 	@PostMapping("/")
-	public RoomDto insert(@RequestBody RoomDto roomDto) {
+	public RoomDto insert(@RequestBody RoomDto roomDto, @RequestHeader("Authorization") String token) {
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
 		int roomNo = roomDao.sequence();
 		roomDto.setRoomNo(roomNo);
+		roomDto.setRoomCreatedBy(claimVO.getUserId());
 		roomDao.insert(roomDto);
 		return roomDao.selectOne(roomNo);
 	}
@@ -43,6 +47,12 @@ public class RoomRestController {
 	public List<RoomVO> list(@RequestHeader("Authorization") String token){
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
 		return roomDao.selectList(claimVO.getUserId());
+	}
+	
+	//채팅방 삭제
+	@DeleteMapping("/{roomNo}")
+	public void delete(@PathVariable int roomNo) {
+		roomDao.delete(roomNo);
 	}
 
 	//채팅방 입장
@@ -83,5 +93,27 @@ public class RoomRestController {
 		boolean canEnter = roomDao.check(roomMemberDto);
 
 		return canEnter;
+	}
+	
+	@PostMapping("/createAndEnter")
+	public RoomDto createAndEnter(@RequestBody RoomDto roomDto, 
+													@RequestHeader("Authorization")String token,
+													@RequestParam("userId") String userId) {
+		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
+		int roomNo = roomDao.sequence();
+		roomDto.setRoomNo(roomNo);
+		roomDto.setRoomCreatedBy(claimVO.getUserId());
+		roomDao.insert(roomDto);
+		
+		RoomMemberDto roomMemberDto = new RoomMemberDto();
+		roomMemberDto.setRoomNo(roomNo);
+		roomMemberDto.setUsersId(claimVO.getUserId());
+		roomDao.enter(roomMemberDto);
+		
+		// flight.userId를 방에 추가
+	    roomMemberDto.setUsersId(userId); // flight.userId
+	    roomDao.enter(roomMemberDto);
+		
+		return roomDao.selectOne(roomNo);
 	}
 }

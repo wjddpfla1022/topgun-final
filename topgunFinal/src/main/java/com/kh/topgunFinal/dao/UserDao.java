@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.kh.topgunFinal.dto.AirlineDto;
 import com.kh.topgunFinal.dto.MemberDto;
 import com.kh.topgunFinal.dto.UserDto;
+import com.kh.topgunFinal.vo.ChangePasswordRequestVO;
+import com.kh.topgunFinal.vo.DeleteUserRequestVo;
 import com.kh.topgunFinal.vo.InfoResponseVO;
 
 @Repository
@@ -118,16 +120,6 @@ public class UserDao {
 		return result1 > 0 && result2 > 0;
 	}
 
-	public boolean updateUserPw(String userId, String tempPassword) {
-		// 맵에 파라미터 추가
-		Map<String, Object> params = new HashMap<>();
-		params.put("userId", userId);
-		String enPw = encoder.encode(tempPassword);
-		params.put("tempPassword", enPw);
-		return session.update("Users.updateUserPw", params) > 0;
-
-	}
-
 	public int findImage(String userId) {
 		return session.selectOne("attach.findImage", userId);
 	}
@@ -138,6 +130,15 @@ public class UserDao {
 		params.put("userId", userId);
 		params.put("attachmentNo", attachmentNo);
 
-		session.insert("attach.connect",params);
+		session.insert("attach.connect", params);
+	}
+
+	public boolean changeUserPassword(ChangePasswordRequestVO vo) {
+		vo.setNewPassword(encoder.encode(vo.getNewPassword()));
+		return session.update("Users.updateUserPw", vo) > 0;
+	}
+
+	public boolean deleteUser(DeleteUserRequestVo requestVo) {
+		return session.delete("Users.deleteUser", requestVo.getUserId()) > 0;
 	}
 }

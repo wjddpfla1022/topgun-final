@@ -3,15 +3,20 @@ package com.kh.topgunFinal.restcontroller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.kh.topgunFinal.configuration.CustomCertProperties;
+import com.kh.topgunFinal.dao.CertDao;
 import com.kh.topgunFinal.dao.UserDao;
 import com.kh.topgunFinal.dao.UserTokenDao;
 import com.kh.topgunFinal.dto.AirlineDto;
+import com.kh.topgunFinal.dto.CertDto;
 import com.kh.topgunFinal.dto.MemberDto;
 import com.kh.topgunFinal.dto.UserDto;
 import com.kh.topgunFinal.dto.UserTokenDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.AttachmentService;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.ChangePasswordRequestVO;
+import com.kh.topgunFinal.vo.DeleteUserRequestVo;
 import com.kh.topgunFinal.vo.InfoResponseVO;
 import com.kh.topgunFinal.vo.JoinRequestVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
@@ -28,6 +33,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
 @RestController
@@ -55,6 +62,12 @@ public class UserRestController {
 
 	@Autowired
 	private AttachmentService attachmentService;
+
+	@Autowired
+	private CertDao certDao;
+
+	@Autowired
+	private CustomCertProperties customCertProperties;
 
 	@PostMapping("/login")
 	public UserLoginResponseVO login(@RequestBody UserLoginRequestVO requestVo) {
@@ -257,7 +270,7 @@ public class UserRestController {
 
 		// 아이디 추출
 		String userId = tokenService.check(tokenService.removeBearer(accessToken)).getUserId();
-		
+
 		// 기존 이미지가 있다면 제거
 		try {
 			int beforeNo = userDao.findImage(userId);
@@ -273,4 +286,48 @@ public class UserRestController {
 		userDao.connect(userId, attachmentNo);
 	}
 
+	// 비밀번호 재설정 페이지
+	@PostMapping("/resetPw")
+	public void resetPw(@RequestBody CertDto certDto, @RequestParam String userId) {
+
+		boolean isValid = certDao.check(certDto, customCertProperties.getExpire());
+		if (!isValid) {
+			throw new TargetNotFoundException("올바르지 않은 접근");
+		}
+	}
+
+	@PutMapping("/changePassword")
+	public boolean changePassword(@RequestBody ChangePasswordRequestVO vo) {
+		System.out.println(vo);
+
+		// vo가 null이면 취소
+		if (vo == null) {
+			return false;
+		}
+
+		// 인증 정보 삭제
+		certDao.delete(vo.getCertEmail());
+
+		return userDao.changeUserPassword(vo);
+	}
+
+	@DeleteMapping("/delete")
+	public boolean deleteUser(@RequestBody DeleteUserRequestVo requestVo) {
+		
+		// vo가 null이면 애초에 거짓
+		if (requestVo == null) {
+			return false;
+		}
+
+		// 비밀번호 검증 후
+		UserDto userDto = userDao.selectOne(requestVo.getUserId());
+		boolean isValid = encoder.matches(requestVo.getDelPw(), userDto.getUsersPassword());
+
+		if(!isValid) {
+			return false;
+		}
+		
+		// 삭제 처리
+		return userDao.deleteUser(requestVo);
+	}
 }

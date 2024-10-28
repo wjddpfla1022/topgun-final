@@ -11,18 +11,15 @@
 		select room_seq.nextval from dual
 	</select>
 	
-	<!-- 방 생성 -->
+	<!-- 채팅방 생성 -->
 	<insert id="insert">
-		insert into room(room_no, room_name, room_created)
-		values(#{roomNo}, #{roomName}, #{roomCreated})
+		insert into room(room_no, room_name, room_created, room_created_by)
+		values(#{roomNo}, #{roomName}, systimestamp, #{roomCreatedBy})
 	</insert>
 	
+	<!-- 채팅방 목록 -->
 	<select id="list" resultType="RoomDto">
 		select * from room order by room_no asc
-	</select>
-	
-	<select id="detail" resultType="RoomDto">
-		select * from room where room_no = #{roomNo}
 	</select>
 	
 	<select id="listByUser" resultType="RoomVO">
@@ -35,5 +32,15 @@
 				on R.room_no = RM.room_no
 		order by R.room_no asc
 	</select>
+	
+	<!-- 상세 -->
+	<select id="detail" resultType="RoomDto">
+		select * from room where room_no = #{roomNo}
+	</select>
+	
+	<!-- 채팅방 삭제 -->
+	<delete id="delete">
+		delete room where room_no = #{roomNo}
+	</delete>
 	
 </mapper>

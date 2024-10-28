@@ -26,6 +26,10 @@
 		)
 	</insert>
 	
+	<delete id="delete">
+		delete room_message where room_message_no = #{roomMessageNo}
+	</delete>
+	
 	<select id="listMemberComplete" resultType="WebsocketMessageVO">
 		<include refid="top-n-header"></include>
 		select 
@@ -48,8 +52,6 @@
 		<!-- 조회할 채팅에 대한 조건 -->
 		(
 			RM.room_message_type = 'chat'
-			or
-			RM.room_message_type = 'system'
 			<!-- DM은 회원만(usersId != null) 조회 -->
 			<if test="usersId != null">
 			or

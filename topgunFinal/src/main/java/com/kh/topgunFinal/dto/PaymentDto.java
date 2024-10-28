@@ -9,7 +9,9 @@ import lombok.Data;
 public class PaymentDto {
     private int paymentNo;
     private String paymentTid;
+    private int flightId;
     private String paymentName;
+    private String paymenRank;
     private int paymentTotal;
     private int paymentRemain;
     private String userId;
