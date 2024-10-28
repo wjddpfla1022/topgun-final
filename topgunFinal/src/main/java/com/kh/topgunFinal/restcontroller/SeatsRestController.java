@@ -132,34 +132,34 @@ public class SeatsRestController {
 
 		// DB저장
 		// [1]대표 정보 등록
-		int paymentSeq = paymentDao.paymentSequence();
-		PaymentDto paymentDto = new PaymentDto();
-		paymentDto.setPaymentNo(paymentSeq);//결제번호
-		paymentDto.setPaymentTid(responseVO.getTid());////거래번호
-		paymentDto.setPaymentName(responseVO.getItemName());//상품명
-		paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
-		paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
-		paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
-		paymentDao.paymentInsert(paymentDto);//대표정보 등록
+		// int paymentSeq = paymentDao.paymentSequence();
+		// PaymentDto paymentDto = new PaymentDto();
+		// paymentDto.setPaymentNo(paymentSeq);//결제번호
+		// paymentDto.setPaymentTid(responseVO.getTid());////거래번호
+		// paymentDto.setPaymentName(responseVO.getItemName());//상품명
+		// paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
+		// paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
+		// paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
+		// paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
-		//[2]상세 정보 등록
-		List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
-		for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
-			SeatsDto seatsDto = seatsList.stream()
-		            .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
-		            .findFirst()
-		            .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
+		// //[2]상세 정보 등록
+		// List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
+		// for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
+		// 	SeatsDto seatsDto = seatsList.stream()
+		//             .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
+		//             .findFirst()
+		//             .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
 			
-			int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
-			PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
-			paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
-			paymentDetailDto.setPaymentDetailName(seatsDto.getSeatsRank() + seatsDto.getSeatsNumber());// 좌석번호
-			paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice());// 좌석판매가
-			paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석번호
-			paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
-			paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
-			paymentDao.paymentDetailInsert(paymentDetailDto);
-		}
+		// 	int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
+		// 	PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
+		// 	paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
+		// 	paymentDetailDto.setPaymentDetailName(seatsDto.getSeatsRank() + seatsDto.getSeatsNumber());// 좌석번호
+		// 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice());// 좌석판매가
+		// 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석번호
+		// 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
+		// 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
+		// 	paymentDao.paymentDetailInsert(paymentDetailDto);
+		// }
 		// approve 출력
 		return responseVO;
 	}
