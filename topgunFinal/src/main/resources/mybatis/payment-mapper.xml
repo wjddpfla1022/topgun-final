@@ -11,31 +11,94 @@
         select payment_seq.nextval from dual
     </select>
     <select id="paymentDetailSequence" resultType="int">
-    select payment_detail_seq.nextvail from dual
+  		select payment_detail_seq.nextval from dual
     </select>
 
     <insert id="paymentInsert">
     insert into payment(
-        payment_no, payment_tid, payment_fly, 
-        payment_airline, payment_seatsRank, payment_seatsNo, 
-        payment_total, payment_remain, payment_name, payment_time
+        payment_no, payment_tid, payment_name, 
+        payment_total, payment_remain, user_id
     ) values(
-        #{paymentNo}, #{paymentTid}, #{paymentFly}, 
-        #{paymentAirline}, #{paymentSeatsRank}, #{paymentSeatsNo}, 
-        #{paymentTotal}, #{paymentRemain}, #{paymentNmae}, #{paymentTime}
+        #{paymentNo}, #{paymentTid}, #{paymentName}, 
+        #{paymentTotal}, #{paymentRemain}, #{userId}
     )
     </insert>
 
     <insert id="paymentDetailInsert">
     insert into payment_detail(
-        payment_detail_no, payment_detail_price, payment_detail_origin, 
-        payment_detail_seatsNo, payment_detail_seatsRank, payment_detail_passportCode, 
-        payment_detail_name, payment_detail_sex, payment_detail_birth, payment_detail_status
+        payment_detail_no, payment_detail_name, payment_detail_price, 
+        payment_detail_qty, payment_detail_seatsNo, payment_detail_origin,  
+        payment_detail_status
     ) values(
-        #{paymentDetailNo}, #{paymentDetailPrice}, #{paymentDetailOrigin}, 
-        #{paymentDetailSeatsNo}, #{paymentDetailSeatsRank}, #{paymentDetailPassportCode},
-        #{paymentDetailName}, #{paymentDetailSex}, #{paymentDetailBirth}, #{paymentDetailStatus},
+        #{paymentDetailNo}, #{paymentDetailName}, #{paymentDetailPrice}, 
+        #{paymentDetailQty}, #{paymentDetailSeatsNo}, #{paymentDetailOrigin},  
         '승인'
     )
     </insert>
+    
+    <!-- 정보 조회 -->
+    <select id="list" resultType="PaymentDto">
+    	select * from payment 
+    	where user_id = #{userId}
+    	order by payment_no desc
+    </select>
+
+	<!-- 상세정보 조회 -->
+	<select id="find" resultType="PaymentDto">
+		select * from payment where payment_no = #{paymentNo}
+	</select>
+	<select id="findDetail" resultType="PaymentDetailDto">
+		select *	from payment_detail 
+		where payment_detail_origin = #{paymentNo} 
+		order by payment_detail_no asc
+	</select>
+	
+	<!--  계층형 조회-->
+	<resultMap type="PaymentTotalVO" id="paymentTotalVO">
+		<association property="paymentDto">
+			<result column="payment_no" property="paymentNo"/>
+			<result column="payment_name" property="paymentName"/>
+			<result column= "payment_total" property="paymentTotal"/>
+			<result column="payment_tid" property="paymentTid"/>
+			<result column="payment_remain" property="paymentRemain"/>
+			<result column= "payment_time" property="paymentTime"  javaType="java.sql.Date"/>
+			<result column="user_id" property="userId"/>
+		</association>
+		<collection property="paymentDetailList" 
+		javaType="java.util.List" ofType="PaymentDetailDto" select="findDetail" column="payment_no">
+			<result column="payment_detail_no" property="paymentDetailNo"/>
+			<result column="payment_detail_name" property="paymentDetailName"/>
+			<result column="payment_detail_price" property="paymentDetailPrice"/>
+			<result column="payment_detail_qty" property="paymentDetailQty"/>
+			<result column="payment_detail_item" property="paymentDetailItem"/>
+			<result column="payment_detail_origin" property="paymentDetailOrigin"/>
+			<result column="payment_detail_status" property="paymentDetailStatus"/>
+		</collection>
+	</resultMap>
+	
+	<select id="findTotal" resultMap="paymentTotalVO">
+		select * from payment 
+		where user_id = #{userId} 
+		order by payment_no desc
+	</select>
+	
+	<!-- 결제 전체 취소 -->
+	<update id="cancelAll">
+		update payment set payment_remain=0 where payment_no = #{paymentNo}
+	</update>
+	<update id="cancelAllItem">
+		update payment_detail set payment_detail_status='취소' where payment_detail_origin= #{paymentNo}
+	</update>
+	<!-- 결제 부분 취소 -->
+	<update id="cancelItem">
+		update payment_detail set payment_detail_status='취소' where payment_detail_no = #{paymentDetailNo}
+	</update>
+	<update id="decreaseItemRemain">
+		update payment set payment_remain = payment_remain - #{money} where payment_no = #{paymentNo}
+	</update>
+	<!-- 결제 상세 단일 조회 -->
+	<select id="selectDetailOne" resultType="PaymentDetailDto">
+		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
+	</select>
+	
 </mapper>

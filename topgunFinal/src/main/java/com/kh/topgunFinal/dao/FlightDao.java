@@ -1,6 +1,8 @@
 package com.kh.topgunFinal.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.mapper.FlightMapper;
+import com.kh.topgunFinal.vo.FlightVO;
 
 @Repository
 public class FlightDao {
@@ -38,19 +41,18 @@ public class FlightDao {
     }
     
     // 조회
-    public List<FlightDto> selectList() {
-        return sqlSession.selectList("flight.list");
+    public List<FlightVO> selectList() {
+        return sqlSession.selectList("flight.list2");
     }
     
-  //검색
-  	public List<FlightDto> selectList(String column, String keyword) {
-  		String sql = "select * from flight "
-  						+ "where instr("+column+", ?) > 0 "
-  						+ "order by "+column+" asc, flight_id asc";
-  		Object[] data = {keyword};
-  		return jdbcTemplate.query(sql, flightMapper, data);
-  	}
-    
+ // 검색
+    public List<FlightDto> search(String column, String keyword) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("column", column);
+        params.put("keyword", keyword);
+        return sqlSession.selectList("flight.search", params);
+    }
+     
     // 상세
     public FlightDto selectOne(int flightId) {
         return sqlSession.selectOne("flight.find", flightId);

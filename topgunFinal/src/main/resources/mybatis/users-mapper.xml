@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- sample -->
 <mapper namespace="Users">
 
@@ -36,21 +34,21 @@
 		= #{usersId}
 	</select>
 
-	<select id="findInfo" resultType="InfoResponseVO">
-		SELECT *
-		FROM users
-		<choose>
+	<select id="findInfo" resultType="InfoResponseVO"> SELECT * FROM users <choose>
 			<when test="userType == 'AIRLINE'">
 				LEFT JOIN airline ON users.users_id = airline.user_id
-				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
+		#{userId}
 			</when>
 			<when test="userType == 'MEMBER'">
 				LEFT JOIN member ON users.users_id = member.member_id
-				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
+		#{userId}
 			</when>
 			<when test="userType == 'ADMIN'">
 				LEFT JOIN admin ON users.users_id = admin.users_id
-				WHERE users.USERS_TYPE = #{userType} AND users.users_id = #{userId}
+				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
+		#{userId}
 			</when>
 			<otherwise>
 				SELECT NULL
@@ -87,4 +85,45 @@
 		)
 	</insert>
 
+	<!-- 여기는 정보 수정(Update) -->
+	<update id="updateInfo">
+		UPDATE USERS
+		SET
+		USERS_NAME = #{usersName},
+		USERS_EMAIL = #{usersEmail},
+		USERS_CONTACT = #{usersContact}
+		WHERE
+		USERS_ID = #{usersId}
+	</update>
+
+	<!-- 여기는 멤버 정보 수정(Update) -->
+	<update id="updateMember">
+		UPDATE MEMBER
+		SET
+		MEMBER_ENG_NAME = #{memberEngName},
+		MEMBER_BIRTH = #{memberBirth},
+		MEMBER_GENDER = #{memberGender}
+		WHERE
+		MEMBER_ID = #{usersId}
+	</update>
+
+	<!-- 여기는 항공사 정보 수정(Update) -->
+	<update id="updateAirline">
+		UPDATE AIRLINE
+		SET
+		AIRLINE_NAME = #{airlineName},
+		AIRLINE_NO = #{airlineNo}
+		WHERE
+		USER_ID = #{usersId}
+	</update>
+	
+	<!-- 임시 비밀번호로 비밀번호 수정(Update) -->
+	<update id="updateUserPw">
+		UPDATE USERS
+		SET
+		USERS_PASSWORD = #{tempPassword}
+		WHERE
+		USERS_ID = #{userId}
+	</update>
+	
 </mapper>

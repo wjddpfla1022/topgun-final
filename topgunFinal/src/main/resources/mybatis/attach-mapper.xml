@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- sample -->
+  <mapper namespace="attach">
+  
+  	<select id="selectNextVal" resultType="int">
+        SELECT ATTACH_SEQ.nextval FROM dual
+    </select>
+  
+  	<select id="selectOne" resultType="AttachDto">
+        SELECT * FROM ATTACH WHERE ATTACH_NO = #{attachNo}
+    </select>
+    
+    <insert id="insert">
+        INSERT INTO ATTACH (
+            ATTACH_NO, ATTACH_NAME, ATTACH_TYPE, ATTACH_SIZE
+        ) VALUES (
+            #{attachNo}, #{attachName}, #{attachType}, #{attachSize}
+        )
+    </insert>
+    
+    <delete id="delete">
+        DELETE FROM ATTACH WHERE ATTACH_NO = #{attachNo}
+    </delete>
+    
+    <!-- 특정 userId에 해당하는 attach_no를 가져오는 쿼리 -->
+    <select id="findImage" resultType="int">
+        SELECT ATTACH_NO
+        FROM USERSIMAGE
+        WHERE USERS_ID = #{userId}
+    </select>
+    
+    <insert id="connect">
+    INSERT INTO USERSIMAGE(ATTACH_NO, USERS_ID)
+    VALUES(#{attachmentNo}, #{userId})
+    </insert>
+  
+  </mapper>
