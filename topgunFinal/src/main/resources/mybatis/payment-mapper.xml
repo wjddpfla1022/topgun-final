@@ -43,12 +43,13 @@
         payment_detail_passanger = #{paymentDetailPassanger},
         payment_detail_english = #{paymentDetailEnglish},
         payment_detail_sex = #{paymentDetailSex},
-        payment_detail_birth = #{paymentDetailBirth, jdbcType=DATE},  <!-- JDBC 타입을 명시 -->
+        payment_detail_birth = #{paymentDetailBirth},  
         payment_detail_country = #{paymentDetailCountry},
         payment_detail_visa = #{paymentDetailVisa},
-        payment_detail_expire = #{paymentDetailExpire, jdbcType=DATE}  <!-- JDBC 타입을 명시 -->
+        payment_detail_expire = #{paymentDetailExpire} 
     WHERE payment_detail_no = #{paymentDetailNo}
 </update>
+
     
     <!-- 정보 조회 -->
     <select id="list" resultType="PaymentDto">
@@ -114,5 +115,7 @@
 	<select id="selectDetailOne" resultType="PaymentDetailDto">
 		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
 	</select>
+	
+	
 	
 </mapper>
