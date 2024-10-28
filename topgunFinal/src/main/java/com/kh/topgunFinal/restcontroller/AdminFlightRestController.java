@@ -3,6 +3,7 @@ package com.kh.topgunFinal.restcontroller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.relational.repository.Lock;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,6 +57,8 @@ public class AdminFlightRestController {
 		
 		System.out.println(flightDto);
 		// 승인 완료 후 좌석 생성
-		seatsDao.insertList(flightDto.getFlightId());
+		if(flightDto.getFlightStatus().equals("승인")) {
+			seatsDao.insertList(flightDto.getFlightId());
+		}
 	}
 }
