@@ -7,9 +7,11 @@
 
 	<!-- 등록 -->
 	<insert id="insert" parameterType="SeatsDto">
-		INSERT INTO SEATS (SEATS_NO, FLIGHT_ID, SEATS_RANK, SEATS_PRICE,
+		INSERT INTO SEATS (SEATS_NO,
+		FLIGHT_ID, SEATS_RANK, SEATS_PRICE,
 		SEATS_NUMBER)
-		VALUES (#{seatsNo}, #{flightId}, #{seatsRank}, #{seatsPrice}, #{seatsNumber})
+		VALUES (#{seatsNo},
+		#{flightId}, #{seatsRank}, #{seatsPrice}, #{seatsNumber})
 	</insert>
 
 	<!-- 목록 -->
@@ -17,16 +19,19 @@
 		select * from seats order by
 		seats_no asc
 	</select>
-	
+
+	<!-- 조건(flightId) 목록 -->
+	<select id="listByFlightId" resultType="SeatsDto">
+		SELECT * FROM seats WHERE FLIGHT_ID = #{flightId} ORDER BY SEATS_NUMBER
+	</select>
+
 
 	<!-- 항공편 번호에 따른 좌석 조회 -->
-	<select id="selectSeatsListByFlightId" parameterType="int" resultType="SeatsDto">
-		SELECT * FROM seats WHERE flight_id = #{flightId} ORDER BY seats_no ASC
-	</select>
-<!-- 
-	<select id="selectOne" parameterType="int"
+	<select id="selectSeatsListByFlightId" parameterType="int"
 		resultType="SeatsDto">
-		SELECT * FROM seats WHERE seats_no = #{seatsNo}
+		SELECT * FROM seats WHERE flight_id = #{flightId} ORDER BY
+		seats_no ASC
 	</select>
- -->
+	<!-- <select id="selectOne" parameterType="int" resultType="SeatsDto"> SELECT 
+		* FROM seats WHERE seats_no = #{seatsNo} </select> -->
 </mapper>
