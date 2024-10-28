@@ -32,47 +32,28 @@
 	
 	<select id="listMemberComplete" resultType="WebsocketMessageVO">
 		<include refid="top-n-header"></include>
-		select 
-			RM.room_message_no "no",
-			RM.room_message_type "type",
-			RM.room_message_sender "sender_users_id",
-			U.users_type "sender_users_type",
-			RM.room_message_receiver "receiver_users_id",
-			RM.room_message_content "content",
-			RM.room_message_time "time"
-		from 
-			room_message RM 
-				left outer join users U 
-					on RM.room_message_sender = U.users_id
-		<!-- 일반채팅(chat) + 나의DM만 조회 --> 
-		where 
-			<!-- 방 번호에 대한 조건 -->
-			room_no = #{roomNo}
-			and
-		<!-- 조회할 채팅에 대한 조건 -->
-		(
-			RM.room_message_type = 'chat'
-			<!-- DM은 회원만(usersId != null) 조회 -->
-			<if test="usersId != null">
-			or
-			(
-				RM.room_message_type = 'dm' 
-				and
-				(
-					RM.room_message_sender = #{usersId}
-					or
-					RM.room_message_receiver = #{usersId}
-				) 
-			)			
-			</if>
-		)
-			<!-- 더보기를 위한 조건 추가 : firstMessageNo가 있으면 -->
-			<if test="firstMessageNo != null">
-			<![CDATA[
-			and room_message_no < #{firstMessageNo}
-			]]>
-			</if>
-		order by RM.room_message_no desc
+			 SELECT 
+		        RM.room_message_no AS "no",
+		        RM.room_message_type AS "type",
+		        RM.room_message_sender AS "sender_users_id",
+		        U.users_type AS "sender_users_type",
+		        RM.room_message_receiver AS "receiver_users_id",
+		        RM.room_message_content AS "content",
+		        RM.room_message_time AS "time",
+		        RM.ROOM_NO AS "room_no"
+		    FROM 
+		        room_message RM 
+		        LEFT OUTER JOIN users U ON RM.room_message_sender = U.users_id
+		    WHERE 
+		        RM.room_no = #{roomNo}
+		        AND RM.room_message_type = 'chat'	
+		        <if test="firstMessageNo != null">
+		        <![CDATA[
+					and RM.room_message_no < #{firstMessageNo}
+				]]>
+				</if>
+		    ORDER BY 
+		        RM.room_message_no DESC
 		<include refid="top-n-footer"></include>
 		<!-- top n query로 만들어진 최종 결과를 다시 정렬(별칭 사용 불가) -->
 		order by "no" asc		

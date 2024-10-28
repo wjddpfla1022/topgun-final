@@ -102,6 +102,7 @@ public class WebsocketEventHandler {
 			
 			WebsocketMessageMoreVO moreVO = new WebsocketMessageMoreVO();
 			moreVO.setMessageList(messageList);
+			moreVO.setLast(true);
 			if(messageList.size() > 0) {//메세지가 있다면
 				List<WebsocketMessageVO> prevMessageList = 
 						roomMessageDao.selectListMemberComplete(usersId, 1, 100, roomNo, messageList.get(0).getNo());

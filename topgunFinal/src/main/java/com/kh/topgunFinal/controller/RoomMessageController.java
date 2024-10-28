@@ -77,43 +77,43 @@ public class RoomMessageController {
 	    roomMessageDao.insert(messageDto);
 	}
 	
-	@MessageMapping("/room/{roomNo}/dm/{receiverId}")
-	public void sendDM(@DestinationVariable int roomNo, @DestinationVariable String receiverId, 
-										Message<WebsocketRequestVO> message) {
-		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message); 
-		String accessToken = accessor.getFirstNativeHeader("accessToken");
-		
-		if(accessToken == null) {
-			return;
-		}
-		
-		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(accessToken));
-		if(claimVO.getUserId().equals(receiverId)) {
-			return;
-		}
-		WebsocketRequestVO request = message.getPayload();
-		
-		WebsocketDMResponseVO response = new WebsocketDMResponseVO();
-		response.setContent(request.getContent());
-		response.setTime(LocalDateTime.now());
-		response.setSenderUsersId(claimVO.getUserId());
-		response.setSenderUsersType(claimVO.getUserType());
-		response.setReceiverUsersId(receiverId); 
-		
-		messagingTemplate.convertAndSend("/private/dm/"+response.getSenderUsersId(), response);
-		messagingTemplate.convertAndSend("/private/dm/"+response.getReceiverUsersId(), response);
-		
-		 // DB에 저장
-	    int messageNo = roomMessageDao.sequence();
-	    RoomMessageDto messageDto = new RoomMessageDto();
-	    messageDto.setRoomMessageNo(messageNo);
-	    messageDto.setRoomMessageType("dm");
-	    messageDto.setRoomMessageSender(claimVO.getUserId());
-	    messageDto.setRoomMessageReceiver(receiverId);
-	    messageDto.setRoomMessageContent(request.getContent());
-	    messageDto.setRoomMessageTime(Timestamp.valueOf(response.getTime()));
-	    messageDto.setRoomNo(roomNo);
-	    
-	    roomMessageDao.insert(messageDto);
-	}
+//	@MessageMapping("/room/{roomNo}/dm/{receiverId}")
+//	public void sendDM(@DestinationVariable int roomNo, @DestinationVariable String receiverId, 
+//										Message<WebsocketRequestVO> message) {
+//		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message); 
+//		String accessToken = accessor.getFirstNativeHeader("accessToken");
+//		
+//		if(accessToken == null) {
+//			return;
+//		}
+//		
+//		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(accessToken));
+//		if(claimVO.getUserId().equals(receiverId)) {
+//			return;
+//		}
+//		WebsocketRequestVO request = message.getPayload();
+//		
+//		WebsocketDMResponseVO response = new WebsocketDMResponseVO();
+//		response.setContent(request.getContent());
+//		response.setTime(LocalDateTime.now());
+//		response.setSenderUsersId(claimVO.getUserId());
+//		response.setSenderUsersType(claimVO.getUserType());
+//		response.setReceiverUsersId(receiverId); 
+//		
+//		messagingTemplate.convertAndSend("/private/dm/"+response.getSenderUsersId(), response);
+//		messagingTemplate.convertAndSend("/private/dm/"+response.getReceiverUsersId(), response);
+//		
+//		 // DB에 저장
+//	    int messageNo = roomMessageDao.sequence();
+//	    RoomMessageDto messageDto = new RoomMessageDto();
+//	    messageDto.setRoomMessageNo(messageNo);
+//	    messageDto.setRoomMessageType("dm");
+//	    messageDto.setRoomMessageSender(claimVO.getUserId());
+//	    messageDto.setRoomMessageReceiver(receiverId);
+//	    messageDto.setRoomMessageContent(request.getContent());
+//	    messageDto.setRoomMessageTime(Timestamp.valueOf(response.getTime()));
+//	    messageDto.setRoomNo(roomNo);
+//	    
+//	    roomMessageDao.insert(messageDto);
+//	}
 }
