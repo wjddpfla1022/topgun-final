@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.PaymentDao;
 import com.kh.topgunFinal.dao.SeatsDao;
+import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.dto.PaymentDetailDto;
 import com.kh.topgunFinal.dto.PaymentDto;
 import com.kh.topgunFinal.dto.SeatsDto;
@@ -286,32 +288,10 @@ public class SeatsRestController {
 		return response;
 	}
 
-	// 결제 상세 정보 업데이트
-	@PutMapping("/detailUpdate/{paymentDetailNo}")
-	public ResponseEntity<String> detailUpdate(@RequestHeader("Authorization") String token,
-			@PathVariable int paymentDetailNo, @RequestBody PaymentDetailDto paymentDetailDto)
-			throws URISyntaxException {
-		System.out.println(paymentDetailDto);
-		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-		PaymentDetailDto existingDetail = paymentDao.selectDetailOne(paymentDetailNo);
-		if (existingDetail == null) {
-			throw new TargetNotFoundException("존재하지 않는 결제 상세정보");
-		}
-		PaymentDto paymentDto = paymentDao.selectOne(existingDetail.getPaymentDetailOrigin());
-		if (paymentDto == null) {
-			throw new TargetNotFoundException("존재하지 않는 결제 정보");
-		}
-		if (!paymentDto.getUserId().equals(claimVO.getUserId())) {
-			throw new TargetNotFoundException("결제 상세정보의 소유자가 아닙니다.");
-		}
+	@PutMapping("/detailUpdate")
+	public void update(@RequestBody PaymentDetailDto paymentDetailDto) {
 		paymentDao.updatePaymentDetail(paymentDetailDto);
-		return ResponseEntity.ok("Payment detail updated successfully.");
 	}
 
-	@GetMapping("/getSeats")
-	public List<SeatsDto> getSeatsFromFlightId(@RequestParam int flightId) {
-		System.out.println(flightId);
-	    return seatsDao.selectListByFlightId(flightId);
-	}
 
 }
