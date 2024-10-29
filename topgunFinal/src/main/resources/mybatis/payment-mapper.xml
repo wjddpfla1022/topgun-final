@@ -115,7 +115,28 @@
 	<select id="selectDetailOne" resultType="PaymentDetailDto">
 		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
 	</select>
-	
-	
+	<!-- 좌석 및 항공편 정보를 조회하는 새로운 쿼리 추가 -->
+    <select id="seatsFlightInfo" resultType="SeatsFlightInfoVO">
+        SELECT 
+            s.SEATS_NO as seatsNo,
+            s.SEATS_RANK as seatsRank,
+            s.SEATS_NUMBER as seatsNumber,
+            s.SEATS_PRICE as seatsPrice,
+            s.SEATS_STATUS as seatsStatus,
+            s.FLIGHT_ID as flightId,       
+            a.AIRLINE_NAME as airlineName,
+            f.DEPARTURE_TIME as departureTime,
+            f.ARRIVAL_TIME as arrivalTime,
+            f.FLIGHT_TIME as flightTime,
+            f.DEPARTURE_AIRPORT as departureAirport,
+            f.ARRIVAL_AIRPORT as arrivalAirport,
+            f.FLIGHT_PRICE as flightPrice
+        FROM 
+            SEATS s
+        JOIN 
+            FLIGHT f ON s.FLIGHT_ID = f.FLIGHT_ID
+        JOIN 
+            AIRLINE a ON f.USER_ID = a.USER_ID
+    </select>
 	
 </mapper>
