@@ -1,17 +1,13 @@
 package com.kh.topgunFinal.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.kh.topgunFinal.advice.JsonEmptyStringToNullDeserializer;
 import com.kh.topgunFinal.dto.AirlineDto;
 
 import lombok.Data;
 
 @Data
 public class FlightVO {
-//	private AirlineDto airlineDto;
-	private String airlineName;
-	
+	private AirlineDto airlineDto;
 	
     private int flightId; 
     private String flightNumber;

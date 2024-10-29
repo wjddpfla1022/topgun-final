@@ -1,10 +1,6 @@
 package com.kh.topgunFinal.vo;
 
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.kh.topgunFinal.advice.JsonEmptyStringToNullDeserializer;
 

@@ -18,7 +18,6 @@ import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.vo.FlightComplexSearchRequestVO;
 import com.kh.topgunFinal.vo.FlightComplexSearchResponseVO;
 import com.kh.topgunFinal.vo.FlightVO;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @CrossOrigin(origins = {"http://localhost:3000"})
@@ -28,6 +27,7 @@ public class FlightRestController {
 
 	@Autowired
 	private FlightDao flightDao;
+	
 	
 	@GetMapping("/")
 	public List<FlightVO> list() {
@@ -45,8 +45,8 @@ public class FlightRestController {
 	public FlightComplexSearchResponseVO complexSearch(
 							@RequestBody FlightComplexSearchRequestVO requestVO) {
 		
-		System.out.println("request: " + requestVO);
 		int count = flightDao.complexSearchCount(requestVO);
+		System.out.println("request: " + requestVO);
 		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
 		boolean last = requestVO.getEndRow() == null || count <= requestVO.getEndRow();
 		
