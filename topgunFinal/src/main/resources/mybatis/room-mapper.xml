@@ -33,6 +33,36 @@
 		order by R.room_no asc
 	</select>
 	
+	<select id="listByUserLastMessage" resultType="RoomVO">
+		SELECT 
+		    R.*, 
+		    NVL(M.room_message_content, '') AS lastMessage,  
+		    NVL(M.room_message_time, null) AS lastMessageTime,  
+		    NVL(RM.users_id,'N') AS join  
+		FROM 
+		    room R
+		LEFT JOIN (
+		    SELECT 
+		        room_no, 
+		        room_message_content, 
+		        room_message_time  
+		    FROM 
+		        room_message 
+		    WHERE 
+		        (room_no, room_message_time) IN (
+		            SELECT 
+		                room_no, 
+		                MAX(room_message_time)  
+		            FROM 
+		                room_message 
+		            GROUP BY 
+		                room_no
+		        )
+		) M ON R.room_no = M.room_no
+		LEFT JOIN room_member RM ON R.room_no = RM.room_no AND RM.users_id = #{usersId} 
+		ORDER BY R.room_no ASC
+	</select>
+	
 	<!-- 상세 -->
 	<select id="detail" resultType="RoomDto">
 		select * from room where room_no = #{roomNo}
