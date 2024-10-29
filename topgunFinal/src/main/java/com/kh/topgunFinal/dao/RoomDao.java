@@ -25,8 +25,11 @@ public class RoomDao {
 	public List<RoomDto> selectList(){
 		return sqlSession.selectList("room.list");
 	}
+//	public List<RoomVO> selectList(String usersId){
+//		return sqlSession.selectList("room.listByUser", usersId);
+//	}
 	public List<RoomVO> selectList(String usersId){
-		return sqlSession.selectList("room.listByUser", usersId);
+		return sqlSession.selectList("room.listByUserLastMessage", usersId);
 	}
 	public RoomDto selectOne(int roomNo) {
 		return sqlSession.selectOne("room.detail", roomNo);

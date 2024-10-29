@@ -43,10 +43,11 @@
 		        RM.ROOM_NO AS "room_no"
 		    FROM 
 		        room_message RM 
-		        LEFT OUTER JOIN users U ON RM.room_message_sender = U.users_id
+		        	LEFT OUTER JOIN users U 
+		        		ON RM.room_message_sender = U.users_id
 		    WHERE 
 		        RM.room_no = #{roomNo}
-		        AND RM.room_message_type = 'chat'	
+		        AND RM.room_message_type = 'chat'
 		        <if test="firstMessageNo != null">
 		        <![CDATA[
 					and RM.room_message_no < #{firstMessageNo}
