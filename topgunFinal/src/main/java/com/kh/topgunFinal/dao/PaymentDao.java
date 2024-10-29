@@ -67,8 +67,9 @@ public class PaymentDao {
 	    return sqlSession.update("payment.paymentDetailUpdate", paymentDetailDto) > 0;
 	}
 	// 좌석과 항공편 정보를 조회하는 메서드
-//    public List<SeatsFlightInfoVO> seatsFlightInfo(int flightId) {
-//        return sqlSession.selectList("payment.seatsFlightInfo", flightId);
-//    }
+    public List<SeatsFlightInfoVO> seatsFlightInfo(int flightId) {
+    	 System.out.println("DAO flightId: " + flightId); // DAO에서 flightId 확인
+        return sqlSession.selectList("payment.seatsFlightInfo", flightId);
+    }
 	 
 }

@@ -1,10 +1,12 @@
 package com.kh.topgunFinal.vo.pay;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
 
 import lombok.Data;
 
@@ -27,5 +29,5 @@ public class PayApproveResponseVO {
 	private LocalDateTime createdAt;
 	private LocalDateTime approvedAt;
 	private String payload;
-
+	private List<SeatsFlightInfoVO> flightInfoList;
 }
