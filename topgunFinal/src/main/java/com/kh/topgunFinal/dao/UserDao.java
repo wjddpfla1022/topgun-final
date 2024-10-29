@@ -1,6 +1,7 @@
 package com.kh.topgunFinal.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -15,6 +16,7 @@ import com.kh.topgunFinal.dto.UserDto;
 import com.kh.topgunFinal.vo.ChangePasswordRequestVO;
 import com.kh.topgunFinal.vo.DeleteUserRequestVo;
 import com.kh.topgunFinal.vo.InfoResponseVO;
+import com.kh.topgunFinal.vo.UserComplexRequestVO;
 
 @Repository
 public class UserDao {
@@ -140,5 +142,19 @@ public class UserDao {
 
 	public boolean deleteUser(DeleteUserRequestVo requestVo) {
 		return session.delete("Users.deleteUser", requestVo.getUserId()) > 0;
+	}
+
+	public List<UserDto> selectList() {
+		return session.selectList("Users.list");
+	}
+
+	// 복합 검색 메소드
+	public List<UserDto> complexSearch(UserComplexRequestVO vo) {
+		return session.selectList("Users.complexSearch", vo);
+	}
+
+	// 복합 검색 카운트 메소드
+	public int complexSearchCount(UserComplexRequestVO vo) {
+		return session.selectOne("Users.complexSearchCount", vo);
 	}
 }
