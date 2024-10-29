@@ -34,4 +34,22 @@
 	</select>
 	<!-- <select id="selectOne" parameterType="int" resultType="SeatsDto"> SELECT 
 		* FROM seats WHERE seats_no = #{seatsNo} </select> -->
+		<!-- 항공사명 불러오기 -->
+		 <select id="selectSeatsWithAirline" resultType="SeatsDto">
+        SELECT 
+            s.SEATS_NO,
+            s.SEATS_RANK,
+            s.SEATS_NUMBER,
+            s.SEATS_PRICE,
+            s.SEATS_STATUS,
+            s.FLIGHT_ID,       
+            a.AIRLINE_NAME
+        FROM 
+            SEATS s
+        JOIN 
+            FLIGHT f ON s.FLIGHT_ID = f.FLIGHT_ID
+        JOIN 
+            AIRLINE a ON f.USER_ID = a.USER_ID
+    </select>
+		
 </mapper>

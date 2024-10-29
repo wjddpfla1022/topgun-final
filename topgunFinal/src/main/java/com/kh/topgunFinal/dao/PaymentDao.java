@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.dto.PaymentDetailDto;
 import com.kh.topgunFinal.dto.PaymentDto;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
@@ -61,10 +62,10 @@ public class PaymentDao {
 	public PaymentDetailDto selectDetailOne(int paymentDetailNo) {
 		return sqlSession.selectOne("payment.selectDetailOne", paymentDetailNo);
 	}
+	// 정보 추가입력
+	public boolean updatePaymentDetail(PaymentDetailDto paymentDetailDto) {
+	    return sqlSession.update("payment.paymentDetailUpdate", paymentDetailDto) > 0;
+	}
 	
-	//정보 추가입력
-	 public boolean updatePaymentDetail(PaymentDetailDto paymentDetail) {
-	        return sqlSession.update("payment.paymentDetailUpdate", paymentDetail)>0;
-	    }
 	 
 }

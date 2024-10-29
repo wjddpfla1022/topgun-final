@@ -16,41 +16,40 @@
 
     <insert id="paymentInsert">
     insert into payment(
-        payment_no, payment_tid, flight_id, airline_name, 
-        payment_name, payment_rank, paymet_total, 
-        payment_remain, user_id
+        payment_no, payment_tid, payment_name, 
+        payment_total, payment_remain, user_id
     ) values(
-        #{paymentNo}, #{paymentTid}, #{flightId}, #{airlineName},
-        #{paymentName}, #{payment_rank}, #{paymentTotal}, 
-        #{paymentRemain}, #{userId}
+        #{paymentNo}, #{paymentTid}, #{paymentName}, 
+        #{paymentTotal}, #{paymentRemain}, #{userId}
     )
     </insert>
 
-	<!-- 정보 업데이트 (여권정보)-->
+    <insert id="paymentDetailInsert">
+    insert into payment_detail(
+        payment_detail_no, flight_id, payment_detail_name, payment_detail_price, 
+        payment_detail_qty, payment_detail_seatsNo, payment_detail_origin,  
+        payment_detail_status
+    ) values(
+        #{paymentDetailNo}, #{flightId}, #{paymentDetailName}, #{paymentDetailPrice}, 
+        #{paymentDetailQty}, #{paymentDetailSeatsNo}, #{paymentDetailOrigin},  
+        '승인'
+    )
+    </insert>
+    
+    <!-- 정보 업데이트 (여권정보)-->
 	<update id="paymentDetailUpdate">
     UPDATE payment_detail SET
         payment_detail_passport = #{paymentDetailPassport},
         payment_detail_passanger = #{paymentDetailPassanger},
         payment_detail_english = #{paymentDetailEnglish},
         payment_detail_sex = #{paymentDetailSex},
-        payment_detail_birth = #{paymentDetailBirth, jdbcType=DATE},  <!-- JDBC 타입을 명시 -->
+        payment_detail_birth = #{paymentDetailBirth},  
         payment_detail_country = #{paymentDetailCountry},
         payment_detail_visa = #{paymentDetailVisa},
-        payment_detail_expire = #{paymentDetailExpire, jdbcType=DATE}  <!-- JDBC 타입을 명시 -->
+        payment_detail_expire = #{paymentDetailExpire} 
     WHERE payment_detail_no = #{paymentDetailNo}
 </update>
 
-    <insert id="paymentDetailInsert">
-    insert into payment_detail(
-        payment_detail_no, fright_id, payment_detail_name, payment_detail_price, 
-        payment_detail_qty, payment_detail_seatsNo, payment_detail_origin,  
-        payment_detail_status
-    ) values(
-        #{paymentDetailNo}, #{fright_id}, #{paymentDetailName}, #{paymentDetailPrice}, 
-        #{paymentDetailQty}, #{paymentDetailSeatsNo}, #{paymentDetailOrigin},  
-        '승인'
-    )
-    </insert>
     
     <!-- 정보 조회 -->
     <select id="list" resultType="PaymentDto">
@@ -116,5 +115,7 @@
 	<select id="selectDetailOne" resultType="PaymentDetailDto">
 		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
 	</select>
+	
+	
 	
 </mapper>

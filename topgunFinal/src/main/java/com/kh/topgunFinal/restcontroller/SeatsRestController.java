@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.PaymentDao;
 import com.kh.topgunFinal.dao.SeatsDao;
+import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.dto.PaymentDetailDto;
 import com.kh.topgunFinal.dto.PaymentDto;
 import com.kh.topgunFinal.dto.SeatsDto;
@@ -88,7 +90,7 @@ public class SeatsRestController {
 
 		        total += seatDto.getSeatsPrice() * vo.getQty();
 		        if (buffer.isEmpty()) {
-		            buffer.append(seatDto.getFlightId()).append(" ");
+		            buffer.append(seatDto.getFlightId()).append("항공편 ");
 		            buffer.append(seatDto.getSeatsRank());
 		            buffer.append(seatDto.getSeatsNumber());
 		        }
@@ -132,34 +134,34 @@ public class SeatsRestController {
 
 		// DB저장
 		// [1]대표 정보 등록
-		// int paymentSeq = paymentDao.paymentSequence();
-		// PaymentDto paymentDto = new PaymentDto();
-		// paymentDto.setPaymentNo(paymentSeq);//결제번호
-		// paymentDto.setPaymentTid(responseVO.getTid());////거래번호
-		// paymentDto.setPaymentName(responseVO.getItemName());//상품명
-		// paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
-		// paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
-		// paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
-		// paymentDao.paymentInsert(paymentDto);//대표정보 등록
+		 int paymentSeq = paymentDao.paymentSequence();
+		 PaymentDto paymentDto = new PaymentDto();
+		 paymentDto.setPaymentNo(paymentSeq);//결제번호
+		 paymentDto.setPaymentTid(responseVO.getTid());////거래번호
+		 paymentDto.setPaymentName(responseVO.getItemName());//상품명
+		 paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
+		 paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
+		 paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
+		 paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
-		// //[2]상세 정보 등록
-		// List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
-		// for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
-		// 	SeatsDto seatsDto = seatsList.stream()
-		//             .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
-		//             .findFirst()
-		//             .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
-			
-		// 	int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
-		// 	PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
-		// 	paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
-		// 	paymentDetailDto.setPaymentDetailName(seatsDto.getSeatsRank() + seatsDto.getSeatsNumber());// 좌석번호
-		// 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice());// 좌석판매가
-		// 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석번호
-		// 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
-		// 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
-		// 	paymentDao.paymentDetailInsert(paymentDetailDto);
-		// }
+		// [2]상세 정보 등록
+		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
+		 for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
+		 	SeatsDto seatsDto = seatsList.stream()
+		             .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
+		             .findFirst()
+		             .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
+		 	int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
+		 	PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
+		 	paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
+		 	paymentDetailDto.setFlightId(seatsDto.getFlightId());//항공기번호
+		 	paymentDetailDto.setPaymentDetailName(seatsDto.getSeatsRank() + seatsDto.getSeatsNumber());// 좌석번호
+		 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice());// 좌석판매가
+		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
+		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
+		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
+		 	paymentDao.paymentDetailInsert(paymentDetailDto);
+		 }
 		// approve 출력
 		return responseVO;
 	}
@@ -286,32 +288,10 @@ public class SeatsRestController {
 		return response;
 	}
 
-	// 결제 상세 정보 업데이트
-	@PutMapping("/detailUpdate/{paymentDetailNo}")
-	public ResponseEntity<String> detailUpdate(@RequestHeader("Authorization") String token,
-			@PathVariable int paymentDetailNo, @RequestBody PaymentDetailDto paymentDetailDto)
-			throws URISyntaxException {
-		System.out.println(paymentDetailDto);
-		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-		PaymentDetailDto existingDetail = paymentDao.selectDetailOne(paymentDetailNo);
-		if (existingDetail == null) {
-			throw new TargetNotFoundException("존재하지 않는 결제 상세정보");
-		}
-		PaymentDto paymentDto = paymentDao.selectOne(existingDetail.getPaymentDetailOrigin());
-		if (paymentDto == null) {
-			throw new TargetNotFoundException("존재하지 않는 결제 정보");
-		}
-		if (!paymentDto.getUserId().equals(claimVO.getUserId())) {
-			throw new TargetNotFoundException("결제 상세정보의 소유자가 아닙니다.");
-		}
+	@PutMapping("/detailUpdate")
+	public void update(@RequestBody PaymentDetailDto paymentDetailDto) {
 		paymentDao.updatePaymentDetail(paymentDetailDto);
-		return ResponseEntity.ok("Payment detail updated successfully.");
 	}
 
-	@GetMapping("/getSeats")
-	public List<SeatsDto> getSeatsFromFlightId(@RequestParam int flightId) {
-		System.out.println(flightId);
-	    return seatsDao.selectListByFlightId(flightId);
-	}
 
 }

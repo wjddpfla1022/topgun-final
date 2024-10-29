@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kh.topgunFinal.dao.NoticeDao;
 import com.kh.topgunFinal.dto.NoticeDto;
-import com.kh.topgunFinal.dto.NoticeImageDto; // NoticeImageDto 사용
 import com.kh.topgunFinal.error.TargetNotFoundException;
 
 @CrossOrigin(origins = {"http://localhost:3000"}) // CORS 해제 설정
@@ -30,18 +29,6 @@ public class NoticeRestController {
     public void insert(@RequestBody NoticeDto noticeDto) {
         noticeDto.setNoticeId(noticeDao.getNextSequence());
         noticeDao.insert(noticeDto);
-    }
-
-    // 공지사항 등록과 함께 이미지 업로드
-    @PostMapping("/withImage") // Create (이미지 포함 등록) - 200, 500
-    public void insertWithImage(@RequestBody NoticeDto noticeDto, @RequestBody List<NoticeImageDto> noticeImages) {
-        noticeDto.setNoticeId(noticeDao.getNextSequence());
-        noticeDao.insert(noticeDto);
-        
-        for (NoticeImageDto image : noticeImages) {
-            image.setNoticeId(noticeDto.getNoticeId()); // 이미지와 공지사항을 연결
-            noticeDao.insertImage(image); // 이미지 등록
-        }
     }
 
     // 공지사항 목록 조회

@@ -45,6 +45,7 @@ public class FlightRestController {
 	public FlightComplexSearchResponseVO complexSearch(
 							@RequestBody FlightComplexSearchRequestVO requestVO) {
 		
+		System.out.println("request: " + requestVO);
 		int count = flightDao.complexSearchCount(requestVO);
 		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
 		boolean last = requestVO.getEndRow() == null || count <= requestVO.getEndRow();
@@ -53,6 +54,7 @@ public class FlightRestController {
 		response.setFlightList(flightDao.complexSearch(requestVO));
 		response.setCount(count);
 		response.setLast(last);
+		System.out.println("response: " + response);
 		return response;
 	}
 	
