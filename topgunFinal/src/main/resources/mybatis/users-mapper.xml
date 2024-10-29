@@ -25,7 +25,17 @@
 	</insert>
 
 	<select id="list" resultType="UserDto">
-		select * from users
+		SELECT USERS_ID, USERS_NAME,
+		USERS_EMAIL, USERS_CONTACT, USERS_TYPE
+		FROM users
+		ORDER BY
+		CASE
+		USERS_TYPE
+		WHEN 'ADMIN' THEN 1
+		WHEN 'AIRLINE' THEN 2
+		WHEN 'MEMBER' THEN 3
+		ELSE 4
+		END
 	</select>
 
 
@@ -34,21 +44,23 @@
 		= #{usersId}
 	</select>
 
-	<select id="findInfo" resultType="InfoResponseVO"> SELECT * FROM users <choose>
+	<select id="findInfo" resultType="InfoResponseVO">
+		SELECT * FROM users
+		<choose>
 			<when test="userType == 'AIRLINE'">
 				LEFT JOIN airline ON users.users_id = airline.user_id
 				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
-		#{userId}
+				#{userId}
 			</when>
 			<when test="userType == 'MEMBER'">
 				LEFT JOIN member ON users.users_id = member.member_id
 				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
-		#{userId}
+				#{userId}
 			</when>
 			<when test="userType == 'ADMIN'">
 				LEFT JOIN admin ON users.users_id = admin.users_id
 				WHERE users.USERS_TYPE = #{userType} AND users.users_id =
-		#{userId}
+				#{userId}
 			</when>
 			<otherwise>
 				SELECT NULL
@@ -90,10 +102,12 @@
 		UPDATE USERS
 		SET
 		USERS_NAME = #{usersName},
-		USERS_EMAIL = #{usersEmail},
+		USERS_EMAIL
+		= #{usersEmail},
 		USERS_CONTACT = #{usersContact}
 		WHERE
-		USERS_ID = #{usersId}
+		USERS_ID =
+		#{usersId}
 	</update>
 
 	<!-- 여기는 멤버 정보 수정(Update) -->
@@ -116,7 +130,7 @@
 		WHERE
 		USER_ID = #{usersId}
 	</update>
-	
+
 	<!-- 임시 비밀번호로 비밀번호 수정(Update) -->
 	<update id="updateUserPw">
 		UPDATE USERS
@@ -125,10 +139,142 @@
 		WHERE
 		USERS_ID = #{userId}
 	</update>
-	
+
 	<delete id="deleteUser">
 		DELETE USERS
 		WHERE USERS_ID = #{userId}
 	</delete>
-	
+
+
+
+
+
+
+
+
+	<!-- 복합 검색(complex search) - 다양한 항목들이 있거나 없을 수 있다는 전제조건 하에 구현하는 검색 - 꼭 컬럼명이 
+		아니더라도 여러 가지 형태로 개조하여 사용할 수 있다 -->
+	<select id="complexSearch" resultType="UserDto">
+
+		<!-- top-n-header 자리 -->
+		<include refid="top-n-header"></include>
+
+		SELECT USERS_ID, USERS_NAME,
+		USERS_EMAIL, USERS_CONTACT, USERS_TYPE
+		from users
+		<!-- 조건절을 태그로 만들어서 조건이 존재할 때만 where가 등장하도록 처리 모든 조건은 and 또는 or로 시작해야 한다 -->
+		<where>
+			<!-- 아이디는 시작검사를 수행 -->
+			<if test="usersId != null">
+				and USERS_ID like #{usersId} || '%'
+			</if>
+
+			<!-- 연락처는 유사검색을 수행 -->
+			<if test="usersContact != null">
+				and instr(USERS_CONTACT, #{usersContact}) > 0
+			</if>
+
+			<!-- 이메일은 유사검색을 수행 -->
+			<if test="usersEmail != null">
+				and instr(USERS_EMAIL, #{usersEmail}) > 0
+			</if>
+
+			<!-- 이름은 시작검색을 수행 -->
+			<if test="usersName != null">
+				and USERS_NAME like #{usersName} || '%'
+			</if>
+
+			<!-- 회원등급 검색 - 체크박스에서 하나의 값이 선택된 경우 -->
+			<if test="usersType != null">
+				and USERS_TYPE = #{usersType}
+			</if>
+
+
+		</where>
+
+		<!-- 정렬 추가 - orderList라는 이름으로 정렬 구문이 전달 - 구문이기 때문에 정적 할당을 써야 함($) - 정렬이 
+			하나도 제시되지 않으면? 내가 정한 Type 으로 정렬 -->
+		<choose>
+			<when test="orderList != null and orderList.size() > 0">
+				order by
+				<foreach item="orderItem" collection="orderList"
+					separator=",">
+					${orderItem}
+				</foreach>
+			</when>
+			<otherwise>
+				ORDER BY
+				CASE
+				USERS_TYPE
+				WHEN 'ADMIN' THEN 1
+				WHEN 'AIRLINE'
+				THEN 2
+				WHEN 'MEMBER' THEN 3
+				ELSE 4
+				END
+			</otherwise>
+		</choose>
+
+		<!-- top-n-footer 자리 -->
+		<include refid="top-n-footer"></include>
+
+	</select>
+
+
+
+
+
+
+
+
+
+
+	<!-- 페이징을 위한 카운트 계산 구문 -->
+	<select id="complexSearchCount" resultType="int">
+		select count(*) from USERS
+		<!-- 조건절을 태그로 만들어서 조건이 존재할 때만 where가 등장하도록 처리 모든 조건은 and 또는 or로 시작해야 한다 -->
+		<where>
+			<!-- 아이디는 시작검사를 수행 -->
+			<if test="usersId != null">
+				and USERS_ID like #{usersId} || '%'
+			</if>
+
+			<!-- 연락처는 유사검색을 수행 -->
+			<if test="usersContact != null">
+				and instr(USERS_CONTACT, #{usersContact}) > 0
+			</if>
+
+			<!-- 이메일은 유사검색을 수행 -->
+			<if test="usersEmail != null">
+				and instr(USERS_EMAIL, #{usersEmail}) > 0
+			</if>
+
+			<!-- 회원등급 검색 - 체크박스에서 하나의 값이 선택된 경우 -->
+			<if test="usersType != null">
+				and USERS_TYPE = #{usersType}
+			</if>
+
+		</where>
+	</select>
+
+
+
+
+	<!-- top-n-query 용 -->
+	<sql id="top-n-header">
+		<if test="beginRow != null and endRow != null">
+			select * from (
+			select rownum rn, TMP.* from(
+		</if>
+	</sql>
+
+	<sql id="top-n-footer">
+		<if test="beginRow != null and endRow != null">
+			)TMP
+			)
+			where rn between #{beginRow} and #{endRow}
+		</if>
+	</sql>
+
+
 </mapper>
