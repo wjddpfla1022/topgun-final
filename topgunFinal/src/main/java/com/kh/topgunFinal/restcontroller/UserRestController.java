@@ -3,6 +3,7 @@ package com.kh.topgunFinal.restcontroller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kh.topgunFinal.configuration.CustomCertProperties;
 import com.kh.topgunFinal.dao.CertDao;
 import com.kh.topgunFinal.dao.UserDao;
@@ -20,6 +21,8 @@ import com.kh.topgunFinal.vo.DeleteUserRequestVo;
 import com.kh.topgunFinal.vo.InfoResponseVO;
 import com.kh.topgunFinal.vo.JoinRequestVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
+import com.kh.topgunFinal.vo.UserComplexRequestVO;
+import com.kh.topgunFinal.vo.UserComplexResponseVO;
 import com.kh.topgunFinal.vo.UserLoginRequestVO;
 import com.kh.topgunFinal.vo.UserLoginResponseVO;
 
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +45,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @CrossOrigin(origins = "http://localhost:3000") // 컨트롤러에서 설정
 @RestController
@@ -330,4 +333,26 @@ public class UserRestController {
 		// 삭제 처리
 		return userDao.deleteUser(requestVo);
 	}
+	
+
+	@PostMapping("/list")
+	public List<UserDto> usersList() {
+		return userDao.selectList();
+	}
+	
+	@PostMapping("/search")//회원가입과 구분하기 위해 눈물을 머금고 주소 규칙을 깬다
+	public UserComplexResponseVO search(
+					@RequestBody UserComplexRequestVO vo) {
+		
+		int count = userDao.complexSearchCount(vo);
+		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
+		boolean last = vo.getEndRow() == null || count <= vo.getEndRow();
+		
+		UserComplexResponseVO response = new UserComplexResponseVO();
+		response.setUserList(userDao.complexSearch(vo));
+		response.setCount(count);
+		response.setLast(last);
+		return response;
+	}
+	
 }
