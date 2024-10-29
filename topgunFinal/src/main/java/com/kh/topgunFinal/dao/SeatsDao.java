@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.service.CreateSeatService;
+import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
 
 @Repository
 public class SeatsDao {
@@ -47,5 +48,9 @@ public class SeatsDao {
 	    for (SeatsDto seat : list) {
 	        sqlSession.insert("seats.insert", seat);  // 각 좌석을 개별적으로 삽입
 	    }
+	}
+	//좌석에대한 정보
+	public List<SeatsFlightInfoVO> selectSeatsFlightInfo(int flightId) {
+	    return sqlSession.selectList("payment.seatsFlightInfoByFlightId", flightId);
 	}
 }

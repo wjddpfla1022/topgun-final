@@ -91,7 +91,15 @@ public class FlightDao {
         };
         jdbcTemplate.update(sql, data);
     }
-    
+    //항공편 가격
+	public int selectPrice(int flightId) {
+		return sqlSession.selectOne("flight.getFlightPrice", flightId);
+	}
+	//항공편 출발위치
+	public String selectDeparture(int flightId) {
+		return sqlSession.selectOne("flight.getDepartureAirport", flightId);
+	}
+
 }
 
 

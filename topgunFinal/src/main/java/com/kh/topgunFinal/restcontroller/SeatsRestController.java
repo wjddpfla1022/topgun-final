@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kh.topgunFinal.dao.FlightDao;
 import com.kh.topgunFinal.dao.PaymentDao;
 import com.kh.topgunFinal.dao.SeatsDao;
-import com.kh.topgunFinal.dto.FlightDto;
 import com.kh.topgunFinal.dto.PaymentDetailDto;
 import com.kh.topgunFinal.dto.PaymentDto;
 import com.kh.topgunFinal.dto.SeatsDto;
@@ -33,6 +30,7 @@ import com.kh.topgunFinal.service.TokenService;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
+import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
 import com.kh.topgunFinal.vo.SeatsPurchaseRequestVO;
 import com.kh.topgunFinal.vo.SeatsQtyVO;
 import com.kh.topgunFinal.vo.UserClaimVO;
@@ -49,6 +47,9 @@ import com.kh.topgunFinal.vo.pay.PayReadyResponseVO;
 @RestController
 @RequestMapping("/seats")
 public class SeatsRestController {
+	
+	@Autowired
+	private FlightDao flightDao;
 
 	@Autowired
 	private SeatsDao seatsDao;
@@ -77,10 +78,12 @@ public class SeatsRestController {
 			@RequestBody SeatsPurchaseRequestVO request) throws URISyntaxException {
 		UserClaimVO claimVO = // 회원 아이디 불러옴
 				tokenService.check(tokenService.removeBearer(token));
-
-		// total, itemName
+		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
+//		String departure = flightDao.selectDeparture(request.getSeatsList().get(0).getFlightId());
+		
 		StringBuffer buffer = new StringBuffer();
 		int total = 0;
+		
 		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
 		    for (SeatsQtyVO vo : request.getSeatsList()) {
 		        SeatsDto seatDto = seatsList.stream()
@@ -88,9 +91,10 @@ public class SeatsRestController {
 		                .findFirst()
 		                .orElseThrow(() -> new TargetNotFoundException("결제 대상 없음"));
 
-		        total += seatDto.getSeatsPrice() * vo.getQty();
+		        total += (seatDto.getSeatsPrice()+flightPrice) * vo.getQty() ;
 		        if (buffer.isEmpty()) {
-		            buffer.append(seatDto.getFlightId()).append("항공편 ");
+//		            buffer.append(seatDto.getFlightId()).append("항공편 ");
+//		        	buffer.append(departure);
 		            buffer.append(seatDto.getSeatsRank());
 		            buffer.append(seatDto.getSeatsNumber());
 		        }
@@ -287,11 +291,15 @@ public class SeatsRestController {
 		paymentDao.decreaseItemRemain(paymentDto.getPaymentNo(), money);
 		return response;
 	}
-
+	//정보 업데이트
 	@PutMapping("/detailUpdate")
 	public void update(@RequestBody PaymentDetailDto paymentDetailDto) {
 		paymentDao.updatePaymentDetail(paymentDetailDto);
 	}
-
+	// 좌석과 항공편 정보를 조회하는 메서드
+    @GetMapping("/flightInfo") 
+    public List<SeatsFlightInfoVO> seatsFlightInfo() {
+        return sqlSession.selectList("payment.seatsFlightInfo");
+    }
 
 }
