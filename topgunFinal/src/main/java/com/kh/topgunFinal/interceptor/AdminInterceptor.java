@@ -23,6 +23,8 @@ public class AdminInterceptor implements HandlerInterceptor{
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
+		System.out.println("관리자 인터셉터 실행: " + request.getRequestURI());
+				
 		//[1] OPTIONS 요청이 들어오면 통과시킨다
 		//- options는 통신이 가능한지 확인하는 선발대 형식의 요청
 		//- CORS 상황이거나 GET, HEAD, POST와 같은 일반적인 요청이 아니면 발생
@@ -48,7 +50,7 @@ public class AdminInterceptor implements HandlerInterceptor{
 			
 			// (3) - 1 여기서 USER_TYPE이 ADMIN인지 확인
 			UserClaimVO claimVO = tokenService.check(realToken);//(3)
-			if(claimVO.getUserType().equals("ADMIN")) {
+			if(!claimVO.getUserType().equals("ADMIN")) {
 				response.sendError(403, "권한이 없습니다."); // (3)-1 권한 부족 시 403 Forbidden 반환
 			}
 			return true;
