@@ -62,7 +62,7 @@ public class SeatsRestController {
 
 	@Autowired
 	private PaymentDao paymentDao;
-
+	
 	@Autowired
 	private SqlSession sqlSession;
 
@@ -71,7 +71,12 @@ public class SeatsRestController {
 	public List<SeatsDto> list(@PathVariable int flightId) {
 	    return seatsDao.selectList(flightId); // 항공편 ID를 DAO 메서드에 전달
 	}
-
+	//항공편 정보 조회
+	@GetMapping("info/{flightId}")
+	public List<SeatsFlightInfoVO> flightInfoVO(@PathVariable int flightId) {
+	    return paymentDao.seatsFlightInfo(flightId);
+	}
+	
 	// 좌석 구매
 	@PostMapping("/purchase")
 	public PayReadyResponseVO purchase(@RequestHeader("Authorization") String token, // 회원토큰
@@ -79,11 +84,12 @@ public class SeatsRestController {
 		UserClaimVO claimVO = // 회원 아이디 불러옴
 				tokenService.check(tokenService.removeBearer(token));
 		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
-//		String departure = flightDao.selectDeparture(request.getSeatsList().get(0).getFlightId());
+		System.out.println("항공기 가격"+flightPrice);
+		String arrival = flightDao.selectArrival(request.getSeatsList().get(0).getFlightId());
 		
 		StringBuffer buffer = new StringBuffer();
 		int total = 0;
-		
+		 List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
 		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
 		    for (SeatsQtyVO vo : request.getSeatsList()) {
 		        SeatsDto seatDto = seatsList.stream()
@@ -93,8 +99,8 @@ public class SeatsRestController {
 
 		        total += (seatDto.getSeatsPrice()+flightPrice) * vo.getQty() ;
 		        if (buffer.isEmpty()) {
-//		            buffer.append(seatDto.getFlightId()).append("항공편 ");
-//		        	buffer.append(departure);
+		            buffer.append(flightInfoList.get(0).getAirlineName() +" ");
+		        	buffer.append(arrival+"행 ");
 		            buffer.append(seatDto.getSeatsRank());
 		            buffer.append(seatDto.getSeatsNumber());
 		        }
@@ -127,6 +133,8 @@ public class SeatsRestController {
 
 		UserClaimVO claimVO = // 아이디 토큰 불러옴
 				tokenService.check(tokenService.removeBearer(token));
+		List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
+		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
 		// approve 준비 (입력)
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
@@ -135,7 +143,6 @@ public class SeatsRestController {
 		requestVO.setPgToken(request.getPgToken());
 		// approve 처리 client에 전송
 		PayApproveResponseVO responseVO = payService.approve(requestVO);
-
 		// DB저장
 		// [1]대표 정보 등록
 		 int paymentSeq = paymentDao.paymentSequence();
@@ -160,12 +167,14 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
 		 	paymentDetailDto.setFlightId(seatsDto.getFlightId());//항공기번호
 		 	paymentDetailDto.setPaymentDetailName(seatsDto.getSeatsRank() + seatsDto.getSeatsNumber());// 좌석번호
-		 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice());// 좌석판매가
+		 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice()+flightPrice);// 좌석판매가
 		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
 		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
 		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
+		 responseVO.setFlightInfoList(flightInfoList);
+		 System.out.println(flightInfoList);//이거를 success와 detail에 넣어야 함
 		// approve 출력
 		return responseVO;
 	}

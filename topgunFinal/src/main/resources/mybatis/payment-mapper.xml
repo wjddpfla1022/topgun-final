@@ -118,25 +118,27 @@
 	<!-- 좌석 및 항공편 정보를 조회하는 새로운 쿼리 추가 -->
     <select id="seatsFlightInfo" resultType="SeatsFlightInfoVO">
         SELECT 
-            s.SEATS_NO as seatsNo,
-            s.SEATS_RANK as seatsRank,
-            s.SEATS_NUMBER as seatsNumber,
-            s.SEATS_PRICE as seatsPrice,
-            s.SEATS_STATUS as seatsStatus,
-            s.FLIGHT_ID as flightId,       
-            a.AIRLINE_NAME as airlineName,
-            f.DEPARTURE_TIME as departureTime,
-            f.ARRIVAL_TIME as arrivalTime,
-            f.FLIGHT_TIME as flightTime,
-            f.DEPARTURE_AIRPORT as departureAirport,
-            f.ARRIVAL_AIRPORT as arrivalAirport,
-            f.FLIGHT_PRICE as flightPrice
+            s.SEATS_NO,
+            s.SEATS_RANK,
+            s.SEATS_NUMBER,
+            s.SEATS_PRICE,
+            s.SEATS_STATUS,
+            s.FLIGHT_ID,       
+            a.AIRLINE_NAME,
+            f.DEPARTURE_TIME,
+            f.ARRIVAL_TIME,
+            f.FLIGHT_TIME,
+            f.DEPARTURE_AIRPORT,
+            f.ARRIVAL_AIRPORT,
+            f.FLIGHT_PRICE
         FROM 
             SEATS s
         JOIN 
             FLIGHT f ON s.FLIGHT_ID = f.FLIGHT_ID
         JOIN 
             AIRLINE a ON f.USER_ID = a.USER_ID
+        where s.flight_id = #{flightId}
     </select>
+	
 	
 </mapper>

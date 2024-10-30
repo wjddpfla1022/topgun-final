@@ -96,8 +96,8 @@ public class FlightDao {
 		return sqlSession.selectOne("flight.getFlightPrice", flightId);
 	}
 	//항공편 출발위치
-	public String selectDeparture(int flightId) {
-		return sqlSession.selectOne("flight.getDepartureAirport", flightId);
+	public String selectArrival(int flightId) {
+		return sqlSession.selectOne("flight.getArrivalAirport", flightId);
 	}
 
 }

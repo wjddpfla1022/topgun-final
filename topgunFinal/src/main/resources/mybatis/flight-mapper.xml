@@ -192,14 +192,13 @@
 				</if>
 			</sql>
 			
-			
 			<!-- 항공 비행기 가격 -->
 			<select id="getFlightPrice" resultType="int">
 			select FLIGHT_PRICE from flight where FLIGHT_ID = #{flightId}
 			</select>
-			<!-- 항공 출발공항 -->
-			<select id="getDepartureAirport" resultType="String">
-			select departure_airport from flight where FLIGHT_ID = #{flightId}
+			<!-- 항공 도착공항 -->
+			<select id="getArrivalAirport" resultType="String">
+			select arrival_airport from flight where FLIGHT_ID = #{flightId}
 			</select>
 			
 
