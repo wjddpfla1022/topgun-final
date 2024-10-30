@@ -17,10 +17,10 @@
     <insert id="paymentInsert">
     insert into payment(
         payment_no, payment_tid, payment_name, 
-        payment_total, payment_remain, user_id
+        payment_total, payment_remain, user_id, flight_id
     ) values(
         #{paymentNo}, #{paymentTid}, #{paymentName}, 
-        #{paymentTotal}, #{paymentRemain}, #{userId}
+        #{paymentTotal}, #{paymentRemain}, #{userId}, #{flightId}
     )
     </insert>
 
