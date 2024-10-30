@@ -31,7 +31,7 @@
 	</delete>
 	
 	<select id="listMemberComplete" resultType="WebsocketMessageVO">
-		<include refid="top-n-header"></include>
+		<!-- <include refid="top-n-header"></include> -->
 			 SELECT 
 		        RM.room_message_no AS "no",
 		        RM.room_message_type AS "type",
@@ -54,10 +54,10 @@
 				]]>
 				</if>
 		    ORDER BY 
-		        RM.room_message_no DESC
-		<include refid="top-n-footer"></include>
-		<!-- top n query로 만들어진 최종 결과를 다시 정렬(별칭 사용 불가) -->
-		order by "no" asc		
+		        RM.room_message_no asc
+		<!--  <include refid="top-n-footer"></include> -->
+		<!-- top n query로 만들어진 최종 결과를 다시 정렬(별칭 사용 불가) 
+		order by "no" asc	 	-->
 	</select>
 	
 	<sql id="top-n-header">
