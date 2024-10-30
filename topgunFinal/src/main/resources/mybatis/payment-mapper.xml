@@ -90,12 +90,15 @@
 			<result column="payment_detail_status" property="paymentDetailStatus"/>
 		</collection>
 	</resultMap>
-	
-	<select id="findTotal" resultMap="paymentTotalVO">
+
+	 <select id="findTotal" resultMap="paymentTotalVO">
 		select * from payment 
 		where user_id = #{userId} 
 		order by payment_no desc
 	</select>
+
+	
+
 	
 	<!-- 결제 전체 취소 -->
 	<update id="cancelAll">

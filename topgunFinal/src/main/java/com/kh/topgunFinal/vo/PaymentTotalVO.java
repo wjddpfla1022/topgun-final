@@ -11,4 +11,5 @@ import lombok.Data;
 public class PaymentTotalVO {
 	private PaymentDto paymentDto;
 	private List<PaymentDetailDto> paymentDetailList;
+	private FlightVO flightVO;
 }
