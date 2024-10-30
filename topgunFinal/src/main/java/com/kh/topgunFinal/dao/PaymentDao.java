@@ -72,4 +72,8 @@ public class PaymentDao {
         return sqlSession.selectList("payment.seatsFlightInfo", flightId);
     }
 	 
+ // 항공편 좌석 모든 리스트
+    public List<SeatsFlightInfoVO> seatsFlightInfoList() {
+        return sqlSession.selectList("payment.seatsFlightInfoList");
+    }
 }

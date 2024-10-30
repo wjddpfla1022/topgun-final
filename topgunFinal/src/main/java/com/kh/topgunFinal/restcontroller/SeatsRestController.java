@@ -152,6 +152,7 @@ public class SeatsRestController {
 		 paymentDto.setPaymentName(responseVO.getItemName());//상품명
 		 paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
 		 paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
+		 paymentDto.setFlightId(paymentDto.getFlightId());//항공기번호
 		 paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
 		 paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
@@ -173,8 +174,6 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
-		 responseVO.setFlightInfoList(flightInfoList);
-		 System.out.println(flightInfoList);//이거를 success와 detail에 넣어야 함
 		// approve 출력
 		return responseVO;
 	}
@@ -186,7 +185,7 @@ public class SeatsRestController {
 		List<PaymentDto> list = paymentDao.selectList(claimVO.getUserId());
 		return list;
 	}
-
+	
 	// 구매 내역 상세 조회
 	@GetMapping("/paymentlist/{paymentNo}")
 	public List<PaymentDetailDto> paymentDetailList(@RequestHeader("Authorization") String token,
@@ -305,10 +304,11 @@ public class SeatsRestController {
 	public void update(@RequestBody PaymentDetailDto paymentDetailDto) {
 		paymentDao.updatePaymentDetail(paymentDetailDto);
 	}
+	
 	// 좌석과 항공편 정보를 조회하는 메서드
-    @GetMapping("/flightInfo") 
-    public List<SeatsFlightInfoVO> seatsFlightInfo() {
-        return sqlSession.selectList("payment.seatsFlightInfo");
+    @GetMapping("/flightInfoList") 
+    public List<SeatsFlightInfoVO> seatsFlightInfoList() {
+        return sqlSession.selectList("payment.seatsFlightInfoList");
     }
 
 }
