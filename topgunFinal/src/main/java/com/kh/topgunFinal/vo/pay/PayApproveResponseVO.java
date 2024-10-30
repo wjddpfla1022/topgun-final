@@ -29,5 +29,4 @@ public class PayApproveResponseVO {
 	private LocalDateTime createdAt;
 	private LocalDateTime approvedAt;
 	private String payload;
-	private List<SeatsFlightInfoVO> flightInfoList;
 }

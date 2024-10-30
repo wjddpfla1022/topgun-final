@@ -116,6 +116,29 @@
 		select * from payment_detail where payment_detail_no = #{paymentDetailNo}
 	</select>
 	<!-- 좌석 및 항공편 정보를 조회하는 새로운 쿼리 추가 -->
+	<select id="seatsFlightInfoList" resultType="SeatsFlightInfoVO">
+    SELECT 
+        s.SEATS_NO,
+        s.SEATS_RANK,
+        s.SEATS_NUMBER,
+        s.SEATS_PRICE,
+        s.SEATS_STATUS,
+        s.FLIGHT_ID,       
+        a.AIRLINE_NAME,
+        f.DEPARTURE_TIME,
+        f.ARRIVAL_TIME,
+        f.FLIGHT_TIME,
+        f.DEPARTURE_AIRPORT,
+        f.ARRIVAL_AIRPORT,
+        f.FLIGHT_PRICE
+    FROM 
+        SEATS s
+    JOIN 
+        FLIGHT f ON s.FLIGHT_ID = f.FLIGHT_ID
+    JOIN 
+        AIRLINE a ON f.USER_ID = a.USER_ID
+</select>
+	
     <select id="seatsFlightInfo" resultType="SeatsFlightInfoVO">
         SELECT 
             s.SEATS_NO,
