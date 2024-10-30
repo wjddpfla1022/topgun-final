@@ -2,10 +2,6 @@ package com.kh.topgunFinal.dto;
 
 
 import java.sql.Date;
-import java.util.List;
-
-import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
-
 import lombok.Data;
 
 @Data
