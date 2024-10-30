@@ -316,7 +316,6 @@ public class UserRestController {
 
 	@DeleteMapping("/delete")
 	public boolean deleteUser(@RequestBody DeleteUserRequestVo requestVo) {
-		
 		// vo가 null이면 애초에 거짓
 		if (requestVo == null) {
 			return false;
