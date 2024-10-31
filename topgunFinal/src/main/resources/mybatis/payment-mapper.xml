@@ -110,7 +110,6 @@
 		update payment_detail set payment_detail_status='취소' where payment_detail_no = #{paymentDetailNo}
 	</update>
 	
-
 	
 	<update id="decreaseItemRemain">
 		update payment set payment_remain = payment_remain - #{money} where payment_no = #{paymentNo}
