@@ -99,14 +99,20 @@ public class SeatsRestController {
 		        total += (seatDto.getSeatsPrice()+flightPrice) * vo.getQty() ;
 		        if (buffer.isEmpty()) {
 		            buffer.append(flightInfoList.get(0).getAirlineName() +" ");
-		        	buffer.append(arrival+"행 ");
+		            buffer.append(arrival+"행 ");
 		            buffer.append(seatDto.getSeatsRank());
-		            buffer.append(seatDto.getSeatsNumber());
+		            buffer.append(seatDto.getSeatsNumber()+" ");
+		        if(request.getSeatsList().size()==1) {
+		        	buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
+		        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
+		        	}
 		        }
 		    }
 		if(request.getSeatsList().size()>=2) { //2좌석 이상 구매시
-			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건");
-		}
+			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건 ");
+			buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
+        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
+ 		}
 		// payService #4에 body에 해당
 		// ready 준비 (입력)
 		PayReadyRequestVO requestVO = new PayReadyRequestVO();
@@ -149,6 +155,7 @@ public class SeatsRestController {
 		 PaymentDto paymentDto = new PaymentDto();
 		 paymentDto.setPaymentNo(paymentSeq);//결제번호
 		 paymentDto.setPaymentTid(responseVO.getTid());////거래번호
+//		 paymentDto.setFlightId(seatsFlightInfoList().get(0).getFlightId());
 		 paymentDto.setPaymentName(responseVO.getItemName());//상품명
 		 paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
 		 paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
@@ -181,7 +188,6 @@ public class SeatsRestController {
 	@GetMapping("/paymentlist")
 	public List<PaymentDto> paymentList(@RequestHeader("Authorization") String token) {
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-	
 		List<PaymentDto> list = paymentDao.selectList(claimVO.getUserId());
 		return list;
 	}
@@ -191,8 +197,6 @@ public class SeatsRestController {
 	public List<PaymentDetailDto> paymentDetailList(@RequestHeader("Authorization") String token,
 			@PathVariable int paymentNo) {
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-		FlightVO flightVO = new FlightVO();
-		flightVO.getArrivalAirport();
 		PaymentDto paymentDto = paymentDao.selectOne(paymentNo);
 		if (paymentDto == null)
 			throw new TargetNotFoundException("존재하지 않는 결제번호");
@@ -200,8 +204,6 @@ public class SeatsRestController {
 			throw new TargetNotFoundException("잘못된 대상의 결제번호");
 
 		List<PaymentDetailDto> list = paymentDao.selectDetailList(paymentNo);
-		PaymentDetailDto detailDto = new PaymentDetailDto();
-		detailDto.setFlightId(flightVO.getFlightId());
 		return list;
 	}
 
