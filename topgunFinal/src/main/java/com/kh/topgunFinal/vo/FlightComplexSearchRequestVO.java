@@ -20,7 +20,8 @@ public class FlightComplexSearchRequestVO {
 	    
 	    private Integer passengers;       // 인원수
 	    
-	    private List<String> orderList;   // 정렬 기준
+	    private String order;   // 정렬 기준
+	    
 	    private Integer beginRow, endRow;
 
 }

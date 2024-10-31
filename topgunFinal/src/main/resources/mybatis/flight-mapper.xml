@@ -118,6 +118,7 @@
 			    FROM flight f
 			    JOIN airline a ON f.user_id = a.user_id
 	    <where>
+			    	f.flight_status = '승인'
 	        <!-- 출발지 검색 조건 -->
 	        <if test="departureAirport != null and departureAirport != ''">
 	            AND f.departure_airport = #{departureAirport}
@@ -138,17 +139,25 @@
 	    </where>
 
 		    <!-- 정렬 처리 -->
-		    <choose>
-		        <when test="orderList != null and orderList.size() > 0">
-		            ORDER BY
-		            <foreach item="orderItem" collection="orderList" separator=",">
-		                ${orderItem}
-		            </foreach>
+<!-- 		    <choose>
+		        <when test="order != null">
+		            ORDER BY  #{order} asc
 		        </when>
 		        <otherwise>
 		            ORDER BY f.departure_time ASC
 		        </otherwise>
-		    </choose>
+		    </choose> -->
+		    
+<!-- 정렬 처리 -->
+<choose>
+    <when test="order == 'flight_price'">
+        ORDER BY f.flight_price ASC
+    </when>
+    <otherwise>
+        ORDER BY f.departure_time ASC
+    </otherwise>
+</choose>
+		    
 		    <include refid="top-n-footer"></include>
 		</select>
         
@@ -176,6 +185,7 @@
 		            ]]>
 		        </if>
 		    </where>
+		    
 		</select>
 
 			<sql id="top-n-header">
@@ -191,6 +201,7 @@
 				where rn between #{beginRow} and #{endRow}
 				</if>
 			</sql>
+			
 			
 			<!-- 항공 비행기 가격 -->
 			<select id="getFlightPrice" resultType="int">
