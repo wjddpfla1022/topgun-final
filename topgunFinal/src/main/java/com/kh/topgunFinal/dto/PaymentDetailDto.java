@@ -9,7 +9,7 @@ public class PaymentDetailDto {
     private int paymentDetailNo;
     private int flightId;//복합키 flight_id
     private String paymentDetailName;
-    private String paymentDetailRank;
+//    private String paymentDetailRank;
     private int paymentDetailPrice;
     private int paymentDetailQty;
     private int paymentDetailSeatsNo;//복합키 seats_no

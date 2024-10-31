@@ -60,7 +60,7 @@ public class SeatsDao {
 	}
 	
 	//결제 취소시 좌석 상태 변경
-	public boolean seatsStatus2(SeatsDto seatsDto) {
-		return sqlSession.update("seats.cancelSeats", seatsDto)>0;
-	}
+//	public boolean seatsStatus2(SeatsDto seatsDto) {
+//		return sqlSession.update("seats.cancelSeats", seatsDto)>0;
+//	}
 }
