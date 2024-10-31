@@ -344,6 +344,7 @@ public class UserRestController {
 					@RequestBody UserComplexRequestVO vo) {
 		System.out.println("이건가요?"+ vo);
 		int count = userDao.complexSearchCount(vo);
+		System.out.println("이건 내보내는 숫자에요"+count);
 		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
 		boolean last = vo.getEndRow() == null || count <= vo.getEndRow();
 		
@@ -351,6 +352,7 @@ public class UserRestController {
 		response.setUserList(userDao.complexSearch(vo));
 		response.setCount(count);
 		response.setLast(last);
+		System.out.println("이건내보는거에요"+response);
 		return response;
 	}
 	
