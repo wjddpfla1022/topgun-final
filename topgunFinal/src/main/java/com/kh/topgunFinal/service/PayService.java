@@ -76,16 +76,12 @@ public class PayService {
 	//결제 조회(order)
 	public PayOrderResponseVO order(PayOrderRequestVO request) throws URISyntaxException {
 		URI uri = new URI("https://open-api.kakaopay.com/online/v1/payment/order");
-		
 		Map<String, String> body = new HashMap<>();
 		body.put("cid", payProperties.getCid());
 		body.put("tid", request.getTid());
-		
 		HttpEntity entity = new HttpEntity(body, headers);
-		
 		PayOrderResponseVO response=
 				template.postForObject(uri, entity, PayOrderResponseVO.class);
-		
 		return response;
 	}
 	
