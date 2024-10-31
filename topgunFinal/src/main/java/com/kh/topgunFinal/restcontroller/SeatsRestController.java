@@ -84,12 +84,12 @@ public class SeatsRestController {
 			@RequestBody SeatsPurchaseRequestVO request) throws URISyntaxException {
 		UserClaimVO claimVO = // 회원 아이디 불러옴
 				tokenService.check(tokenService.removeBearer(token));
-		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
+		List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
+		List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
+		int flightPrice = flightInfoList.get(0).getFlightPrice();
 		String arrival = flightDao.selectArrival(request.getSeatsList().get(0).getFlightId());
 		StringBuffer buffer = new StringBuffer();
 		int total = 0;
-		 List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
-		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
 		    for (SeatsQtyVO vo : request.getSeatsList()) {
 		        SeatsDto seatDto = seatsList.stream()
 		                .filter(seat -> seat.getSeatsNo() == vo.getSeatsNo())
@@ -102,16 +102,10 @@ public class SeatsRestController {
 		            buffer.append(arrival+"행 ");
 		            buffer.append(seatDto.getSeatsRank());
 		            buffer.append(seatDto.getSeatsNumber()+" ");
-		        if(request.getSeatsList().size()==1) {
-		        	buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
-		        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
-		        	}
 		        }
 		    }
 		if(request.getSeatsList().size()>=2) { //2좌석 이상 구매시
 			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건 ");
-			buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
-        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
  		}
 		// payService #4에 body에 해당
 		// ready 준비 (입력)
@@ -177,7 +171,8 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailPrice(seatsDto.getSeatsPrice()+flightPrice);// 좌석판매가
 		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
 		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
-		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
+		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지\
+		 	seatsDao.seatsStatus(seatsDto);//결제시 사용으로 변경
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
 		// approve 출력
@@ -202,7 +197,6 @@ public class SeatsRestController {
 			throw new TargetNotFoundException("존재하지 않는 결제번호");
 		if (!paymentDto.getUserId().equals(claimVO.getUserId()))// 내 결제 정보가 아니면
 			throw new TargetNotFoundException("잘못된 대상의 결제번호");
-
 		List<PaymentDetailDto> list = paymentDao.selectDetailList(paymentNo);
 		return list;
 	}
@@ -266,7 +260,6 @@ public class SeatsRestController {
 		request.setTid(paymentDto.getPaymentTid());
 		request.setCancelAmount(paymentDto.getPaymentRemain());
 		PayCancelResponseVO response = payService.cancel(request);
-
 		// 잔여금액 0으로 변경
 		paymentDao.cancelAll(paymentNo);
 		// 관련항목의 상태를 취소로 변경
@@ -282,14 +275,12 @@ public class SeatsRestController {
 		PaymentDetailDto paymentDetailDto = paymentDao.selectDetailOne(paymentDetailNo);
 		if (paymentDetailDto == null)
 			throw new TargetNotFoundException("존재하지 않는 결제정보");
-
 		PaymentDto paymentDto = paymentDao.selectOne(paymentDetailDto.getPaymentDetailOrigin());
 		if (paymentDto == null)
 			throw new TargetNotFoundException("존재하지 않는 결제정보");
-
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
 		if (!paymentDto.getUserId().equals(claimVO.getUserId()))
-			;
+			throw new TargetNotFoundException("소유자 불일치");
 
 		// 취소요청
 		int money = paymentDetailDto.getPaymentDetailPrice() * paymentDetailDto.getPaymentDetailQty();

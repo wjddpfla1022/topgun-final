@@ -26,7 +26,7 @@ public class SeatsDao {
 	@Value("${custom.seat.col}")
 	private int seatCol;
 	
-	// 조회
+	// 좌석 조회
 	public List<SeatsDto> selectList(int flightId) {
 	    return sqlSession.selectList("seats.selectSeatsListByFlightId", flightId);
 	}
@@ -36,7 +36,7 @@ public class SeatsDao {
 		System.out.println(sqlSession.selectList("seats.listByFlightId", flightId));
 		return sqlSession.selectList("seats.listByFlightId", flightId);
 	}
-
+	
 //	// 좌석 조회
 //	public SeatsDto selectOne(int seatsNo) {
 //		return sqlSession.selectOne("seats.selectOne", seatsNo);
@@ -49,8 +49,18 @@ public class SeatsDao {
 	        sqlSession.insert("seats.insert", seat);  // 각 좌석을 개별적으로 삽입
 	    }
 	}
-	//좌석에대한 정보
+	//항공기에 대한 좌석의 정보
 	public List<SeatsFlightInfoVO> selectSeatsFlightInfo(int flightId) {
 	    return sqlSession.selectList("payment.seatsFlightInfoByFlightId", flightId);
+	}
+	
+	//좌석 결제시 상태 사용 으로 변경
+	public boolean seatsStatus(SeatsDto seatsDto) {
+		return sqlSession.update("seats.usedSeats", seatsDto)>0;
+	}
+	
+	//결제 취소시 좌석 상태 변경
+	public boolean seatsStatus2(SeatsDto seatsDto) {
+		return sqlSession.update("seats.cancelSeats", seatsDto)>0;
 	}
 }
