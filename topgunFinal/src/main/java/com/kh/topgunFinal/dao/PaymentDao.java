@@ -74,7 +74,7 @@ public class PaymentDao {
     public List<PaymentDetailDto> selectPaymentDetailList(int paymentNo) {
         return sqlSession.selectList("payment.selectPaymentDetailList", paymentNo);
     }
- // 항공편 좌석 모든 리스트
+ // 항공편 좌석 모든 리스트 수정완료 
     public List<SeatsFlightInfoVO> seatsFlightInfoList() {
         return sqlSession.selectList("payment.seatsFlightInfoList");
     }
