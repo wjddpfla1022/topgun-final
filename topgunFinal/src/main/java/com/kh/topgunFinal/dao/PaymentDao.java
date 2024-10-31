@@ -28,6 +28,7 @@ public class PaymentDao {
         sqlSession.insert("payment.paymentInsert", paymentDto);
     }
     public void paymentDetailInsert(PaymentDetailDto paymentDetailDto){
+    	System.out.println("Inserting PaymentDetailDto: " + paymentDetailDto);
         sqlSession.insert("payment.paymentDetailInsert", paymentDetailDto);
     }
 	public List<PaymentDto> selectList(String userId) {
@@ -78,4 +79,9 @@ public class PaymentDao {
     public List<SeatsFlightInfoVO> seatsFlightInfoList() {
         return sqlSession.selectList("payment.seatsFlightInfoList");
     }
+    
+   //DB 데이터 중복확인
+	public boolean existsPaymentDetail(PaymentDetailDto paymentDetailDto) {
+		return sqlSession.selectOne("payment.disabledPayment", paymentDetailDto);
+	}
 }

@@ -28,11 +28,22 @@
     insert into payment_detail(
         payment_detail_no, flight_id, payment_detail_name, payment_detail_price, 
         payment_detail_qty, payment_detail_seatsNo, payment_detail_origin,  
-        payment_detail_status
+        payment_detail_status, 
+        payment_detail_passport, payment_detail_passanger, payment_detail_english, 
+        payment_detail_sex, payment_detail_birth, payment_detail_country, payment_detail_visa, 
+        payment_detail_expire
     ) values(
         #{paymentDetailNo}, #{flightId}, #{paymentDetailName}, #{paymentDetailPrice}, 
         #{paymentDetailQty}, #{paymentDetailSeatsNo}, #{paymentDetailOrigin},  
-        '승인'
+        '승인',
+      	#{paymentDetailPassport, jdbcType=VARCHAR}, 
+        #{paymentDetailPassanger, jdbcType=VARCHAR}, 
+        #{paymentDetailEnglish, jdbcType=VARCHAR}, 
+        #{paymentDetailSex, jdbcType=VARCHAR}, 
+        #{paymentDetailBirth, jdbcType=VARCHAR}, 
+        #{paymentDetailCountry, jdbcType=VARCHAR}, 
+        #{paymentDetailVisa, jdbcType=VARCHAR}, 
+        #{paymentDetailExpire, jdbcType=VARCHAR}
     )
     </insert>
     
