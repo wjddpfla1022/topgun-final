@@ -342,7 +342,7 @@ public class UserRestController {
 	@PostMapping("/search")//회원가입과 구분하기 위해 눈물을 머금고 주소 규칙을 깬다
 	public UserComplexResponseVO search(
 					@RequestBody UserComplexRequestVO vo) {
-		
+		System.out.println("이건가요?"+ vo);
 		int count = userDao.complexSearchCount(vo);
 		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
 		boolean last = vo.getEndRow() == null || count <= vo.getEndRow();
