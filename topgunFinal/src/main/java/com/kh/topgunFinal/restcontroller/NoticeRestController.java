@@ -25,7 +25,7 @@ public class NoticeRestController {
     private NoticeDao noticeDao;
 
     // 공지사항 등록
-    @PostMapping("/") // Create (등록) - 200, 500
+    @PostMapping("/post") // Create (등록) - 200, 500
     public void insert(@RequestBody NoticeDto noticeDto) {
         noticeDto.setNoticeId(noticeDao.getNextSequence());
         noticeDao.insert(noticeDto);
@@ -48,7 +48,7 @@ public class NoticeRestController {
     }
 
  // 공지사항 수정
-    @PutMapping("/{noticeId}") // Update (수정) - 200, 404, 500
+    @PutMapping("/edit/{noticeId}") // Update (수정) - 200, 404, 500
     public void update(@PathVariable int noticeId, @RequestBody NoticeDto noticeDto) {
         noticeDto.setNoticeId(noticeId); // ID를 noticeDto에 설정
         boolean result = noticeDao.update(noticeDto);
@@ -59,7 +59,7 @@ public class NoticeRestController {
 
 
     // 공지사항 삭제
-    @DeleteMapping("/{noticeId}") // Delete (삭제) - 200, 404, 500
+    @DeleteMapping("/delete/{noticeId}") // Delete (삭제) - 200, 404, 500
     public void delete(@PathVariable int noticeId) {
         boolean result = noticeDao.delete(noticeId);
         if (!result) {
