@@ -27,6 +27,7 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.FlightVO;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
@@ -84,9 +85,7 @@ public class SeatsRestController {
 		UserClaimVO claimVO = // 회원 아이디 불러옴
 				tokenService.check(tokenService.removeBearer(token));
 		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
-		System.out.println("항공기 가격"+flightPrice);
 		String arrival = flightDao.selectArrival(request.getSeatsList().get(0).getFlightId());
-		
 		StringBuffer buffer = new StringBuffer();
 		int total = 0;
 		 List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
@@ -100,14 +99,20 @@ public class SeatsRestController {
 		        total += (seatDto.getSeatsPrice()+flightPrice) * vo.getQty() ;
 		        if (buffer.isEmpty()) {
 		            buffer.append(flightInfoList.get(0).getAirlineName() +" ");
-		        	buffer.append(arrival+"행 ");
+		            buffer.append(arrival+"행 ");
 		            buffer.append(seatDto.getSeatsRank());
-		            buffer.append(seatDto.getSeatsNumber());
+		            buffer.append(seatDto.getSeatsNumber()+" ");
+		        if(request.getSeatsList().size()==1) {
+		        	buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
+		        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
+		        	}
 		        }
 		    }
 		if(request.getSeatsList().size()>=2) { //2좌석 이상 구매시
-			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건");
-		}
+			buffer.append(" 외 " +(request.getSeatsList().size()-1)+"건 ");
+			buffer.append(flightInfoList.get(0).getDepartureAirport()+flightInfoList.get(0).getDepartureTime()+" ");
+        	buffer.append(flightInfoList.get(0).getArrivalAirport()+flightInfoList.get(0).getArrivalTime());
+ 		}
 		// payService #4에 body에 해당
 		// ready 준비 (입력)
 		PayReadyRequestVO requestVO = new PayReadyRequestVO();
@@ -143,26 +148,27 @@ public class SeatsRestController {
 		requestVO.setPgToken(request.getPgToken());
 		// approve 처리 client에 전송
 		PayApproveResponseVO responseVO = payService.approve(requestVO);
+		
 		// DB저장
 		// [1]대표 정보 등록
 		 int paymentSeq = paymentDao.paymentSequence();
 		 PaymentDto paymentDto = new PaymentDto();
 		 paymentDto.setPaymentNo(paymentSeq);//결제번호
 		 paymentDto.setPaymentTid(responseVO.getTid());////거래번호
+//		 paymentDto.setFlightId(seatsFlightInfoList().get(0).getFlightId());
 		 paymentDto.setPaymentName(responseVO.getItemName());//상품명
 		 paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
 		 paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
-		 paymentDto.setFlightId(paymentDto.getFlightId());//항공기번호
 		 paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
 		 paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
 		// [2]상세 정보 등록
 		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
-		 for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
-		 	SeatsDto seatsDto = seatsList.stream()
-		             .filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
-		             .findFirst()
-		             .orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
+			for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
+				SeatsDto seatsDto = seatsList.stream()
+						.filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
+						.findFirst()
+						.orElseThrow(() -> new TargetNotFoundException("존재하지 않는 좌석입니다"));
 		 	int paymentDetailSeq= paymentDao.paymentDetailSequence();//번호추출
 		 	PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
 		 	paymentDetailDto.setPaymentDetailNo(paymentDetailSeq);// 번호 설정
@@ -191,7 +197,6 @@ public class SeatsRestController {
 	public List<PaymentDetailDto> paymentDetailList(@RequestHeader("Authorization") String token,
 			@PathVariable int paymentNo) {
 		UserClaimVO claimVO = tokenService.check(tokenService.removeBearer(token));
-
 		PaymentDto paymentDto = paymentDao.selectOne(paymentNo);
 		if (paymentDto == null)
 			throw new TargetNotFoundException("존재하지 않는 결제번호");
