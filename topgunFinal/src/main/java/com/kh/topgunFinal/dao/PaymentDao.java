@@ -17,7 +17,11 @@ import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
 public class PaymentDao {
     @Autowired
     private SqlSession sqlSession;
-
+//카카오 결제 주문번호
+    public int payServiceSequence(){
+        return sqlSession.selectOne("payment.payServiceSequence");
+    }
+    
     public int paymentSequence(){
         return sqlSession.selectOne("payment.paymentSequence");
     }

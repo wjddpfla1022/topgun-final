@@ -62,7 +62,13 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 MEMBER인 경우
 		registry.addInterceptor(memberInterceptor)
 					.addPathPatterns(
-						"/flight"
+						"/flight",
+						"/payment/{flightId}",//회원 항공기 좌석 결제 페이지
+						"/payment/{flightId}/success", //회원 결제 성공시 페이지
+						"/payment/{flightId}/cancel", //회원 결제 취소 페이지
+						"/payment/{flightId}/fail", //회원 결제 실패 페이지
+						"/payment/alllist",//회원 결제목록 결제정보 페이지
+						"/payment/detail/{paymentNo}"//상세결제 목록 및 전체취소,부분취소 가능 페이지
 					);
 		
 		

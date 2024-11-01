@@ -38,7 +38,7 @@ public class PayService {
 		//#4 보낼 내용
 		Map<String, String> body = new HashMap<>();
 		body.put("cid", payProperties.getCid());
-		body.put("partner_order_id", request.getPartnerOrderId());//주문번호
+		body.put("partner_order_id", String.valueOf(request.getPartnerOrderId()));//주문번호
 		body.put("partner_user_id", request.getPartnerUserId());//회원아이디
 		body.put("item_name", request.getItemName());//상품명 (비지니스 || 이코노미 + 좌석번호)
 		body.put("quantity", "1");//수량
