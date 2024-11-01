@@ -78,16 +78,7 @@ public class SeatsRestController {
 	    return paymentDao.seatsFlightInfo(flightId);
 	}
 	
-	// 중복 체크 로직 추가
-//    for (SeatsQtyVO vo : request.getSeatsList()) {
-//        PaymentDetailDto paymentDetailDto = new PaymentDetailDto();
-//        paymentDetailDto.setFlightId(vo.getFlightId());
-//        paymentDetailDto.setPaymentDetailSeatsNo(vo.getSeatsNo());
-//        
-//        if (paymentDao.existsPaymentDetail(paymentDetailDto)) {
-//            throw new IllegalStateException("이미 결제된 좌석이 포함되어 있어 결제가 불가능합니다.");
-//        }
-//    }
+	
 	
 	// 좌석 구매
 	@PostMapping("/purchase")
@@ -121,7 +112,7 @@ public class SeatsRestController {
 		// payService #4에 body에 해당
 		// ready 준비 (입력)
 		PayReadyRequestVO requestVO = new PayReadyRequestVO();
-		requestVO.setPartnerOrderId(UUID.randomUUID().toString());// 주문번호 Random
+		requestVO.setPartnerOrderId(paymentDao.payServiceSequence());// 주문번호 Random
 		requestVO.setPartnerUserId(claimVO.getUserId());// header token
 		requestVO.setItemName(buffer.toString());
 		requestVO.setTotalAmount(total);
@@ -183,8 +174,7 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
 		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
 		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
-//		 	paymentDetailDto.setPaymentDetailPassanger(qtyVO.getPaymentDetailPassport());
-		 	System.out.println("d23094723ij32kfndffd= "+qtyVO);
+		 	paymentDetailDto.setPaymentDetailPassport(paymentDetailDto.getPaymentDetailPassport());
 		 	seatsDao.seatsStatus(seatsDto);//결제시 사용으로 변경
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
