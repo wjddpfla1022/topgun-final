@@ -55,6 +55,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 						"/users/join", // 회원가입
 						"/users/resetPw", // 비밀번호 초기화
 						"/users/changePassword", // 비밀번호 변경
+						"/users/checkId", // 아이디 중복 검증
 						"/users/search" // ADMIN만 접근 가능한 경로도 제외
 					);
 		
