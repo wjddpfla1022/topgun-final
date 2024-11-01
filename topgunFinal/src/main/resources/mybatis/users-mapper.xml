@@ -249,6 +249,11 @@
 				and instr(USERS_EMAIL, #{usersEmail}) > 0
 			</if>
 
+			<!-- 이름은 시작검색을 수행 -->
+			<if test="usersName != null">
+				and USERS_NAME like #{usersName} || '%'
+			</if>
+
 			<!-- 회원등급 검색 - 체크박스에서 하나의 값이 선택된 경우 -->
 			<if test="usersType != null">
 				and USERS_TYPE = #{usersType}
