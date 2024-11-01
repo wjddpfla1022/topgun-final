@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class PayReadyRequestVO {
-	private String partnerOrderId;
+	private int partnerOrderId;
 	private String partnerUserId;
 	private String itemName;
 	private int totalAmount;

@@ -24,7 +24,7 @@ public class Paytest03 {
 	public void test() throws URISyntaxException {
 		//준비 PayReadyReqeusetVO
 		PayReadyRequestVO request = new PayReadyRequestVO();
-		request.setPartnerOrderId(UUID.randomUUID().toString());
+//		request.setPartnerOrderId(UUID.randomUUID().toString());
 		request.setPartnerUserId("testuser1");
 		request.setItemName("테스트결제");
 		request.setTotalAmount(990000);
