@@ -62,7 +62,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 MEMBER인 경우
 		registry.addInterceptor(memberInterceptor)
 					.addPathPatterns(
-						"/flight",
+						
 						"/payment/{flightId}",//회원 항공기 좌석 결제 페이지
 						"/payment/{flightId}/success", //회원 결제 성공시 페이지
 						"/payment/{flightId}/cancel", //회원 결제 취소 페이지
@@ -75,7 +75,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 AIRLINE인 경우
 		registry.addInterceptor(airLineInterceptor)
 					.addPathPatterns(
-						"/flight"
+						"/flight", //항공편페이지
+						"/flight/detail/{flightId}"
 					)
 					.excludePathPatterns(
 
@@ -85,6 +86,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(adminInterceptor)
 					.addPathPatterns(
 						"/users/search", // 회원 목록 리스트 조회
+						"/admin/list",//항공편 조회 및 승인 거절
+						"/admin/detail/{flight}",
 							
 							//공지사항 등록시 어드민인 경우만 허용하도록 조회를 제외한 편집 기능 api 를 모두 포함
 	                        "/notice/edit/{noticeId}",
