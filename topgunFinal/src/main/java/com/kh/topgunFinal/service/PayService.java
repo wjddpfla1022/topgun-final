@@ -40,7 +40,7 @@ public class PayService {
 		body.put("cid", payProperties.getCid());
 		body.put("partner_order_id", String.valueOf(request.getPartnerOrderId()));//주문번호
 		body.put("partner_user_id", request.getPartnerUserId());//회원아이디
-		body.put("item_name", request.getItemName());//상품명 (비지니스 || 이코노미 + 좌석번호)
+		body.put("item_name", request.getItemName());//상품명 (항공사 + 비지니스 || 이코노미 + 좌석번호)
 		body.put("quantity", "1");//수량
 		body.put("total_amount", String.valueOf(request.getTotalAmount()));//숫자를 문자열로 바꾸는 변환명령 String.valueOf
 		body.put("tax_free_amount", "0");

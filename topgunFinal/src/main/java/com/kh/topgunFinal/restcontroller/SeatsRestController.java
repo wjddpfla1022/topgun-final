@@ -78,8 +78,6 @@ public class SeatsRestController {
 	    return paymentDao.seatsFlightInfo(flightId);
 	}
 	
-	
-	
 	// 좌석 구매
 	@PostMapping("/purchase")
 	public PayReadyResponseVO purchase(@RequestHeader("Authorization") String token, // 회원토큰
@@ -97,7 +95,6 @@ public class SeatsRestController {
 		                .filter(seat -> seat.getSeatsNo() == vo.getSeatsNo())
 		                .findFirst()
 		                .orElseThrow(() -> new TargetNotFoundException("결제 대상 없음"));
-
 		        total += (seatDto.getSeatsPrice()+flightPrice) * vo.getQty() ;
 		        if (buffer.isEmpty()) {
 		            buffer.append(flightInfoList.get(0).getAirlineName() +" ");
@@ -134,8 +131,6 @@ public class SeatsRestController {
 
 		UserClaimVO claimVO = // 아이디 토큰 불러옴
 				tokenService.check(tokenService.removeBearer(token));
-		List<SeatsFlightInfoVO> flightInfoList = paymentDao.seatsFlightInfo(request.getSeatsList().get(0).getFlightId());
-		int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
 		// approve 준비 (입력)
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
@@ -145,8 +140,11 @@ public class SeatsRestController {
 		// approve 처리 client에 전송
 		PayApproveResponseVO responseVO = payService.approve(requestVO);
 		
+		//중복검사 필요
+		
 		// DB저장
 		// [1]대표 정보 등록
+		 int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
 		 int paymentSeq = paymentDao.paymentSequence();
 		 PaymentDto paymentDto = new PaymentDto();
 		 paymentDto.setPaymentNo(paymentSeq);//결제번호
@@ -174,7 +172,6 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
 		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
 		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
-		 	paymentDetailDto.setPaymentDetailPassport(paymentDetailDto.getPaymentDetailPassport());
 		 	seatsDao.seatsStatus(seatsDto);//결제시 사용으로 변경
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
