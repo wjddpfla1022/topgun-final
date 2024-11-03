@@ -32,25 +32,29 @@
     insert into payment_detail(
         payment_detail_no, flight_id, payment_detail_name, payment_detail_price, 
         payment_detail_qty, payment_detail_seatsNo, payment_detail_origin,  
-        payment_detail_status
+        payment_detail_status, payment_detail_passport, payment_detail_passanger, 
+        payment_detail_english, payment_detail_sex, payment_detail_birth, 
+        payment_detail_country, payment_detail_visa, payment_detail_expire
     ) values(
         #{paymentDetailNo}, #{flightId}, #{paymentDetailName}, #{paymentDetailPrice}, 
         #{paymentDetailQty}, #{paymentDetailSeatsNo}, #{paymentDetailOrigin},  
-        '승인'
+        '승인', #{paymentDetailPassport,jdbcType=VARCHAR}, #{paymentDetailPassanger,jdbcType=VARCHAR}, 
+        #{paymentDetailEnglish,jdbcType=VARCHAR}, #{paymentDetailSex,jdbcType=VARCHAR}, #{paymentDetailBirth,jdbcType=VARCHAR}, 
+        #{paymentDetailCountry,jdbcType=VARCHAR}, #{paymentDetailVisa,jdbcType=VARCHAR}, #{paymentDetailExpire,jdbcType=VARCHAR}
     )
     </insert>
     
     <!-- 정보 업데이트 (여권정보)-->
 	<update id="paymentDetailUpdate">
     UPDATE payment_detail SET
-        payment_detail_passport = #{paymentDetailPassport},
-        payment_detail_passanger = #{paymentDetailPassanger},
-        payment_detail_english = #{paymentDetailEnglish},
-        payment_detail_sex = #{paymentDetailSex},
-        payment_detail_birth = #{paymentDetailBirth},  
-        payment_detail_country = #{paymentDetailCountry},
-        payment_detail_visa = #{paymentDetailVisa},
-        payment_detail_expire = #{paymentDetailExpire} 
+        payment_detail_passport = #{paymentDetailPassport,jdbcType=VARCHAR},
+        payment_detail_passanger = #{paymentDetailPassanger,jdbcType=VARCHAR},
+        payment_detail_english = #{paymentDetailEnglish,jdbcType=VARCHAR},
+        payment_detail_sex = #{paymentDetailSex,jdbcType=VARCHAR},
+        payment_detail_birth = #{paymentDetailBirth,jdbcType=VARCHAR},  
+        payment_detail_country = #{paymentDetailCountry,jdbcType=VARCHAR},
+        payment_detail_visa = #{paymentDetailVisa,jdbcType=VARCHAR},
+        payment_detail_expire = #{paymentDetailExpire,jdbcType=VARCHAR} 
     WHERE payment_detail_no = #{paymentDetailNo}
 </update>
 
@@ -72,6 +76,13 @@
 	</select>
 	
 	<!--  계층형 조회-->
+        <!-- <association property="flightDto">
+            <result column="departure_time" property="departureTime"/>        
+            <result column="departrue_airport" property="departureAirport"/>        
+            <result column="arrival_time" property="arrivalTime"/>        
+            <result column="flight_time" property="flightTime"/>      
+            <result column="arrival_airport" property="arrivalAirport"/>
+        </association> -->
 	<resultMap type="PaymentTotalVO" id="paymentTotalVO">
 		<association property="paymentDto">
 			<result column="payment_no" property="paymentNo"/>
@@ -79,9 +90,18 @@
 			<result column= "payment_total" property="paymentTotal"/>
 			<result column="payment_tid" property="paymentTid"/>
 			<result column="payment_remain" property="paymentRemain"/>
-			<result column= "payment_time" property="paymentTime"  javaType="java.sql.Date"/>
+            <result column="flight_id" property="flightId"/>
+			<result column="payment_time" property="paymentTime"  javaType="java.util.Date"/>
 			<result column="user_id" property="userId"/>
 		</association>
+        <association property="flightVO">
+            <result column="flight_id" property="flightId"/>
+            <result column="flight_time" property="flightTime"/>
+            <result column="departure_airport" property="departureAirport"/>
+            <result column="departure_time" property="departureTime"/>
+            <result column="arrival_airport" property="arrivalAirport"/>
+            <result column="arrival_time" property="arrivalTime"/>
+        </association>
 		<collection property="paymentDetailList" 
 		javaType="java.util.List" ofType="PaymentDetailDto" select="findDetail" column="payment_no">
 			<result column="payment_detail_no" property="paymentDetailNo"/>
@@ -95,10 +115,25 @@
 	</resultMap>
 
 	 <select id="findTotal" resultMap="paymentTotalVO">
-		select * from payment 
-		where user_id = #{userId} 
-		order by payment_no desc
-	</select>
+    SELECT 
+        p.payment_no AS payment_no,
+        p.payment_name AS payment_name,
+        p.payment_total AS payment_total,
+        p.payment_tid AS payment_tid,
+        p.payment_remain AS payment_remain,
+        p.flight_id AS flight_id,
+        p.payment_time AS payment_time,
+        p.user_id AS user_id,
+        f.flight_time AS flight_time,
+        f.departure_airport AS departure_airport,
+        f.departure_time AS departure_time,
+        f.arrival_airport AS arrival_airport,
+        f.arrival_time AS arrival_time
+    FROM payment p
+    LEFT JOIN flight f ON p.flight_id = f.flight_id
+    WHERE p.user_id = #{userId}
+    ORDER BY p.payment_no DESC
+</select>
 
 	<!-- 결제 전체 취소 -->
 	<update id="cancelAll">

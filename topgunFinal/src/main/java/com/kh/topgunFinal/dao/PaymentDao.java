@@ -32,7 +32,6 @@ public class PaymentDao {
         sqlSession.insert("payment.paymentInsert", paymentDto);
     }
     public void paymentDetailInsert(PaymentDetailDto paymentDetailDto){
-    	System.out.println("Inserting PaymentDetailDto: " + paymentDetailDto);
         sqlSession.insert("payment.paymentDetailInsert", paymentDetailDto);
     }
 	public List<PaymentDto> selectList(String userId) {
