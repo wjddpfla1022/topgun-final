@@ -26,6 +26,7 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.FlightVO;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
@@ -64,7 +65,7 @@ public class SeatsRestController {
 	
 	@Autowired
 	private SqlSession sqlSession;
-
+	
 	//좌석 조회
 	@GetMapping("/{flightId}") // 비워두면 /seats/{flightId}에 대한 GET 요청이 됩니다.
 	public List<SeatsDto> list(@PathVariable int flightId) {
@@ -146,10 +147,11 @@ public class SeatsRestController {
 		// [1]대표 정보 등록
 		 int flightPrice = flightDao.selectPrice(request.getSeatsList().get(0).getFlightId());
 		 int paymentSeq = paymentDao.paymentSequence();
+		 
 		 PaymentDto paymentDto = new PaymentDto();
 		 paymentDto.setPaymentNo(paymentSeq);//결제번호
 		 paymentDto.setPaymentTid(responseVO.getTid());////거래번호
-		 paymentDto.setFlightId(seatsFlightInfoList().get(0).getFlightId());
+		 paymentDto.setFlightId(request.getSeatsList().get(0).getFlightId());
 		 paymentDto.setPaymentName(responseVO.getItemName());//상품명
 		 paymentDto.setPaymentTotal(responseVO.getAmount().getTotal());//총결제금액
 		 paymentDto.setPaymentRemain(paymentDto.getPaymentTotal());//취소가능금액
