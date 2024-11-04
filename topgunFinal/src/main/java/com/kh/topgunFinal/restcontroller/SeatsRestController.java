@@ -2,7 +2,6 @@ package com.kh.topgunFinal.restcontroller;
 
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
-import com.kh.topgunFinal.vo.FlightVO;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
@@ -132,6 +130,8 @@ public class SeatsRestController {
 		UserClaimVO claimVO = // 아이디 토큰 불러옴
 				tokenService.check(tokenService.removeBearer(token));
 		// approve 준비 (입력)
+		
+		//중복검사 필요
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
 		requestVO.setPartnerUserId(claimVO.getUserId());
@@ -172,6 +172,14 @@ public class SeatsRestController {
 		 	paymentDetailDto.setPaymentDetailSeatsNo(seatsDto.getSeatsNo());// 좌석별고유번호
 		 	paymentDetailDto.setPaymentDetailQty(qtyVO.getQty());// 구매수량
 		 	paymentDetailDto.setPaymentDetailOrigin(paymentSeq);// 어느소속에 상세번호인지
+			paymentDetailDto.setPaymentDetailPassport(qtyVO.getPaymentDetailPassport());
+			paymentDetailDto.setPaymentDetailPassanger(qtyVO.getPaymentDetailPassanger());
+			paymentDetailDto.setPaymentDetailEnglish(qtyVO.getPaymentDetailEnglish());
+			paymentDetailDto.setPaymentDetailSex(qtyVO.getPaymentDetailSex());
+			paymentDetailDto.setPaymentDetailBirth(qtyVO.getPaymentDetailBirth());
+			paymentDetailDto.setPaymentDetailCountry(qtyVO.getPaymentDetailCountry());
+			paymentDetailDto.setPaymentDetailVisa(qtyVO.getPaymentDetailVisa());
+			paymentDetailDto.setPaymentDetailExpire(qtyVO.getPaymentDetailExpire());
 		 	seatsDao.seatsStatus(seatsDto);//결제시 사용으로 변경
 		 	paymentDao.paymentDetailInsert(paymentDetailDto);
 		 }
