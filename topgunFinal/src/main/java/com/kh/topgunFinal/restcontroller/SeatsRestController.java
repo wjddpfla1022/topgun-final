@@ -26,7 +26,6 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
-import com.kh.topgunFinal.vo.FlightVO;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
@@ -132,7 +131,11 @@ public class SeatsRestController {
 				tokenService.check(tokenService.removeBearer(token));
 		// approve 준비 (입력)
 		
-		//중복검사 필요
+		  // 중복 결제 검사
+	    if (paymentDao.existsByTid(request.getTid())) {
+	        throw new TargetNotFoundException("이미 처리된 결제입니다."); // 사용자 정의 예외
+	    }
+		
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
 		requestVO.setPartnerUserId(claimVO.getUserId());
@@ -140,8 +143,6 @@ public class SeatsRestController {
 		requestVO.setPgToken(request.getPgToken());
 		// approve 처리 client에 전송
 		PayApproveResponseVO responseVO = payService.approve(requestVO);
-		
-		//중복검사 필요
 		
 		// DB저장
 		// [1]대표 정보 등록
