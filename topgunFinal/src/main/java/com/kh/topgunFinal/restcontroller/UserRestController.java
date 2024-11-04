@@ -314,13 +314,14 @@ public class UserRestController {
 		return userDao.changeUserPassword(vo);
 	}
 
+	@Transactional
 	@DeleteMapping("/delete")
 	public boolean deleteUser(@RequestBody DeleteUserRequestVo requestVo) {
 		// vo가 null이면 애초에 거짓
 		if (requestVo == null) {
 			return false;
 		}
-
+		
 		// 비밀번호 검증 후
 		UserDto userDto = userDao.selectOne(requestVo.getUserId());
 		boolean isValid = encoder.matches(requestVo.getDelPw(), userDto.getUsersPassword());
@@ -328,6 +329,21 @@ public class UserRestController {
 		if(!isValid) {
 			return false;
 		}
+		
+		try {
+		    int beforeNo = userDao.findImage(userDto.getUsersId());
+
+		    // 이미지가 존재하는 경우에만 삭제
+		    if (beforeNo > 0) {
+		        attachmentService.delete(beforeNo);
+		    } else {
+		        System.out.println("삭제할 이미지가 없습니다.");
+		    }
+		} catch (Exception e) {
+		    System.out.println("이미지에러!");
+		    // 예외는 업로드때와 동일하게 무시
+		}
+		
 		
 		// 삭제 처리
 		return userDao.deleteUser(requestVo);
