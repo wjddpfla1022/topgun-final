@@ -55,7 +55,6 @@ public class AdminFlightRestController {
     public void update(@RequestBody FlightDto flightDto) {
         adminFlightDao.update(flightDto);
 
-        System.out.println(flightDto);
         // 승인 완료 후 좌석 생성
         if(flightDto.getFlightStatus().equals("승인")) {
             seatsDao.insertList(flightDto.getFlightId());

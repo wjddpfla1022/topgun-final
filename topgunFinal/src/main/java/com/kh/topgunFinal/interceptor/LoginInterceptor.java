@@ -22,7 +22,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		System.out.println("로그인 인터셉터 실행: " + request.getRequestURI());
 
 		// [1] OPTIONS 요청이 들어오면 통과시킨다
 		// - options는 통신이 가능한지 확인하는 선발대 형식의 요청
