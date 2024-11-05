@@ -48,7 +48,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 					.addPathPatterns(
 						"/users/**",
 						"/room/**",
-						"/chat/**"
+						"/chat/**",
+						"/seats/**"
 					)
 					.excludePathPatterns(
 						"/users/login", // 로그인
@@ -64,12 +65,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(memberInterceptor)
 					.addPathPatterns(
 						
-						"/payment/{flightId}",//회원 항공기 좌석 결제 페이지
-						"/payment/{flightId}/success", //회원 결제 성공시 페이지
-						"/payment/{flightId}/cancel", //회원 결제 취소 페이지
-						"/payment/{flightId}/fail", //회원 결제 실패 페이지
-						"/payment/alllist",//회원 결제목록 결제정보 페이지
-						"/payment/detail/{paymentNo}"//상세결제 목록 및 전체취소,부분취소 가능 페이지
+				
 					);
 		
 		
