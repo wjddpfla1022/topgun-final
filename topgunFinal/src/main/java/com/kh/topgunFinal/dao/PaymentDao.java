@@ -84,7 +84,7 @@ public class PaymentDao {
     }
     
    //DB 데이터 중복확인
-    public boolean existsByTid(String tid) {
-        return sqlSession.selectOne("payment.existsByTid", tid);
-    }
+//    public boolean existsByTid(String tid) {
+//        return sqlSession.selectOne("payment.existsByTid", tid);
+//    }
 }
