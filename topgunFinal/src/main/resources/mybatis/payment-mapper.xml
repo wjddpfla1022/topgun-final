@@ -58,11 +58,13 @@
     WHERE payment_detail_no = #{paymentDetailNo}
 </update>
 
- <select id="existsByTid" parameterType="string" resultType="boolean">
+<!-- 확인필요
+ <select id="existsByPartnerOrderId" parameterType="string" resultType="boolean">
         SELECT COUNT(*)
         FROM payment
         WHERE payment_tid = #{tid}
     </select>
+ -->
 
     <!-- 정보 조회 -->
     <select id="list" resultType="PaymentDto">

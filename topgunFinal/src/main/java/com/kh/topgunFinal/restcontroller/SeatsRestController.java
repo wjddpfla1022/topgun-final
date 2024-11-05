@@ -132,9 +132,9 @@ public class SeatsRestController {
 		// approve 준비 (입력)
 		
 		  // 중복 결제 검사
-	    if (paymentDao.existsByTid(request.getTid())) {
-	        throw new TargetNotFoundException("이미 처리된 결제입니다."); // 사용자 정의 예외
-	    }
+//	    if (paymentDao.existsByParterOrderId(request.getPartnerOrderId())) {
+//	        throw new TargetNotFoundException("이미 처리된 결제입니다."); // 사용자 정의 예외
+//	    }
 		
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
