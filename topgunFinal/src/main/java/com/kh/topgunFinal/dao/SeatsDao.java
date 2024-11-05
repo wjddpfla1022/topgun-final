@@ -33,7 +33,6 @@ public class SeatsDao {
 	
 	// 조건 리스트 조회(FlightId로 좌석을 조회해야한다)
 	public List<SeatsDto> selectListByFlightId(int flightId){
-		System.out.println(sqlSession.selectList("seats.listByFlightId", flightId));
 		return sqlSession.selectList("seats.listByFlightId", flightId);
 	}
 	

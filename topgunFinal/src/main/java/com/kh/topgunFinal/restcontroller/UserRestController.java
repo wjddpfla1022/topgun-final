@@ -74,7 +74,6 @@ public class UserRestController {
 
 	@PostMapping("/login")
 	public UserLoginResponseVO login(@RequestBody UserLoginRequestVO requestVo) {
-		System.out.println(requestVo);
 
 		// 회원조회
 		UserDto userDto = userDao.selectOne(requestVo.getUsersId());
@@ -102,7 +101,6 @@ public class UserRestController {
 
 	@PostMapping("/refresh")
 	public UserLoginResponseVO refresh(@RequestHeader("Authorization") String refreshToken) {
-		System.out.println("refresh = " + refreshToken);
 		// [1] refreshToken이 없거나 Bearer로 시작하지 않으면 안됨
 		if (refreshToken == null)
 			throw new TargetNotFoundException("토큰 없음");
@@ -121,7 +119,6 @@ public class UserRestController {
 		userTokenDto.setTokenTarget(claimVO.getUserId());
 		userTokenDto.setTokenValue(tokenService.removeBearer(refreshToken));
 		UserTokenDto resultDto = userTokenDao.selectOne(userTokenDto);
-		System.out.println("resultDto ============" + resultDto);
 		if (resultDto == null)// 발급내역이 없음
 			throw new TargetNotFoundException("발급 내역이 없음");
 
@@ -164,7 +161,6 @@ public class UserRestController {
 	// 회원 등록 기능
 	@PostMapping("/join")
 	public void join(@RequestBody JoinRequestVO vo) {
-		System.out.println("vo = " + vo);
 
 		// 기본 회원 정보 저장 객체 생성
 		UserDto userDto = new UserDto();
@@ -301,7 +297,6 @@ public class UserRestController {
 
 	@PutMapping("/changePassword")
 	public boolean changePassword(@RequestBody ChangePasswordRequestVO vo) {
-		System.out.println(vo);
 
 		// vo가 null이면 취소
 		if (vo == null) {
@@ -337,10 +332,8 @@ public class UserRestController {
 		    if (beforeNo > 0) {
 		        attachmentService.delete(beforeNo);
 		    } else {
-		        System.out.println("삭제할 이미지가 없습니다.");
 		    }
 		} catch (Exception e) {
-		    System.out.println("이미지에러!");
 		    // 예외는 업로드때와 동일하게 무시
 		}
 		
@@ -358,9 +351,7 @@ public class UserRestController {
 	@PostMapping("/search")//회원가입과 구분하기 위해 눈물을 머금고 주소 규칙을 깬다
 	public UserComplexResponseVO search(
 					@RequestBody UserComplexRequestVO vo) {
-		System.out.println("이건가요?"+ vo);
 		int count = userDao.complexSearchCount(vo);
-		System.out.println("이건 내보내는 숫자에요"+count);
 		//마지막 = 페이징을 안쓰는 경우 or 검색개수가 종료번호보다 작거나 같은 경우
 		boolean last = vo.getEndRow() == null || count <= vo.getEndRow();
 		
@@ -368,7 +359,6 @@ public class UserRestController {
 		response.setUserList(userDao.complexSearch(vo));
 		response.setCount(count);
 		response.setLast(last);
-		System.out.println("이건내보는거에요"+response);
 		return response;
 	}
 	

@@ -21,7 +21,6 @@ public class CertCleanService {
 //	매 시 정각마다 인증번호 청소 작업을 수행
 	@Scheduled(cron = "0 0 * * * *")
 	public void clean() {
-		System.out.println("청소 시작! " + LocalDateTime.now());
 		certDao.clean(customCertProperties.getExpire());
 	}
 	
