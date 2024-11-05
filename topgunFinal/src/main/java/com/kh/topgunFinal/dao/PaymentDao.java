@@ -84,7 +84,7 @@ public class PaymentDao {
     }
     
    //DB 데이터 중복확인
-	public boolean existsPaymentDetail(PaymentDetailDto paymentDetailDto) {
-		return sqlSession.selectOne("payment.disabledPayment", paymentDetailDto);
-	}
+    public boolean existsByTid(String tid) {
+        return sqlSession.selectOne("payment.existsByTid", tid);
+    }
 }
