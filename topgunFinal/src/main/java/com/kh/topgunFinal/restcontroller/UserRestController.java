@@ -3,7 +3,6 @@ package com.kh.topgunFinal.restcontroller;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.kh.topgunFinal.configuration.CustomCertProperties;
 import com.kh.topgunFinal.dao.CertDao;
 import com.kh.topgunFinal.dao.UserDao;
