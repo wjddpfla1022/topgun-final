@@ -41,7 +41,7 @@ public class FlightDao {
     
     // 조회
     public List<FlightVO> selectList() {
-        return sqlSession.selectList("flight.list2");
+        return sqlSession.selectList("flight.list");
     }
     
     // 검색
