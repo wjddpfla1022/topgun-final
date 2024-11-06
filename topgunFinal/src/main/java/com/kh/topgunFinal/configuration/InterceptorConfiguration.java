@@ -26,15 +26,15 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	@Autowired
 	private AdminInterceptor adminInterceptor;
 	
-	@Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
-                .allowedOrigins("http://localhost:3000") // 허용할 출처 (예시)
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
-                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더를 명시적으로 설정
-                .allowCredentials(true); // 쿠키나 인증 정보를 허용할지 여부
-    }
-	
+//	@Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
+//                .allowedOrigins("http://localhost:3000") // 허용할 출처 (예시)
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+//                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더를 명시적으로 설정
+//                .allowCredentials(true); // 쿠키나 인증 정보를 허용할지 여부
+//    }
+//	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		
@@ -44,7 +44,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 						"/users/**",
 						"/room/**",
 						"/chat/**",
-						"/seats/**"
+						"/seats/**",
+						"/api/**"
 					)
 					.excludePathPatterns(
 						"/users/login", // 로그인
@@ -59,9 +60,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(airLineInterceptor)
 					.addPathPatterns(
 						"/flight/detail/{flightId}",
-						"/flight/column/{column}/keyword/{keyword}",
+						"/flight/column/{column}/keyword/{keyword}"
 						//그래프 api
-						"/api/flight-payments"
+						
 					)
 					.excludePathPatterns(
 
@@ -77,9 +78,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 							//공지사항 등록시 어드민인 경우만 허용하도록 조회를 제외한 편집 기능 api 를 모두 포함
 	                        "/notice/edit/{noticeId}",
 	                        "/notice/delete/{noticeId}",
-	                        "/notice/post",
+	                        "/notice/post"
 	                        //그래프 api
-	                        "/api/all-flight-payments"
 					)
 					.excludePathPatterns(
 
