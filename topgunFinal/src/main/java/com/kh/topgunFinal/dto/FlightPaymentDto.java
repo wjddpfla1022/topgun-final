@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class FlightPaymentDto {
-    private String flightId;
+    private String flightNumber;
     private Integer totalPayment;
     private String airlineName;
 }
