@@ -88,7 +88,6 @@ CREATE TABLE ADMIN (
     USERS_ID           VARCHAR2(255) PRIMARY KEY,                -- 사용자 ID (USERS 테이블과 연관) 
     ADMIN_DEPARTMENT   VARCHAR2(30),                              -- 관리 부서
     ADMIN_ACCESS_LEVEL VARCHAR2(255),                             -- 관리자 접근 레벨
-    FLIGHT_ID          NUMBER,                                     -- 비행기 ID (선택 사항)
 
     -- 외래 키 제약: USERS_ID는 USERS 테이블의 USERS_ID를 참조
     CONSTRAINT FK_ADMIN_USER FOREIGN KEY (USERS_ID) 
