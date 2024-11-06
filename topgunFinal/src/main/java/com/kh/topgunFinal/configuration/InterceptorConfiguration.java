@@ -59,7 +59,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		registry.addInterceptor(airLineInterceptor)
 					.addPathPatterns(
 						"/flight", //항공편페이지
-						"/flight/detail/{flightId}"
+						"/flight/detail/{flightId}",
+						//그래프 페이지 
+						"/graph"
 					)
 					.excludePathPatterns(
 
@@ -75,7 +77,9 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 							//공지사항 등록시 어드민인 경우만 허용하도록 조회를 제외한 편집 기능 api 를 모두 포함
 	                        "/notice/edit/{noticeId}",
 	                        "/notice/delete/{noticeId}",
-	                        "/notice/post"
+	                        "/notice/post",
+	                        //그래프 
+	                        "/graph"
 					)
 					.excludePathPatterns(
 
