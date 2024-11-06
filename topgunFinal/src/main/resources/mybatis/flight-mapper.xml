@@ -27,7 +27,7 @@
 	<select id="list" resultType="FlightDto">
 		select * from flight order by
 		flight_id desc
-	</select>
+	</select> 
 
 	<!-- 상세 -->
 	<select id="find" resultType="FlightDto">
