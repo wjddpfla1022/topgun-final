@@ -58,8 +58,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 AIRLINE인 경우
 		registry.addInterceptor(airLineInterceptor)
 					.addPathPatterns(
-						"/flight", //항공편페이지
 						"/flight/detail/{flightId}",
+						"/flight/column/{column}/keyword/{keyword}",
 						//그래프 api
 						"/api/flight-payments"
 					)
