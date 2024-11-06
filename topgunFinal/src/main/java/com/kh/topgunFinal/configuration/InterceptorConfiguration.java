@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.kh.topgunFinal.interceptor.AdminInterceptor;
 import com.kh.topgunFinal.interceptor.AirLineInterceptor;
 import com.kh.topgunFinal.interceptor.LoginInterceptor;
-import com.kh.topgunFinal.interceptor.MemberInterceptor;
 
 
 @Configuration
@@ -18,11 +17,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	// 로그인 여부
 	@Autowired
 	private LoginInterceptor loginInterceptor;
-	
-	// Type이 MEMBER인지
-	@Autowired
-	private MemberInterceptor memberInterceptor;
-	
+		
 	// Type이 AIRLINE인지
 	@Autowired
 	private AirLineInterceptor airLineInterceptor;
@@ -59,16 +54,7 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 						"/users/checkId", // 아이디 중복 검증
 						"/users/search" // ADMIN만 접근 가능한 경로도 제외
 					);
-		
-		
-		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 MEMBER인 경우
-		registry.addInterceptor(memberInterceptor)
-					.addPathPatterns(
-						
-				
-					);
-		
-		
+			
 		// 로그인 인터셉터를 적용할 경로 추가(즉 로그인만 되어있는지 아닌지 판단할 경우) + TYPE이 AIRLINE인 경우
 		registry.addInterceptor(airLineInterceptor)
 					.addPathPatterns(
