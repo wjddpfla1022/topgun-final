@@ -3,33 +3,27 @@
 
 <mapper namespace="graph">
     <!-- 특정 사용자 ID로 결제 및 항공사 정보를 조회하는 쿼리 -->
-    <select id="getTotalPaymentWithAirline" resultType="com.kh.topgunFinal.dto.FlightPaymentDto">
-        SELECT f.flight_id, 
-               SUM(p.payment_total) AS total_payment, 
+    <select id="getTotalPaymentWithAirline" parameterType="String" resultType="com.kh.topgunFinal.dto.FlightPaymentDto">
+        SELECT f.flight_number,
+               SUM(p.payment_total) AS total_payment,
                a.airline_name
         FROM flight f
         JOIN payment p ON f.flight_id = p.flight_id
         JOIN airline a ON f.user_id = a.user_id
-        WHERE f.user_id = #{userId}
-        GROUP BY f.flight_id, a.airline_name
-        ORDER BY f.flight_id
+        WHERE f.user_id = #{userId}  <!-- userId를 파라미터로 받음 -->
+        GROUP BY f.flight_number, a.airline_name
+        ORDER BY f.flight_number
     </select>
 
     <!-- 모든 사용자에 대한 결제 및 항공사 정보를 조회하는 쿼리 -->
     <select id="getAllPaymentsWithAirline" resultType="com.kh.topgunFinal.dto.FlightPaymentDto">
-        SELECT 
-            f.flight_id, 
-            SUM(p.payment_total) AS total_payment, 
-            a.airline_name
-        FROM 
-            flight f
-        JOIN 
-            payment p ON f.flight_id = p.flight_id
-        JOIN 
-            airline a ON f.user_id = a.user_id
-        GROUP BY 
-            f.flight_id, a.airline_name
-        ORDER BY 
-            f.flight_id
+        SELECT f.flight_number,
+               SUM(p.payment_total) AS total_payment,
+               a.airline_name
+        FROM flight f
+        JOIN payment p ON f.flight_id = p.flight_id
+        JOIN airline a ON f.user_id = a.user_id
+        GROUP BY f.flight_number, a.airline_name
+        ORDER BY f.flight_number
     </select>
 </mapper>

@@ -60,8 +60,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 					.addPathPatterns(
 						"/flight", //항공편페이지
 						"/flight/detail/{flightId}",
-						//그래프 페이지 
-						"/graph"
+						//그래프 api
+						"/api/flight-payments"
 					)
 					.excludePathPatterns(
 
@@ -78,8 +78,8 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	                        "/notice/edit/{noticeId}",
 	                        "/notice/delete/{noticeId}",
 	                        "/notice/post",
-	                        //그래프 
-	                        "/graph"
+	                        //그래프 api
+	                        "/api/all-flight-payments"
 					)
 					.excludePathPatterns(
 
