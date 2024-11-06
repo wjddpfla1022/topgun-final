@@ -160,8 +160,8 @@ public class SeatsRestController {
 		 paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
 		 paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
-		// [2]상세 정보 등록//비관적락
-		 List<SeatsDto> seatsList = seatsDao.selectListForUpdateDtos(request.getSeatsList().get(0).getFlightId());
+		// [2]상세 정보 등록
+		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
 			for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
 				SeatsDto seatsDto = seatsList.stream()
 						.filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())

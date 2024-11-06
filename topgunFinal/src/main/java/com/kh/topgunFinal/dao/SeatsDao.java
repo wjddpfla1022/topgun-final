@@ -60,9 +60,9 @@ public class SeatsDao {
 	}
 	
 	//결제 비관적락
-	public List<SeatsDto> selectListForUpdateDtos(int flightId) {
-	    return sqlSession.selectList("seats.selectListForUpdateDtos", flightId);
-	}
+//	public List<SeatsDto> selectListForUpdateDtos(int flightId) {
+//	    return sqlSession.selectList("seats.selectListForUpdateDtos", flightId);
+//	}
 	//항공기 탑승자 명단
 	 public List<FlightPassangerInfoVO> passangerInfo(int flightId) {
 	        return sqlSession.selectList("flightPassangerInfo", flightId);
