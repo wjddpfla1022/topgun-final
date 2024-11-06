@@ -110,6 +110,15 @@ CREATE TABLE USERS_TOKEN (
         ON DELETE CASCADE
 );
 
+-- 인증 테이블
+CREATE TABLE CERT (
+    -- 기본 키 제약: CERT_EMAIL
+    CERT_EMAIL          VARCHAR2(60) PRIMARY KEY,  -- 인증 이메일 (기본 키)
+    
+    CERT_NUMBER         CHAR(6) NOT NULL,          -- 인증 번호
+    CERT_TIME           DATE DEFAULT SYSDATE NOT NULL  -- 인증 시간 (기본값: 현재 시간)
+);
+
 -- 첨부파일
 CREATE SEQUENCE ATTACH_SEQ;
 CREATE TABLE ATTACH (
