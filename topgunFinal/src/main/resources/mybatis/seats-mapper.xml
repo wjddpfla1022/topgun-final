@@ -63,5 +63,30 @@
         JOIN 
             AIRLINE a ON f.USER_ID = a.USER_ID
     </select>
+    
+    <select id="selectListForUpdateDtos" parameterType="int" resultType="SeatsDto">
+    SELECT * FROM seats WHERE flight_id = #{flightId} FOR UPDATE
+</select>
+		
+		<select id= "flightPassangerInfo" resultType="FlightPassangerInfoVO">
+		SELECT 
+    f.flight_id,
+    pd.payment_detail_name,
+    pd.payment_detail_passport,
+    pd.payment_detail_passanger,
+    pd.payment_detail_english,
+    pd.payment_detail_sex,
+    pd.payment_detail_birth,
+    pd.payment_detail_country,
+    pd.payment_detail_visa,
+    pd.payment_detail_expire
+FROM 
+    flight f
+JOIN 
+    payment_detail pd ON f.flight_id = pd.flight_id
+WHERE 
+    f.flight_id = #{flightId} AND
+    pd.payment_detail_status = '승인'
+		</select>
 		
 </mapper>
