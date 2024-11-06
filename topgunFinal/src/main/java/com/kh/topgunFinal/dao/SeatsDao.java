@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.service.CreateSeatService;
+import com.kh.topgunFinal.vo.FlightPassangerInfoVO;
 import com.kh.topgunFinal.vo.SeatsFlightInfoVO;
 
 @Repository
@@ -58,8 +59,13 @@ public class SeatsDao {
 		return sqlSession.update("seats.usedSeats", seatsDto)>0;
 	}
 	
-	//결제 취소시 좌석 상태 변경
-//	public boolean seatsStatus2(SeatsDto seatsDto) {
-//		return sqlSession.update("seats.cancelSeats", seatsDto)>0;
-//	}
+	//결제 비관적락
+	public List<SeatsDto> selectListForUpdateDtos(int flightId) {
+	    return sqlSession.selectList("seats.selectListForUpdateDtos", flightId);
+	}
+	//항공기 탑승자 명단
+	 public List<FlightPassangerInfoVO> passangerInfo(int flightId) {
+	        return sqlSession.selectList("flightPassangerInfo", flightId);
+	    }
 }
+

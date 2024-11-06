@@ -26,6 +26,7 @@ import com.kh.topgunFinal.dto.SeatsDto;
 import com.kh.topgunFinal.error.TargetNotFoundException;
 import com.kh.topgunFinal.service.PayService;
 import com.kh.topgunFinal.service.TokenService;
+import com.kh.topgunFinal.vo.FlightPassangerInfoVO;
 import com.kh.topgunFinal.vo.PaymentInfoVO;
 import com.kh.topgunFinal.vo.PaymentTotalVO;
 import com.kh.topgunFinal.vo.SeatsApproveRequestVO;
@@ -71,10 +72,15 @@ public class SeatsRestController {
 	    return seatsDao.selectList(flightId); // 항공편 ID를 DAO 메서드에 전달
 	}
 	//항공편 정보 조회
-	@GetMapping("info/{flightId}")
+	@GetMapping("/info/{flightId}")
 	public List<SeatsFlightInfoVO> flightInfoVO(@PathVariable int flightId) {
 	    return paymentDao.seatsFlightInfo(flightId);
 	}
+	//항공기 탑승자 명단 조회
+	@GetMapping("/passanger/{flightId}")
+    public List<FlightPassangerInfoVO> getPassengerInfo(@PathVariable int flightId) {
+        return seatsDao.passangerInfo(flightId);
+    }
 	
 	// 좌석 구매
 	@PostMapping("/purchase")
@@ -131,11 +137,6 @@ public class SeatsRestController {
 				tokenService.check(tokenService.removeBearer(token));
 		// approve 준비 (입력)
 		
-		  // 중복 결제 검사
-//	    if (paymentDao.existsByParterOrderId(request.getPartnerOrderId())) {
-//	        throw new TargetNotFoundException("이미 처리된 결제입니다."); // 사용자 정의 예외
-//	    }
-		
 		PayApproveRequestVO requestVO = new PayApproveRequestVO();
 		requestVO.setPartnerOrderId(request.getPartnerOrderId());
 		requestVO.setPartnerUserId(claimVO.getUserId());
@@ -159,8 +160,8 @@ public class SeatsRestController {
 		 paymentDto.setUserId(claimVO.getUserId());//결제한 아이디
 		 paymentDao.paymentInsert(paymentDto);//대표정보 등록
 		
-		// [2]상세 정보 등록
-		 List<SeatsDto> seatsList = seatsDao.selectList(request.getSeatsList().get(0).getFlightId());
+		// [2]상세 정보 등록//비관적락
+		 List<SeatsDto> seatsList = seatsDao.selectListForUpdateDtos(request.getSeatsList().get(0).getFlightId());
 			for(SeatsQtyVO qtyVO : request.getSeatsList()) {//tid,pg_token,partner_orderId
 				SeatsDto seatsDto = seatsList.stream()
 						.filter(seat -> seat.getSeatsNo() == qtyVO.getSeatsNo())
@@ -317,5 +318,5 @@ public class SeatsRestController {
     public List<SeatsFlightInfoVO> seatsFlightInfoList() {
         return sqlSession.selectList("payment.seatsFlightInfoList");
     }
-
+   
 }
