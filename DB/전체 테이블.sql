@@ -34,26 +34,116 @@ room_created_by varchar2(20) not null
 );
 
 --사용자 테이블
-DROP sequence users_seq;
-CREATE sequence users_seq;
-drop table users;
-CREATE TABLE Users (
-    users_id         varchar2(20)     primary key   NOT NULL,
-    users_name       varchar2(20)        NOT NULL,
-    users_pw    varchar2(16)       NOT NULL,
-    users_email      varchar2(60)        NOT NULL,
-    users_contact    char(11)            NOT NULL,
-    user_type        varchar2(21)        DEFAULT 'MEMBER' NOT NULL,
-    CHECK(user_type IN ('MEMBER', 'AIRLINE', 'ADMIN')),
-    CHECK(regexp_like(users_id, '^[a-z][a-z0-9]{4,19}$')),
+CREATE TABLE USERS (
+    USERS_ID         varchar2(20)     PRIMARY KEY NOT NULL,       -- 기본 키 설정
+    USERS_NAME       varchar2(20)     NOT NULL,                    -- 필수 항목
+    USERS_PW         varchar2(16)     NOT NULL,                    -- 필수 항목
+    USERS_EMAIL      varchar2(60)     NOT NULL,                    -- 필수 항목
+    USERS_CONTACT    char(11)         NOT NULL,                    -- 필수 항목
+    USER_TYPE        varchar2(21)     DEFAULT 'MEMBER' NOT NULL,   -- 기본값 설정
+    -- USER_TYPE에 대한 CHECK 제약: 'MEMBER', 'AIRLINE', 'ADMIN'만 허용
+    CHECK(USER_TYPE IN ('MEMBER', 'AIRLINE', 'ADMIN')),
+    
+    -- USERS_ID에 대한 정규 표현식 CHECK 제약: 소문자 시작, 알파벳과 숫자 포함 (4-20자)
+    CHECK(regexp_like(USERS_ID, '^[a-z][a-z0-9]{4,19}$')),
+    
+    -- USERS_PW에 대한 복잡성 검사:
+    -- 최소 8자 이상, 대소문자, 숫자, 특수문자 포함
     CHECK(
-        regexp_like(users_pw, '^[A-Za-z0-9!@#$]{8,16}$')
-        AND regexp_like(users_pw, '[A-Z]+')
-        AND regexp_like(users_pw, '[a-z]+')
-        AND regexp_like(users_pw, '[0-9]+')
-        AND regexp_like(users_pw, '[!@#$]+')
+        regexp_like(USERS_PW, '^[A-Za-z0-9!@#$]{8,16}$') AND 
+        regexp_like(USERS_PW, '[A-Z]+') AND 
+        regexp_like(USERS_PW, '[a-z]+') AND 
+        regexp_like(USERS_PW, '[0-9]+') AND 
+        regexp_like(USERS_PW, '[!@#$]+')
     ),
-    CHECK(regexp_like(users_contact, '^010[1-9][0-9]{6,7}$'))
+    
+    -- USERS_CONTACT에 대한 정규 표현식 CHECK 제약: 전화번호 형식 (010으로 시작, 8자리 숫자)
+    CHECK(regexp_like(USERS_CONTACT, '^010[1-9][0-9]{6,7}$'))
+);
+
+-- 사용자(일반회원) 상세 테이블
+CREATE TABLE MEMBER (
+    MEMBER_ID         VARCHAR2(255) PRIMARY KEY,            -- 회원 ID
+    MEMBER_ENG_NAME   VARCHAR2(255) NOT NULL,               -- 회원 영문 이름
+    MEMBER_BIRTH      TIMESTAMP(6) NOT NULL,                -- 회원 생일
+    MEMBER_GENDER     CHAR(1) NOT NULL,                     -- 회원 성별
+    MEMBER_POINT      NUMBER DEFAULT 5000,                  -- 회원 포인트 (기본값: 5000)
+
+    -- 외래 키 제약: MEMBER_ID는 USERS 테이블의 USERS_ID를 참조
+    CONSTRAINT FK_MEMBER_USER FOREIGN KEY (MEMBER_ID)
+        REFERENCES USERS (USERS_ID) 
+        ON DELETE CASCADE
+);
+
+-- 항공사 상세 테이블
+CREATE TABLE AIRLINE (
+    USERS_ID varchar2(20) PRIMARY KEY,
+    AIRLINE_NAME VARCHAR2(255) NOT NULL, 
+    AIRLINE_NO VARCHAR2(255) NOT NULL, 
+    FOREIGN KEY (USERS_ID) REFERENCES USERS (USERS_ID) ON DELETE CASCADE
+);
+
+-- 관리자 상세 테이블
+CREATE TABLE ADMIN (
+    USERS_ID           VARCHAR2(255) PRIMARY KEY,                -- 사용자 ID (USERS 테이블과 연관) 
+    ADMIN_DEPARTMENT   VARCHAR2(30),                              -- 관리 부서
+    ADMIN_ACCESS_LEVEL VARCHAR2(255),                             -- 관리자 접근 레벨
+
+    -- 외래 키 제약: USERS_ID는 USERS 테이블의 USERS_ID를 참조
+    CONSTRAINT FK_ADMIN_USER FOREIGN KEY (USERS_ID) 
+        REFERENCES USERS (USERS_ID) 
+        ON DELETE CASCADE
+);
+
+-- 사용자 토큰
+CREATE SEQUENCE USERS_TOKEN_SEQ;  -- 시퀀스 생성
+CREATE TABLE USERS_TOKEN (
+    TOKEN_NO         NUMBER   PRIMARY KEY  NOT NULL,                  -- 토큰 번호
+    TOKEN_TARGET     VARCHAR2(255)   NOT NULL,                  -- 토큰 대상
+    TOKEN_VALUE      VARCHAR2(500),                               -- 토큰 값 (선택 사항)
+    TOKEN_TIME       DATE            DEFAULT SYSDATE,           -- 토큰 생성 시간 (기본값: 현재 시간)
+    
+    -- 외래 키 제약: TOKEN_TARGET은 USERS 테이블의 USERS_ID를 참조
+    CONSTRAINT FK_TOKEN_USER FOREIGN KEY (TOKEN_TARGET) 
+        REFERENCES USERS (USERS_ID) 
+        ON DELETE CASCADE
+);
+
+-- 인증 테이블
+CREATE TABLE CERT (
+    -- 기본 키 제약: CERT_EMAIL
+    CERT_EMAIL          VARCHAR2(60) PRIMARY KEY,  -- 인증 이메일 (기본 키)
+    
+    CERT_NUMBER         CHAR(6) NOT NULL,          -- 인증 번호
+    CERT_TIME           DATE DEFAULT SYSDATE NOT NULL  -- 인증 시간 (기본값: 현재 시간)
+);
+
+-- 첨부파일
+CREATE SEQUENCE ATTACH_SEQ;
+CREATE TABLE ATTACH (
+    ATTACH_NO        NUMBER PRIMARY KEY,                -- 첨부 파일 번호 (기본 키)
+    ATTACH_NAME      VARCHAR2(255),                      -- 첨부 파일 이름
+    ATTACH_TYPE      VARCHAR2(90),                       -- 첨부 파일 타입
+    ATTACH_SIZE      NUMBER                              -- 첨부 파일 크기
+);
+
+-- 사용자 프로필 이미지 테이블
+CREATE TABLE USERSIMAGE (
+    USERS_ID   VARCHAR2(20),                  -- 사용자 ID (USERS 테이블과 연관)
+    ATTACH_NO  NUMBER,                        -- 첨부 파일 번호 (ATTACH 테이블과 연관)
+
+    -- 기본 키 제약: USERS_ID와 ATTACH_NO의 복합 키
+    CONSTRAINT PK_USERSIMAGE PRIMARY KEY (USERS_ID, ATTACH_NO),
+
+    -- 외래 키 제약: ATTACH_NO는 ATTACH 테이블의 ATTACH_NO를 참조
+    CONSTRAINT FK_ATTACH_TO_USERSIMAGE_1 FOREIGN KEY (ATTACH_NO)
+        REFERENCES ATTACH (ATTACH_NO) 
+        ON DELETE CASCADE,
+
+    -- 외래 키 제약: USERS_ID는 USERS 테이블의 USERS_ID를 참조
+    CONSTRAINT FK_USERS_TO_USERSIMAGE_1 FOREIGN KEY (USERS_ID)
+        REFERENCES USERS (USERS_ID) 
+        ON DELETE CASCADE
 );
 
 ---항공편 테이블
@@ -71,16 +161,6 @@ CREATE TABLE Flight (
     user_id VARCHAR2(255) NOT NULL,
     flight_price NUMBER NOT NULL,
     flight_status CHAR(6) DEFAULT '대기'
-);
-
---항공사 테이블
-drop sequence airline_seq;
-create sequence airline_seq; 
-drop table airline;
-create table airline(
-users_id references users(users_id) on delete cascade,
-airline_name varchar(255) not null,
-airline_no varchar(255) not null
 );
 
 --좌석결제대표
