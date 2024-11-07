@@ -26,15 +26,15 @@ public class InterceptorConfiguration implements WebMvcConfigurer {
 	@Autowired
 	private AdminInterceptor adminInterceptor;
 	
-//	@Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
-//                .allowedOrigins("http://localhost:3000") // 허용할 출처 (예시)
-//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
-//                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더를 명시적으로 설정
-//                .allowCredentials(true); // 쿠키나 인증 정보를 허용할지 여부
-//    }
-//	
+	@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // 모든 경로에 대해 CORS 허용
+                .allowedOrigins("http://localhost:3000") // 허용할 출처 (예시)
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 허용할 HTTP 메서드
+                .allowedHeaders("Authorization", "Content-Type") // 허용할 헤더를 명시적으로 설정
+                .allowCredentials(true); // 쿠키나 인증 정보를 허용할지 여부
+    }
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		

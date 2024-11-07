@@ -33,6 +33,8 @@ public class PayService {
 
 	// 결제 준비(ready)
 	public PayReadyResponseVO ready(PayReadyRequestVO request) throws URISyntaxException {
+		
+		System.out.println(request);
 		//#2 보낼 주소
 		URI uri = new URI("https://open-api.kakaopay.com/online/v1/payment/ready");
 		//#4 보낼 내용
@@ -52,6 +54,7 @@ public class PayService {
 		//#6 response= #1.post(#2+#5.#6.class) ,모두 담아서 SeatsResController에 전송
 		PayReadyResponseVO response = template.postForObject(uri, entity, PayReadyResponseVO.class);
 		//SeatResController로부터 받아온 tid,url,partner_order_id, partner_user_id 받음
+		System.out.println(response);
 		return response;
 	}
 
