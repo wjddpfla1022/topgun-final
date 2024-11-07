@@ -33,6 +33,7 @@ public class PayService {
 
 	// 결제 준비(ready)
 	public PayReadyResponseVO ready(PayReadyRequestVO request) throws URISyntaxException {
+		
 		//#2 보낼 주소
 		URI uri = new URI("https://open-api.kakaopay.com/online/v1/payment/ready");
 		//#4 보낼 내용
