@@ -71,8 +71,8 @@ public class EmailService {
 	        String encodedUserId = URLEncoder.encode(userId, StandardCharsets.UTF_8.toString());
 
 			String url = ServletUriComponentsBuilder
-//					.fromCurrentContextPath()//http://localhost:8080
-					.fromHttpUrl("http://localhost:3000") // 원하는 호스트와 포트를 설정
+					.fromCurrentContextPath()//http://localhost:8080
+//					.fromHttpUrl("http://localhost:3000") // 원하는 호스트와 포트를 설정
 					.path("/resetPw")// 나머지경로
 					.queryParam("certNumber", encodedCertNumber)// 파라미터
 					.queryParam("certEmail", encodedUserEmail)// 파라미터
